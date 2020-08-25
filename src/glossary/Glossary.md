@@ -5,6 +5,8 @@
  
  - [x] [Noun] productions - the process of or financial and administrative management involved in making a movie, play, or record.
  
+ - [ ] [Adjective] raw - (of food) uncooked.
+ 
   #
  ### Sub-words
   
