@@ -8,7 +8,8 @@
  - [ ] [Adjective] raw - (of food) uncooked.
  
  - [ ] [Verb] consists - be composed or made up of.
- 
+
+ - [ ] [Adverb] namely - that is to say; to be specific (used to introduce detailed information or a specific example).
   #
  ### Sub-words
   
