@@ -12,6 +12,8 @@
   #
  ### Sub-words
   
+ - [ ] [Adjective] composed - having one's feelings and expression under control; calm.
+  
  - [ ] [Verb] manufacturing - the making of articles on a large scale using machinery; industrial production.
 
  - [ ] [Adjective] manufactured - produced on a large scale using machinery.
