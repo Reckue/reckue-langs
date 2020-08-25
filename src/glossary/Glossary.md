@@ -7,6 +7,8 @@
  
  - [ ] [Adjective] raw - (of food) uncooked.
  
+ - [ ] [Verb] consists - be composed or made up of.
+ 
   #
  ### Sub-words
   
