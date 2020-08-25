@@ -3,7 +3,7 @@
   
  - [x] [Noun] productions - the action of making or manufacturing from components or raw materials, or the process of being so manufactured.
  
- - [ ] [Noun] productions - the process of or financial and administrative management involved in making a movie, play, or record.
+ - [x] [Noun] productions - the process of or financial and administrative management involved in making a movie, play, or record.
  
   #
  ### Sub-words
