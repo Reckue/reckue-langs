@@ -7,7 +7,7 @@ const port = 3000;
 app.use(cors());
 app.use(bodyParser());
 
-const wordbook = [''];
+const wordbook = [];
 
 app.get('/', (request, response) => {
     response.send(wordbook);

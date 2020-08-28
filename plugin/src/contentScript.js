@@ -4,7 +4,7 @@ fetch('http://localhost:3000/').then(response => response.json()).then(wordbook 
         element.innerText = '';
         words.forEach(word => {
             const span = document.createElement('span');
-            span.innerText = word.toLowerCase() + ' ';
+            span.innerText = word + ' ';
             if (wordbook.indexOf(word.toLowerCase()) === -1) {
                 span.style.background = 'rgba(255, 0, 0, 0.1)';
             } else {
