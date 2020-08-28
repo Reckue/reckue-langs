@@ -1,0 +1,37 @@
+* {
+    display: flex;
+    box-sizing: content-box;
+}
+
+.wrapper {
+    flex-direction: column;
+}
+
+.wrapper .nav-menu {
+    flex-direction: row;
+}
+
+.wrapper .nav-menu * {
+    margin: 2px 4px;
+}
+
+.wrapper .content {
+    background: #fdfdfd;
+    border-radius: 10px;
+    border: #ebebeb 1px solid;
+    padding: 2px 4px;
+}
+
+.wrapper .content .wordbook {
+    flex-direction: column;
+}
+
+.wrapper .content .wordbook input {
+    border: none;
+    background: none;
+    outline: none;
+}
+
+.wrapper .content .wordbook .words {
+    flex-direction: column;
+}
