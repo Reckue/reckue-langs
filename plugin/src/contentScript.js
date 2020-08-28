@@ -5,7 +5,9 @@ fetch('http://localhost:3000/').then(response => response.json()).then(wordbook 
         words.forEach(word => {
             const span = document.createElement('span');
             span.innerText = word + ' ';
-            if (wordbook.indexOf(word.toLowerCase()) === -1) {
+            if (word.match(/\d/)) {
+                span.style.background = 'none';
+            } else if (wordbook.indexOf(word.toString().toLowerCase()) === -1) {
                 span.style.background = 'rgba(255, 0, 0, 0.1)';
             } else {
                 span.style.background = 'rgba(0, 255, 0, 0.1)';
@@ -14,4 +16,3 @@ fetch('http://localhost:3000/').then(response => response.json()).then(wordbook 
         });
     }
 });
-

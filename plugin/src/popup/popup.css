@@ -16,20 +16,21 @@
 }
 
 .wrapper .content {
-    background: #fdfdfd;
-    border-radius: 10px;
-    border: #ebebeb 1px solid;
+    flex-direction: column;
     padding: 2px 4px;
+}
+
+.wrapper .content input {
+    border: none;
+    background: none;
+    outline: none;
 }
 
 .wrapper .content .wordbook {
     flex-direction: column;
-}
-
-.wrapper .content .wordbook input {
-    border: none;
-    background: none;
-    outline: none;
+    background: #fdfdfd;
+    border-radius: 10px;
+    border: #ebebeb 1px solid;
 }
 
 .wrapper .content .wordbook .words {

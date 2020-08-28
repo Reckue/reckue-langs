@@ -27,18 +27,21 @@ const getWordbook = async () => {
 const updateWords = (words) => {
     wordbookBlock.innerHTML = '';
     for (const word of words) {
-        const div = document.createElement('div');
-        const closeButton = document.createElement('button');
-        closeButton.addEventListener("click", function (event) {
-            console.log(word);
-            deleteWord(word);
-        });
-        createElement('div', word, 'word', div);
-        createElement('div', 'translate', 'translate', div);
-        createElement('div', 'definition', 'definition', div);
-        div.appendChild(closeButton);
-        wordbookBlock.appendChild(div);
+        createWordRow(wordbookBlock, word);
     }
+};
+
+const createWordRow = (wordbookBlock, word) => {
+    const div = document.createElement('div');
+    const closeButton = document.createElement('button');
+    closeButton.addEventListener("click", function (event) {
+        deleteWord(word);
+    });
+    createElement('div', word, 'word', div);
+    createElement('div', 'translate', 'translate', div);
+    createElement('div', 'definition', 'definition', div);
+    div.appendChild(closeButton);
+    wordbookBlock.appendChild(div);
 };
 
 const createElement = (type, content, className, parent) => {
