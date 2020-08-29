@@ -10,7 +10,7 @@ addWordInput.addEventListener("change", function (event) {
             },
             body: JSON.stringify({word: event.target.value})
         }).then(response => response.json())
-        .then(words => updateWords(words));
+        .then(rows => updateWords());
     event.target.value = '';
 });
 
@@ -24,11 +24,14 @@ const getWordbook = async () => {
     return await fetch('http://localhost:3000/').then(response => response.json());
 };
 
-const updateWords = (words) => {
+const updateWords = () => {
     wordbookBlock.innerHTML = '';
-    for (const word of words) {
-        createWordRow(wordbookBlock, word);
-    }
+    getWordbook().then(rows => {
+        console.log(rows);
+        for (const row of rows) {
+            createWordRow(wordbookBlock, row.word);
+        }
+    });
 };
 
 const createWordRow = (wordbookBlock, word) => {
@@ -52,9 +55,7 @@ const createElement = (type, content, className, parent) => {
 };
 
 const deleteWord = (word) => {
-    fetch(`http://localhost:3000/${word}`,{method: 'DELETE'})
-        .then(response => response.json())
-        .then(words => updateWords(words));
+    fetch(`http://localhost:3000/${word}`,{method: 'DELETE'}).then(ignore => updateWords());
 };
 
-getWordbook().then(words => updateWords(words));
+updateWords();

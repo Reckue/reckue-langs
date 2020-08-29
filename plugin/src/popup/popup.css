@@ -35,6 +35,7 @@
 
 .wrapper .content .wordbook .words {
     flex-direction: column;
+    padding: 2px 6px;
 }
 
 .wrapper .content .wordbook .words .word {
