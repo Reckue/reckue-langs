@@ -35,19 +35,22 @@
 
 .wrapper .content .wordbook .words {
     flex-direction: column;
-    padding: 2px 6px;
 }
 
 .wrapper .content .wordbook .words .word {
-    width: 100px;
+    width: 120px;
     overflow: hidden;
 }
 
 .wrapper .content .wordbook .words .translate {
-    width: 100px;
+    width: 120px;
     overflow: hidden;
 }
 
 .wrapper .content .wordbook .words .definition {
-    width: 250px;
+    width: 400px;
+}
+
+.wrapper .content .wordbook .words .level {
+    width: 80px;
 }
