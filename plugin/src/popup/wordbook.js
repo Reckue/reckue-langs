@@ -29,21 +29,22 @@ const updateWords = () => {
     getWordbook().then(rows => {
         let counter = 0;
         for (const row of rows) {
-            createWordRow(wordbookBlock, row, counter % 2);
+            createWordRow(wordbookBlock, row, counter);
             counter++;
         }
     });
 };
 
-const createWordRow = (wordbookBlock, row, parity) => {
+const createWordRow = (wordbookBlock, row, counter) => {
     const div = document.createElement('div');
-    div.style.background = parity === 0 ? '#fdfdfd' : '#f5f5f5';
-    div.style.padding = '0 8px';
+    div.style.background = counter % 2 === 0 ? '#fdfdfd' : '#f5f5f5';
     const closeButton = document.createElement('button');
+    closeButton.className = 'delete-button';
     closeButton.innerText = 'x';
     closeButton.addEventListener("click", function (event) {
         deleteWord(row._id);
     });
+    createElement('div', counter, 'number', div);
     createElement('div', row.word, 'word', div);
     createElement('input', row.translate, 'translate', div, "change", (event) => {
         row.translate = event.target.value;

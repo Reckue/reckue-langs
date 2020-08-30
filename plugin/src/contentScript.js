@@ -1,27 +1,110 @@
+const parents = [];
+
 fetch('http://localhost:3000/string/').then(response => response.json()).then(wordbook => {
-    for(let element of window.document.getElementsByTagName('p')) {
-        const words = element.innerText.split(' ');
-        element.innerText = '';
-        words.forEach(word => {
-            const a = document.createElement('a');
-            a.innerText = word + ' ';
-            const clearWord = word.toString().toLowerCase().replace(/[\W]/g, '');
-            if (!word.match(/\d/)) {
-                if (wordbook.indexOf(clearWord.concat(' good')) !== -1) {
-                    a.style.color = 'rgb(0,0,0)';
-                } else {
-                    if (wordbook.indexOf(clearWord.concat(' average')) !== -1) {
-                        a.style.color = 'rgb(0,183,237)';
-                    } else if (wordbook.indexOf(clearWord.concat(' bad')) !== -1) {
-                        a.style.color = 'rgb(255,144,0)';
-                    } else {
-                        a.style.color = 'rgb(255,0,0)';
-                    }
-                    a.href = `https://translate.google.com/#view=home&op=translate&sl=en&tl=ru&text=${clearWord}`;
-                    a.target = "_blank";
-                }
+    const tagList = getEntryTagsList(window.document.getElementsByTagName('p'));
+    const filteredTagsList = filter(tagList);
+    const paragraphs = getParagraphs(filteredTagsList);
+    getParentsParagraphs().then(paragraphs => {parseParents(paragraphs, wordbook)});
+    parseEntries(paragraphs, wordbook);
+});
+
+const chooseWordColor = (wordbook, content) => {
+    content.a.style.color = 'rgb(255,0,0)';
+    contains(wordbook, content.clearWord, 'good').then(good => {
+        if (good) {
+            content.a.style.color = 'rgb(0,0,0)';
+        }
+    });
+    contains(wordbook, content.clearWord, 'average').then(average => {
+        if (average) {
+            content.a.style.color = 'rgb(0, 183, 237)';
+        }
+    });
+    contains(wordbook, content.clearWord, 'bad').then(average => {
+        if (average) {
+            content.a.style.color = 'rgb(255,169,0)';
+        }
+    });
+};
+
+const contains = async (wordbook, word, level) => {
+    return wordbook.indexOf(word.concat(` ${level}`)) !== -1;
+};
+
+const getEntryTagsList = (tagsList) => {
+    const resultSet = [];
+    for (const tag of tagsList) {
+        const entryTags = tag.getElementsByTagName('*');
+        if (entryTags.length > 0) {
+            parents.push(tag);
+            resultSet.push(...getEntryTagsList(entryTags));
+        } else {
+            resultSet.push(tag);
+        }
+    }
+    return resultSet;
+};
+
+const filter = (tagList) => {
+    return tagList.filter(tag => tag.innerText);
+};
+
+const getParentsParagraphs = async () => {
+    const paragraphs = [];
+    for (let parent of parents) {
+        parent.childNodes.forEach(node => {
+            const value = node.nodeValue;
+            if (!node.hasChildNodes() && value !== null && value !== undefined) {
+                const contentSet = value.split(' ')
+                    .map(word => createContentSet(word))
+                    .filter(set => set.word.match(/\w/));
+                const ref = node;
+                paragraphs.push({ref, contentSet});
             }
-            element.appendChild(a);
         });
     }
-});
+    return paragraphs;
+};
+
+const getParagraphs = (tagList) => {
+    const paragraphs = [];
+    for(let tag of tagList) {
+        const contentSet = tag.innerText.split(' ').map(word => createContentSet(word));
+        paragraphs.push({ref: tag, contentSet});
+    }
+    return paragraphs;
+};
+
+const createContentSet = (word) => {
+    const clearWord = word.toString().toLowerCase().replace(/[\W]/g, '');
+    const notANumber = !word.match(/\d/);
+    const a = document.createElement('a');
+    a.innerText = word + ' ';
+    a.href = `https://translate.google.com/#view=home&op=translate&sl=en&tl=ru&text=${clearWord}`;
+    a.target = "_blank";
+    return {word, clearWord, a, notANumber}
+};
+
+const parseParents = (paragraphs, wordbook) => {
+    for (let paragraph of paragraphs) {
+        for (const content of paragraph.contentSet) {
+            if (content.notANumber) {
+                chooseWordColor(wordbook, content);
+                paragraph.ref.parentElement.insertBefore(content.a, paragraph.ref);
+                paragraph.ref.nodeValue = '';
+            }
+        }
+    }
+};
+
+const parseEntries = (paragraphs, wordbook) => {
+    for (let paragraph of paragraphs) {
+        paragraph.ref.innerText = '';
+        for (const content of paragraph.contentSet) {
+            if (content.notANumber) {
+                chooseWordColor(wordbook, content);
+            }
+            paragraph.ref.appendChild(content.a);
+        }
+    }
+};

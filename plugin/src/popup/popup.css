@@ -15,9 +15,32 @@
     margin: 2px 4px;
 }
 
+.wrapper .nav-menu .update-btn {
+    margin-left: auto;
+    color: #4b4b4b;
+    border: #4b4b4b 1px solid;
+    border-radius: 4px;
+    padding: 2px 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.wrapper .nav-menu .update-btn:hover {
+    color: #ffffff;
+    background: #4b4b4b;
+    border-radius: 4px;
+    padding: 2px 4px;
+}
+
+.wrapper .nav-menu .update-btn:active {
+    color: #ffffff;
+    background: black;
+    border-radius: 4px;
+    padding: 2px 4px;
+}
+
 .wrapper .content {
     flex-direction: column;
-    padding: 2px 4px;
 }
 
 .wrapper .content input {
@@ -26,10 +49,14 @@
     outline: none;
 }
 
+.wrapper .content input::placeholder {
+    color: #4f9fff;
+}
+
 .wrapper .content .wordbook {
     flex-direction: column;
     background: #fdfdfd;
-    border-radius: 10px;
+    border-radius: 4px;
     border: #ebebeb 1px solid;
 }
 
@@ -37,13 +64,19 @@
     flex-direction: column;
 }
 
+.wrapper .content .wordbook .words .number {
+    width: 25px;
+    overflow: hidden;
+    margin: 0 3px;
+}
+
 .wrapper .content .wordbook .words .word {
-    width: 120px;
+    width: 90px;
     overflow: hidden;
 }
 
 .wrapper .content .wordbook .words .translate {
-    width: 120px;
+    width: 110px;
     overflow: hidden;
 }
 
@@ -52,5 +85,21 @@
 }
 
 .wrapper .content .wordbook .words .level {
-    width: 80px;
+    width: 70px;
+    border: none;
+    background: none;
+}
+
+.delete-button {
+    background: #ff9ea5;
+    border: none;
+    border-radius: 4px;
+    width: 16px;
+    height: 16px;
+    padding: 0;
+    font-size: 12px;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    margin: auto 2px;
 }
