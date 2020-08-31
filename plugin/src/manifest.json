@@ -1,6 +1,6 @@
 {
   "name": "Interactive language coach",
-  "version": "0.1.6",
+  "version": "0.1.8",
   "description": "Interactive language learning assistant",
   "permissions": ["declarativeContent", "storage", "activeTab"],
   "background": {

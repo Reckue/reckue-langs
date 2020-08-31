@@ -1,37 +1,34 @@
-const wordbookBlock = window.document.getElementsByClassName('words')[0];
+const wordsBlock = window.document.getElementsByClassName('words')[0];
 const addWordInput = window.document.getElementById('add');
 const updateButton = window.document.getElementsByClassName('update-btn')[0];
 
-addWordInput.addEventListener("change", function (event) {
-    fetch('http://localhost:3000/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json;charset=utf-8'
-            },
-            body: JSON.stringify({word: event.target.value, level: 'bad'})
-        }).then(response => response.json())
-        .then(rows => updateWords());
-    event.target.value = '';
-});
+const config = {method: '', headers: {'Content-Type': 'application/json;charset=utf-8'}, body: ''};
 
-updateButton.addEventListener("click", function (event) {
+const addWord = (event) => {
+    config.method = 'POST';
+    config.body = JSON.stringify({word: event.target.value, level: 'bad'});
+    fetch('http://localhost:3000/', config).then(ignore => updateWords());
+    event.target.value = '';
+};
+
+const callContentScript = () => {
     chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
         chrome.tabs.executeScript(tabs[0].id, {file: 'contentScript.js'});
     });
-});
+};
+
+addWordInput.addEventListener("change",event => addWord(event));
+updateButton.addEventListener("click", () => callContentScript());
 
 const getWordbook = async () => {
     return await fetch('http://localhost:3000/').then(response => response.json());
 };
 
 const updateWords = () => {
-    wordbookBlock.innerHTML = '';
+    wordsBlock.innerHTML = '';
     getWordbook().then(rows => {
         let counter = 0;
-        for (const row of rows) {
-            createWordRow(wordbookBlock, row, counter);
-            counter++;
-        }
+        rows.forEach(row => createWordRow(wordsBlock, row, counter++));
     });
 };
 

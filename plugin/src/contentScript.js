@@ -1,12 +1,18 @@
 const parents = [];
 
 fetch('http://localhost:3000/string/').then(response => response.json()).then(wordbook => {
-    const tagList = getEntryTagsList(window.document.getElementsByTagName('p'));
+    processing('p', wordbook);
+});
+
+const processing = (type, wordbook) => {
+    const tagList = getEntryTagsList(window.document.getElementsByTagName(type));
+    getParentsParagraphs().then(paragraphs => {
+        parseParents(paragraphs, wordbook)
+    });
     const filteredTagsList = filter(tagList);
     const paragraphs = getParagraphs(filteredTagsList);
-    getParentsParagraphs().then(paragraphs => {parseParents(paragraphs, wordbook)});
     parseEntries(paragraphs, wordbook);
-});
+};
 
 const chooseWordColor = (wordbook, content) => {
     content.a.style.color = 'rgb(255,0,0)';
@@ -52,16 +58,18 @@ const filter = (tagList) => {
 const getParentsParagraphs = async () => {
     const paragraphs = [];
     for (let parent of parents) {
-        parent.childNodes.forEach(node => {
-            const value = node.nodeValue;
-            if (!node.hasChildNodes() && value !== null && value !== undefined) {
-                const contentSet = value.split(' ')
-                    .map(word => createContentSet(word))
-                    .filter(set => set.word.match(/\w/));
-                const ref = node;
-                paragraphs.push({ref, contentSet});
-            }
-        });
+        if (parent.tagName !== 'A') {
+            parent.childNodes.forEach(node => {
+                const value = node.nodeValue;
+                if (!node.hasChildNodes() && value !== null && value !== undefined) {
+                    const contentSet = value.split(/\s/)
+                        .map(word => createContentSet(word))
+                        .filter(set => set.word.match(/\w/));
+                    const ref = node;
+                    paragraphs.push({ref, contentSet});
+                }
+            });
+        }
     }
     return paragraphs;
 };
@@ -90,9 +98,9 @@ const parseParents = (paragraphs, wordbook) => {
         for (const content of paragraph.contentSet) {
             if (content.notANumber) {
                 chooseWordColor(wordbook, content);
-                paragraph.ref.parentElement.insertBefore(content.a, paragraph.ref);
-                paragraph.ref.nodeValue = '';
             }
+            paragraph.ref.parentElement.insertBefore(content.a, paragraph.ref);
+            paragraph.ref.nodeValue = '';
         }
     }
 };
