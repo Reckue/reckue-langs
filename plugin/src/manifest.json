@@ -2,7 +2,7 @@
   "name": "Interactive language coach",
   "version": "0.1.8",
   "description": "Interactive language learning assistant",
-  "permissions": ["declarativeContent", "storage", "activeTab"],
+  "permissions": ["storage", "activeTab"],
   "background": {
     "scripts": ["application.js"],
     "persistent": false
@@ -17,6 +17,12 @@
     }
   },
   "content_scripts": [
+    {
+      "matches": ["https://translate.google.com/*"],
+      "run_at": "document_idle",
+      "js": ["translate/googleTranslate.js"],
+      "css": ["translate/googleTranslate.css"]
+    },
     {
       "matches": ["http://*/*", "https://*/*"],
       "run_at": "document_idle",
