@@ -1,0 +1,49 @@
+.translations {
+    position: absolute;
+    transition: all 0.2s ease;
+}
+
+.translations .scroll {
+    position: relative;
+    flex-direction: column;
+    width: 100vw;
+    height: calc(100vh - 30px);
+    overflow-y: scroll;
+}
+
+.translations .scroll .block {
+    font-size: 20px;
+    flex-direction: column;
+    border-bottom: 1px #ffffff solid;
+    transition: all 1s ease;
+}
+
+.translations .scroll .block .word {
+    flex-direction: row;
+    align-items: center;
+    height: 36px;
+    border-bottom: 1px #ebebeb solid;
+    cursor: pointer;
+}
+
+.translations .scroll .block .word .index {
+    width: 30px;
+    justify-content: flex-end;
+    padding-right: 10px;
+    font-size: 16px;
+}
+
+.translations .scroll .block .translation {
+    height: 0;
+    transform: translate(-40px);
+    transition: all 0.5s ease;
+    width: 200px;
+}
+
+.translations .scroll .block .translation input {
+    color: #5599c8;
+    font-size: 20px;
+    border: none;
+    background: none;
+    outline: none;
+}

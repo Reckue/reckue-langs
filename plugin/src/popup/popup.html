@@ -3,22 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="popup.css">
+    <link rel="stylesheet" href="./nav/nav-menu.css">
+    <link rel="stylesheet" href="./content/collections.css">
+    <script src="../wordbook.js"></script>
+    <script src="elementsFunctions.js"></script>
+    <link rel="stylesheet" href="content/translations.css">
 </head>
 <body>
 <div class="wrapper">
     <nav class="nav-menu">
-        <div class="wordbook-nav">wordbook</div>
-        <div class="settings-nav">settings</div>
-        <div class="update-btn">Reload page</div>
+        <button class="nav-button" disabled>Collections</button>
+        <button class="nav-button">Translations</button>
+        <button class="nav-button">Definitions</button>
+        <button class="nav-button">Settings</button>
+        <button class="refresh-btn">Refresh</button>
     </nav>
     <div class="content">
-        <input id="add" placeholder="New word..." class="add">
-        <div class="wordbook">
-            <div class="words"></div>
+        <div class="collections">
+            <div class="header">
+                <div>English</div>
+                <input id="create-term" placeholder="Type new term..." class="add">
+            </div>
+            <div class="terms"></div>
         </div>
-        <div class="settings" hidden></div>
+        <div class="translations">
+            <div class="scroll"></div>
+        </div>
+        <div class="definitions"></div>
+        <div class="settings"></div>
     </div>
 </div>
-<script src="wordbook.js"></script>
+<script src="./content/terms.js"></script>
+<script src="./content/translations.js"></script>
+<script src="./nav/nav.js"></script>
 </body>
 </html>

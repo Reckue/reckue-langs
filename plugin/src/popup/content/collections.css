@@ -1,0 +1,55 @@
+.collections {
+    font-size: 12px;
+    flex-direction: column;
+    transition: all 0.2s ease;
+}
+
+.collections .header {
+    flex-direction: row;
+    justify-content: space-around;
+    height: 30px;
+    align-items: center;
+}
+
+.collections .header input {
+    width: 200px;
+    font-size: 12px;
+    border: none;
+    background: none;
+    outline: none;
+}
+
+.collections .terms {
+    flex-direction: column;
+    height: 500px;
+    overflow-y: scroll;
+}
+
+.collections .terms div {
+    flex-direction: row;
+    justify-content: space-between;
+    font-size: 16px;
+    padding: 2px 4px;
+    align-items: center;
+    border-top: 1px #ebebeb solid;
+}
+
+.collections .terms div .term {
+    width: 160px;
+}
+
+.collections .terms div .level {
+    outline: none;
+}
+
+.collections .terms div button {
+    background: none;
+    border: none;
+    color: brown;
+}
+
+.collections .terms div button:hover {
+    background: none;
+    border: none;
+    color: #ff3434;
+}

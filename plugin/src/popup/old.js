@@ -35,12 +35,7 @@ const updateWords = () => {
 const createWordRow = (wordbookBlock, row, counter) => {
     const div = document.createElement('div');
     div.style.background = counter % 2 === 0 ? '#fdfdfd' : '#f5f5f5';
-    const closeButton = document.createElement('button');
-    closeButton.className = 'delete-button';
-    closeButton.innerText = 'x';
-    closeButton.addEventListener("click", function (event) {
-        deleteWord(row._id);
-    });
+
     createElement('div', counter, 'number', div);
     createElement('div', row.word, 'word', div);
     createElement('input', row.translate, 'translate', div, "change", (event) => {
@@ -58,7 +53,6 @@ const createWordRow = (wordbookBlock, row, counter) => {
     createOption(select, 'good', row.level);
     createOption(select, 'average', row.level);
     createOption(select, 'bad', row.level);
-    div.appendChild(closeButton);
     wordbookBlock.appendChild(div);
 };
 
@@ -68,7 +62,7 @@ const createOption = (select, value, selected) => {
     option.innerText = value;
     option.selected = selected === value;
     select.appendChild(option)
-}
+};
 
 const updateRow = (row) => {
     fetch('http://localhost:3000/', {
@@ -93,10 +87,6 @@ const createElement = (type, content, className, parent, eventType, callback) =>
     element.addEventListener(eventType, callback);
     parent.appendChild(element);
     return element;
-};
-
-const deleteWord = (id) => {
-    fetch(`http://localhost:3000/${id}`,{method: 'DELETE'}).then(ignore => updateWords());
 };
 
 updateWords();
