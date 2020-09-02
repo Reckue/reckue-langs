@@ -1,7 +1,11 @@
-const parents = [];
+let parents = [];
 
-fetch('http://localhost:3000/string/').then(response => response.json()).then(wordbook => {
-    processing('p', wordbook);
+chrome.storage.sync.get(['enable'], function(app) {
+    if (app.enable) {
+        fetch('http://localhost:3000/string/').then(response => response.json()).then(wordbook => {
+            processing('p', wordbook);
+        });
+    }
 });
 
 const processing = (type, wordbook) => {
