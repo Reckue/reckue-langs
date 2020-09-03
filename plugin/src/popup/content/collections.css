@@ -19,6 +19,16 @@
     outline: none;
 }
 
+.collections .header button {
+    padding: 2px 8px;
+    color: white;
+    font-size: 12px;
+    border: none;
+    background: #35414b;
+    border-radius: 12px;
+    outline: none;
+}
+
 .collections .terms {
     flex-direction: column;
     height: 500px;

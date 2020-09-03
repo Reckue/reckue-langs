@@ -2,7 +2,7 @@ let parents = [];
 
 chrome.storage.sync.get(['enable'], function(app) {
     if (app.enable) {
-        fetch('http://localhost:3000/string/').then(response => response.json()).then(wordbook => {
+        fetch('http://localhost:8080/').then(response => response.json()).then(wordbook => {
             processing('p', wordbook);
         });
     }

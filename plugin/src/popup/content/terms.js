@@ -6,7 +6,7 @@ const config = {method: '', headers: {'Content-Type': 'application/json;charset=
 const addTerm = (event) => {
     config.method = 'POST';
     config.body = JSON.stringify({word: event.target.value, level: 'bad'});
-    fetch('http://localhost:3000/', config).then(ignore => updateTerms());
+    fetch('http://localhost:8080/', config).then(ignore => updateTerms());
     event.target.value = '';
 };
 
@@ -31,7 +31,7 @@ const createTermRow = (id, row, removeTerm) => {
 };
 
 const removeTerm = (id) => {
-    fetch(`http://localhost:3000/${id}`,{method: 'DELETE'}).then(ignore => {
+    fetch(`http://localhost:8080/${id}`,{method: 'DELETE'}).then(ignore => {
         window.document.getElementById(id).remove();
     });
 };

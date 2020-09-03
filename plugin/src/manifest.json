@@ -2,7 +2,7 @@
   "name": "Interactive language coach",
   "version": "0.2.2",
   "description": "Interactive language learning assistant",
-  "permissions": ["storage", "activeTab"],
+  "permissions": ["storage", "activeTab", "declarativeContent"],
   "background": {
     "scripts": ["application.js"],
     "persistent": false

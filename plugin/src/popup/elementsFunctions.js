@@ -54,7 +54,7 @@ const configureBlock = (className, parent) => {
 };
 
 const updateRow = (row) => {
-    fetch('http://localhost:3000/', {
+    fetch('http://localhost:8080/', {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json;charset=utf-8'
