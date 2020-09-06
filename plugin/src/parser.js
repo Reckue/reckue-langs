@@ -1,6 +1,6 @@
 let parents = [];
 
-chrome.storage.sync.get(['enable'], function(app) {
+chrome.storage.sync.get(['enable', 'collectionId'], function(app) {
     if (app.enable) {
         fetch('http://localhost:3000/string/').then(response => response.json()).then(wordbook => {
             processing('p', wordbook);

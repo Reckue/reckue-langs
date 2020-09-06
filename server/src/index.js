@@ -55,7 +55,7 @@ const getLevelIndex = (level) => {
     } else {
         return 0;
     }
-}
+};
 
 app.get('/string/', (request, response) => {
     db.collection('wordbook').find({}).toArray((err, wordbook) => {
