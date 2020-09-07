@@ -1,6 +1,6 @@
 {
   "name": "Interactive language coach",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "Interactive language learning assistant",
   "permissions": ["storage", "activeTab", "declarativeContent"],
   "background": {
@@ -8,7 +8,7 @@
     "persistent": false
   },
   "page_action": {
-    "default_popup": "popup/popup.html",
+    "default_popup": "pages/popup/index.html",
     "default_icon": {
       "16": "images/coach16.png",
       "32": "images/coach32.png",
@@ -20,13 +20,13 @@
     {
       "matches": ["https://translate.google.com/*"],
       "run_at": "document_idle",
-      "js": ["translate/googleTranslate.js"],
-      "css": ["translate/googleTranslate.css"]
+      "js": ["pages/translate/googleTranslate.js"],
+      "css": ["pages/translate/googleTranslate.css"]
     },
     {
       "matches": ["http://*/*", "https://*/*"],
       "run_at": "document_idle",
-      "js": ["parser_utils.js","parser.js"]
+      "js": ["remote/wordbooks.js", "parser_utils.js", "parser.js"]
     }
   ],
   "icons": {

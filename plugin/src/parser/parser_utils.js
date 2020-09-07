@@ -1,23 +1,3 @@
-let parents = [];
-
-chrome.storage.sync.get(['enable', 'collectionId'], function(app) {
-    if (app.enable) {
-        fetch('http://localhost:3000/string/').then(response => response.json()).then(wordbook => {
-            processing('p', wordbook);
-        });
-    }
-});
-
-const processing = (type, wordbook) => {
-    const tagList = getEntryTagsList(window.document.getElementsByTagName(type));
-    getParentsParagraphs().then(paragraphs => {
-        parseParents(paragraphs, wordbook)
-    });
-    const filteredTagsList = filter(tagList);
-    const paragraphs = getParagraphs(filteredTagsList);
-    parseEntries(paragraphs, wordbook);
-};
-
 const chooseWordColor = (wordbook, content) => {
     content.a.style.color = 'rgb(255,0,0)';
     contains(wordbook, content.clearWord, 'good').then(good => {

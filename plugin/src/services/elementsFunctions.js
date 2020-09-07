@@ -54,11 +54,5 @@ const configureBlock = (className, parent) => {
 };
 
 const updateRow = (row) => {
-    fetch('http://localhost:3000/', {
-        method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json;charset=utf-8'
-        },
-        body: JSON.stringify(row)
-    }).then(ignore => {});
+    editTerm(row).then(json => console.log(json));
 };
