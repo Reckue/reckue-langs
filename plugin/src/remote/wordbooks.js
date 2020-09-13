@@ -16,7 +16,7 @@ const createTerm = async (word) => {
 };
 
 const deleteTerm = async (id) => {
-    return fetch(base_url + id,{method: 'DELETE'}).then(response => response.json());
+    return fetch(base_url + id,{method: 'DELETE'}).then(ignore => {});
 };
 
 const editTerm = (term) => {

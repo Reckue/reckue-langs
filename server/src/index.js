@@ -66,6 +66,15 @@ app.get('/string/', (request, response) => {
     });
 });
 
+app.get('/string/', (request, response) => {
+    fs.readFile('DATA', 'utf8', function(err, wordbook) {
+        if (err) {
+            response.send(err);
+        }
+        response.send(JSON.stringify(wordbook.map(row => row.word + ' ' + row.level)));
+    });
+});
+
 app.delete('/:_id', (request, response) => {
     let row = request.params;
     row._id = new ObjectID(row._id);

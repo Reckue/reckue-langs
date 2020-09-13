@@ -1,17 +1,22 @@
 let parents = [];
+const userId = 'hardelele';
+const collectionId = 'english';
 
 chrome.storage.sync.get(['enable', 'collectionId'], function(app) {
     if (app.enable) {
-        getWordbook('string').then(wordbook => processing('p', wordbook));
+        processing(userId, collectionId);
     }
 });
 
-const processing = (type, wordbook) => {
-    const tagList = getEntryTagsList(window.document.getElementsByTagName(type));
-    getParentsParagraphs().then(paragraphs => {
-        parseParents(paragraphs, wordbook)
+const processing = (userId, collectionId) => {
+    const url = `http://localhost:8080/parser/?userId=${userId}&collectionId=${collectionId}`;
+    config.method = 'POST';
+    config.body = window.document.querySelector('body').innerHTML;
+    fetch(url, config).then(resp => resp.json()).then(json => {
+        createDom(json[0]);
     });
-    const filteredTagsList = filter(tagList);
-    const paragraphs = getParagraphs(filteredTagsList);
-    parseEntries(paragraphs, wordbook);
 };
+
+createDom = (html) => {
+    document.querySelector('body').innerHTML = html;
+}

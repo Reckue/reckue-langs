@@ -1,24 +1,16 @@
 const chooseWordColor = (wordbook, content) => {
+    const condition = {wordbook, word: content.clearWord, level: null};
     content.a.style.color = 'rgb(255,0,0)';
-    contains(wordbook, content.clearWord, 'good').then(good => {
-        if (good) {
-            content.a.style.color = 'rgb(0,0,0)';
-        }
-    });
-    contains(wordbook, content.clearWord, 'average').then(average => {
-        if (average) {
-            content.a.style.color = 'rgb(0, 183, 237)';
-        }
-    });
-    contains(wordbook, content.clearWord, 'bad').then(average => {
-        if (average) {
-            content.a.style.color = 'rgb(255,169,0)';
-        }
-    });
+    condition.level = 'good';
+    content.a.style.color = check(condition) ? 'rgb(0,0,0)' : content.a.style.color;
+    condition.level = 'average';
+    content.a.style.color = check(condition) ? 'rgb(0, 183, 237)' : content.a.style.color;
+    condition.level = 'bad';
+    content.a.style.color = check(condition) ? 'rgb(255,169,0)' : content.a.style.color;
 };
 
-const contains = async (wordbook, word, level) => {
-    return wordbook.indexOf(word.concat(` ${level}`)) !== -1;
+const check = (condition) => {
+    return condition.wordbook.indexOf(condition.word.concat(` ${condition.level}`)) !== -1;
 };
 
 const getEntryTagsList = (tagsList) => {

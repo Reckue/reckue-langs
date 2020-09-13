@@ -1,17 +1,30 @@
 const terms = window.document.getElementsByClassName('terms')[0];
 const input = window.document.getElementById('create-term');
+const filter = window.document.getElementById('filter-terms');
+let store = [];
 
 const createTermAndUpdatePopup = (event) => {
-    createTerm(event.target.value).then(ignore => updateTerms());
+    createTerm(event.target.value).then(ignore => getAndUpdateTerms());
     event.target.value = '';
 };
 
-const updateTerms = () => {
+const filterTermsAndUpdatePopup = (event) => {
+    terms.innerHTML = '';
+    const filtered = store.filter(value => value.word.includes(event.target.value));
+    updateTerms(filtered);
+};
+
+const getAndUpdateTerms = () => {
     terms.innerHTML = '';
     getWordbook().then(rows => {
-        let counter = 0;
-        rows.forEach(row => createTermRow(++counter, row, deleteTermAndUpdatePopup));
+        store = rows;
+        updateTerms(rows);
     });
+};
+
+const updateTerms = (rows) => {
+    let counter = 0;
+    rows.forEach(row => createTermRow(++counter, row, deleteTermAndUpdatePopup));
 };
 
 const createTermRow = (id, row, removeFunc) => {
@@ -29,4 +42,5 @@ const createTermRow = (id, row, removeFunc) => {
 const deleteTermAndUpdatePopup = (id) => deleteTerm(id).then(ignore => window.document.getElementById(id).remove());
 
 input.addEventListener("change",event => createTermAndUpdatePopup(event));
-updateTerms();
+filter.addEventListener("change",event => filterTermsAndUpdatePopup(event));
+getAndUpdateTerms();

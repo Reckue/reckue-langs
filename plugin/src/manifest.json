@@ -25,8 +25,9 @@
     },
     {
       "matches": ["http://*/*", "https://*/*"],
+      "exclude_matches": ["https://translate.google.com//*"],
       "run_at": "document_idle",
-      "js": ["remote/wordbooks.js", "parser_utils.js", "parser.js"]
+      "js": ["remote/wordbooks.js", "services/parser_utils.js", "parser/parser.js"]
     }
   ],
   "icons": {
