@@ -4,39 +4,45 @@ const filter = window.document.getElementById('filter-terms');
 let store = [];
 
 const createTermAndUpdatePopup = (event) => {
-    createTerm(event.target.value).then(ignore => getAndUpdateTerms());
+    postTerm(event.target.value).then(ignore => getAndUpdateTerms());
     event.target.value = '';
 };
 
 const filterTermsAndUpdatePopup = (event) => {
     terms.innerHTML = '';
-    const filtered = store.filter(value => value.word.includes(event.target.value));
+    const filtered = store.filter(term => term.value.includes(event.target.value));
     updateTerms(filtered);
 };
 
 const getAndUpdateTerms = () => {
     terms.innerHTML = '';
-    getWordbook().then(rows => {
-        store = rows;
-        updateTerms(rows);
+    getTerms().then(terms => {
+        store = terms;
+        updateTerms(terms);
     });
 };
 
-const updateTerms = (rows) => {
+const updateTerms = (terms) => {
     let counter = 0;
-    rows.forEach(row => createTermRow(++counter, row, deleteTermAndUpdatePopup));
+    terms.forEach(term => createTermRow(++counter, term, deleteTermAndUpdatePopup));
 };
 
-const createTermRow = (id, row, removeFunc) => {
+const createTermRow = (id, term, removeFunc) => {
     const divRow = document.createElement('div');
-    configureRow(divRow, row._id);
+    configureRow(divRow, term.id);
     configureColumn('span', id, 'index', divRow);
-    configureColumn('span', row.word, 'term', divRow);
-    const select = configureSelect('level', divRow, row);
-    configureOption(select, 'good', row.level);
-    configureOption(select, 'average', row.level);
-    configureOption(select, 'bad', row.level);
-    configureRemove(divRow, {_id: row._id}, removeFunc);
+    configureColumn('span', term.value, 'term', divRow);
+    const select = configureSelect('level', divRow, term);
+    configureOption(select, 'NATIVE', term.level);
+    configureOption(select, 'ADVANCED', term.level);
+    configureOption(select, 'KNOW_PART', term.level);
+    configureOption(select, 'UNDERSTAND', term.level);
+    configureOption(select, 'LEARNING', term.level);
+    configureOption(select, 'FAMILIAR', term.level);
+    configureOption(select, 'DONT_KNOW', term.level);
+    configureOption(select, 'USELESS', term.level);
+    configureOption(select, 'UNDEFINED', term.level);
+    configureRemove(divRow, {id: term.id}, removeFunc);
 };
 
 const deleteTermAndUpdatePopup = (id) => deleteTerm(id).then(ignore => window.document.getElementById(id).remove());

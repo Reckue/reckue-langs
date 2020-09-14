@@ -22,16 +22,16 @@ const configureInput = (content, className, parent, api) => {
     const element = document.createElement('input');
     element.value = content;
     element.classList.add(className);
-    element.addEventListener('change', (event) => api.func(event, api.row));
+    element.addEventListener('change', (event) => api.func(event, api.term));
     parent.appendChild(element);
 };
 
-const configureSelect = (className, parent, row) => {
+const configureSelect = (className, parent, term) => {
     const element = document.createElement('select');
     element.classList.add(className);
     element.addEventListener('change', function (event) {
-        row.level = event.target.value;
-        updateRow(row);
+        term.level = event.target.value;
+        updateRow(term);
     });
     parent.appendChild(element);
     return element;

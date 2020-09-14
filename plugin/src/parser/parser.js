@@ -1,6 +1,4 @@
 let parents = [];
-const userId = 'hardelele';
-const collectionId = 'english';
 
 chrome.storage.sync.get(['enable', 'collectionId'], function(app) {
     if (app.enable) {
@@ -17,6 +15,4 @@ const processing = (userId, collectionId) => {
     });
 };
 
-createDom = (html) => {
-    document.querySelector('body').innerHTML = html;
-}
+createDom = (html) => document.querySelector('body').innerHTML = html;

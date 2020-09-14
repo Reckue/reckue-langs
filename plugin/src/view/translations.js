@@ -3,21 +3,21 @@ const translations = absolute.getElementsByClassName('scroll')[0];
 
 const updateTranslations = () => {
     terms.innerHTML = '';
-    getWordbook().then(rows => {
+    getTerms().then(terms => {
         let counter = 0;
-        rows.forEach(row => createTranslationBlock(++counter, row));
+        terms.forEach(term => createTranslationBlock(++counter, term));
     });
 };
 
-const createTranslationBlock = (index, row) => {
+const createTranslationBlock = (index, term) => {
   const block = configureBlock('block', translations);
   const word = configureBlock('word', block);
   const translation = configureBlock('translation', block);
   translation.style.opacity = '0';
   word.addEventListener("click", () => reverseViability(translation, block));
   configureColumn('span', index + '.', 'index', word);
-  configureColumn('span', row.word, 'word', word);
-  configureInput(row.translate, 'translate', translation, {func: update, row});
+  configureColumn('span', term.value, 'word', word);
+  configureInput(term.value, 'translate', translation, {func: update, term});
 };
 
 const update = (event, row) => {
