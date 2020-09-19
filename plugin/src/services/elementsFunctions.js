@@ -1,5 +1,5 @@
 const configureRow = (row, id) => {
-    terms.appendChild(row);
+    termsDiv.appendChild(row);
     row.id = id;
 };
 

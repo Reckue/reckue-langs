@@ -36,7 +36,11 @@
 }
 
 .collections .terms div .term {
-    width: 160px;
+    width: 150px;
+}
+
+.collections .terms div .index {
+    padding: 0 10px 0 0;
 }
 
 .collections .terms div .level {
@@ -47,6 +51,11 @@
     background: none;
     border: none;
     color: brown;
+}
+
+.collections .terms div select {
+    font-size: 10px;
+    margin-right: 4px;
 }
 
 .collections .terms div button:hover {
