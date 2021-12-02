@@ -17,3 +17,7 @@ In addition.Two days ago i couldn't write this article))
 - Added `instantly create terms button` on google translate page
 - Fixed list of bugs
 ![](https://sun9-6.userapi.com/7N36ebXciQqlCgqGvYB9ThFMw_RNnD3yCWzalQ/sp3mE8Cowoc.jpg)
+  
+## 0.2.7 - Returned to development
+
+- Add docs, comments and TODO's for parser.js, move file to from `./parser` to `./scripts`
