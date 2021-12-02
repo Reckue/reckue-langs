@@ -2,15 +2,13 @@
 const BASE_URL = "http://localhost:8080/parser";
 const POST_METHOD = 'POST';
 
-let parents = [];
-
 /**
  * Если плагин включен - то делаем парсинг страницы, при заходе на неё.
  */
 chrome.storage.sync.get(['enable', 'collectionId'], function(app) {
     if (app.enable) {
-        //делаем обработку с моковыми данными
-        processing(userId, collectionId);
+        //делаем реквест с моковыми данными
+        prepareAndSendRequestToServerSideParser(userId, collectionId);
     }
 });
 
@@ -21,7 +19,7 @@ chrome.storage.sync.get(['enable', 'collectionId'], function(app) {
  * @param collectionId - мусорный параметр, в дальнейшем надо переработать,
  * пока что он принимается сервером, так что шлём его
  */
-const processing = (userId, collectionId) => {
+const prepareAndSendRequestToServerSideParser = (userId, collectionId) => {
     //TODO:: перенести всё что связанно с отправкой реквеста на сервер в dir ./remote
     const url = buildRequestUrl(userId, collectionId);
     const htmlBeforeParsing = window.document.querySelector('body').innerHTML;
