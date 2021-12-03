@@ -1,14 +1,22 @@
 //TODO:: Убрать все лишние переменные из этого файла
 const BASE_URL = "http://localhost:8080/parser";
 const POST_METHOD = 'POST';
+const isServerSideParsingEnable = false;
 
 /**
  * Если плагин включен - то делаем парсинг страницы, при заходе на неё.
  */
 chrome.storage.sync.get(['enable', 'collectionId'], function(app) {
+    window.console.log(`Reckue language app: Reach join point with app.enable=${app.enable}`);
     if (app.enable) {
         //делаем реквест с моковыми данными
-        prepareAndSendRequestToServerSideParser(userId, collectionId);
+        window.console.log(`Reckue language app: isServerSideParsingEnable=${isServerSideParsingEnable}`);
+        if (isServerSideParsingEnable) {
+            const htmlAfterParsing = prepareAndSendRequestToServerSideParser("userId", "collectionId");
+            createDom(htmlAfterParsing);
+        } else {
+            offlineParsing();
+        }
     }
 });
 
@@ -24,7 +32,7 @@ const prepareAndSendRequestToServerSideParser = (userId, collectionId) => {
     const url = buildRequestUrl(userId, collectionId);
     const htmlBeforeParsing = window.document.querySelector('body').innerHTML;
     fillConfigPayload(htmlBeforeParsing);
-    doServerSideParsing(url, config);
+    return doServerSideParsing(url, config);
 };
 
 buildRequestUrl = (userId, collectionId) => {
@@ -49,9 +57,8 @@ fillConfigPayload = (htmlBeforeParsing) => {
  * @param config
  */
 doServerSideParsing = (url, config) => {
-    fetch(url, config).then(resp => resp.json()).then(json => {
-        const htmlAfterParsing = json[0];
-        createDom(htmlAfterParsing);
+    return fetch(url, config).then(resp => resp.json()).then(json => {
+        return json[0];
     });
 }
 

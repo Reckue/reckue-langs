@@ -20,4 +20,4 @@ In addition.Two days ago i couldn't write this article))
   
 ## 0.2.7 - Returned to development
 
-- Add docs, comments and TODO's for parser.js, move file to from `./parser` to `./scripts`
+- Add docs, comments and TODO's for onNewPageLoad.js, move file to from `./parser` to `./scripts`

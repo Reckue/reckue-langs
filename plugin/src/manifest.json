@@ -1,6 +1,6 @@
 {
   "name": "Interactive language coach",
-  "version": "0.2.8",
+  "version": "0.2.9",
   "description": "Interactive language learning assistant",
   "permissions": ["storage", "activeTab", "declarativeContent"],
   "background": {
@@ -27,7 +27,7 @@
       "matches": ["http://*/*", "https://*/*"],
       "exclude_matches": ["https://translate.google.com//*", "http://localhost:*/*"],
       "run_at": "document_idle",
-      "js": ["services/api/terms.js", "scripts/parser.js"]
+      "js": ["scripts/pageParser.js", "scripts/pageBuilder.js", "scripts/onNewPageLoad.js"]
     }
   ],
   "icons": {

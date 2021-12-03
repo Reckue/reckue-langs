@@ -5,7 +5,7 @@ const refresh = window.document.getElementsByClassName('refresh-btn')[0];
 
 const callParser = () => {
     chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-        chrome.tabs.executeScript(tabs[0].id, {file: 'parser.js'});
+        chrome.tabs.executeScript(tabs[0].id, {file: 'onNewPageLoad.js'});
     });
 };
 
