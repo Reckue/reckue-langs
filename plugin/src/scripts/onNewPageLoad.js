@@ -1,11 +1,20 @@
 //TODO:: Убрать все лишние переменные из этого файла
-const BASE_URL = "http://localhost:8080/parser";
+const PARSER_URL = "http://localhost:8080/parser";
 const POST_METHOD = 'POST';
 const isServerSideParsingEnable = false;
 
 /**
+ * Идём в chrome.storage и берём оттуда два параметра.
+ * enable - toggle указывающий на то включен плагин или нет.
+ * collectionId - мусорный, потом уберу.
+ *
  * Если плагин включен - то делаем парсинг страницы, при заходе на неё.
+ *
+ * Либо отработает логика серверного парсинга, либо распарсим у себя локально.
+ * Второй вариант чуть дольше и ресурсо-затратнее.
  */
+//TODO:: Заменить collectionId на wordbook. В параметре wordbook хранить всё что должно быть на сервере,
+// но для локальной работы. По возможности релизовать механизмы синхронизации.
 chrome.storage.sync.get(['enable', 'collectionId'], function(app) {
     window.console.log(`Reckue language app: Reach join point with app.enable=${app.enable}`);
     if (app.enable) {
@@ -13,9 +22,10 @@ chrome.storage.sync.get(['enable', 'collectionId'], function(app) {
         window.console.log(`Reckue language app: isServerSideParsingEnable=${isServerSideParsingEnable}`);
         if (isServerSideParsingEnable) {
             const htmlAfterParsing = prepareAndSendRequestToServerSideParser("userId", "collectionId");
-            createDom(htmlAfterParsing);
+            updateDom(htmlAfterParsing);
         } else {
-            offlineParsing();
+            const latestNodesList = parseTextNodes();
+            editLatestNodesToRebuildPage(latestNodesList);
         }
     }
 });
@@ -35,8 +45,15 @@ const prepareAndSendRequestToServerSideParser = (userId, collectionId) => {
     return doServerSideParsing(url, config);
 };
 
+/**
+ * Вспомогательный метод, собирающий ссылку по которой пойдём на сервер
+ *
+ * @param userId - мусор на 03.12.21
+ * @param collectionId - мусор на 03.12.21
+ * @returns {string} - готовая ссылка
+ */
 buildRequestUrl = (userId, collectionId) => {
-    return BASE_URL + `/?userId=${userId}&collectionId=${collectionId}`;
+    return PARSER_URL + `/?userId=${userId}&collectionId=${collectionId}`;
 }
 
 /**
@@ -62,4 +79,9 @@ doServerSideParsing = (url, config) => {
     });
 }
 
-createDom = (html) => document.querySelector('body').innerHTML = html;
+/**
+ * Рендерим результат серверного парсига
+ *
+ * @param html - готовая, перестроенная на сервере страница
+ */
+updateDom = (html) => document.querySelector('body').innerHTML = html;

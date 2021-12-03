@@ -1,38 +1,75 @@
-let parents = [];
-
-offlineParsing = () => {
+/**
+ * Парсим html страницу и выдаём как результат список всех
+ * текстовых элементов на странице, с ссылками на эти самые элементы
+ *
+ * @returns {*[]} - latestNodesList (список всех текстовых элементов / это всегда конечные ноды)
+ */
+const parseTextNodes = () => {
     window.console.log("Reckue language app: Start offline parsing.");
     let body = window.document.querySelector('body');
-    // Вытаскиваем все значащие элементы и работаем с ними по ссылке на объект
-    const latestNodesList = buildLatestNodesList(body);
-    editLatestNodesToRebuildPage(latestNodesList);
+    window.console.log("Reckue language app: Building latest nodes list...");
+    return buildLatestNodesList(body);
 }
 
-const buildLatestNodesList = (parentTag, parentKey) => {
+/**
+ * Принимает тэг и возвращает список всех TEXT элементов
+ * (Они всегда расположены в конце дерева html документа)
+ *
+ * @param node - Текущий тэг
+ * @returns {[]}
+ */
+const buildLatestNodesList = (node) => {
     const localLastNodesList = [];
-    parentTag.childNodes.forEach((tag, localKey) => {
-        if (notInteractiveElement(tag)) {
-            if (tag.hasChildNodes()) {
-                const childLastNodesList = buildLatestNodesList(tag);
-                localLastNodesList.push(...childLastNodesList);
-            } else {
-                const lastNode = getLastNode(tag);
-                pushIfNotEmpty(localLastNodesList, lastNode);
-            }
+    node.childNodes.forEach((childNode) => {
+        if (notInteractiveElement(childNode)) {
+            parseCurrentNode(localLastNodesList, childNode);
         }
     });
     return localLastNodesList;
 }
 
-const pushIfNotEmpty = (list, elem) => elem ? list.push(elem) : list;
-
-const getLastNode = (tag) => {
-    const text = tag.textContent;
-    //TODO:: Сделать так чтобы числа не попадали в выборку
-    if (notBlank(text)) {
-        return {tag, text};
+/**
+ * Если текущий элемент не в конце дерева, идём парсить дальше,
+ * иначе пробуем добавить его в массив всех TEXT элементов
+ *
+ * @param localLastNodesList - список всех TEXT элементов
+ * @param node - текущий элемент
+ */
+const parseCurrentNode = (localLastNodesList, node) => {
+    if (node.hasChildNodes()) {
+        parseChildNodes(localLastNodesList, node);
+    } else {
+        pushLastNode(localLastNodesList, node);
     }
-    return undefined;
+}
+
+/**
+ * Заходим на 2 круг в buildLatestNodesList, но уже в более глубокой точке дерева,
+ * получаем кусок масива TEXT элементов, который добавляем к уже имеющимуся списку всех TEXT элементов
+ *
+ * @param localLastNodesList
+ * @param node
+ */
+const parseChildNodes = (localLastNodesList, node) => {
+    window.console.log("Reckue language app: Processing child nodes...");
+    const childLastNodesList = buildLatestNodesList(node);
+    localLastNodesList.push(...childLastNodesList);
+}
+
+/**
+ * Проводим все необходимые проверки и складываем ссылку на тэг
+ * и его содержимое в локальный (не полный) список TEXT элементов
+ *
+ * @param list - локальный (не полный) список TEXT элементов
+ * @param node - тэг с текстом
+ */
+const pushLastNode = (list, node) => {
+    const text = node.textContent;
+    //TODO:: Сделать так чтобы числа не попадали в выборку
+    //TODO:: Регулярка жрёт много времени здесь. Стоит перенести в другое место.
+    if (notBlank(text)) {
+        list.push({node, text});
+    }
 }
 
 //TODO:: Сделать так чтобы числа не попадали в выборку
@@ -42,19 +79,20 @@ const notBlank = (text) => {
     return clear !== '';
 }
 
-const notInteractiveElement = (tag) => !isScript(tag) && !isSVG(tag);
-const isScript = (tag) => tag instanceof HTMLScriptElement;
-const isSVG = (tag) => tag instanceof SVGSVGElement;
-const isComment = (tag) => tag instanceof Comment;
+const notInteractiveElement = (node) => !isScript(node) && !isSVG(node);
+const isScript = (node) => node instanceof HTMLScriptElement;
+const isSVG = (node) => node instanceof SVGSVGElement;
+const isComment = (node) => node instanceof Comment;
 
 // старый скрипт парсинга
+let parents = [];
+
 const processing = (type, wordbook) => {
     const tagList = getEntryTagsList(window.document.getElementsByTagName(type));
     getParentsParagraphs().then(paragraphs => {
         parseParents(paragraphs, wordbook)
     });
     const filteredTagsList = filter(tagList);
-    window.console.log(filteredTagsList);
     const paragraphs = getParagraphs(filteredTagsList);
     parseEntries(paragraphs, wordbook);
 };
