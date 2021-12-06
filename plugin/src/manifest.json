@@ -1,6 +1,6 @@
 {
   "name": "Interactive language coach",
-  "version": "0.2.7",
+  "version": "0.3.0",
   "description": "Interactive language learning assistant",
   "permissions": ["storage", "activeTab", "declarativeContent"],
   "background": {
@@ -18,16 +18,10 @@
   },
   "content_scripts": [
     {
-      "matches": ["https://translate.google.com/*"],
-      "run_at": "document_idle",
-      "js": ["pages/translate/googleTranslate.js"],
-      "css": ["pages/translate/googleTranslate.css"]
-    },
-    {
       "matches": ["http://*/*", "https://*/*"],
       "exclude_matches": ["https://translate.google.com//*", "http://localhost:*/*"],
       "run_at": "document_idle",
-      "js": ["remote/terms.js", "scripts/parser.js"]
+      "js": ["globals/mocks.js", "scripts/pageParser.js", "scripts/textParser.js", "scripts/pageBuilder.js", "scripts/onNewPageLoad.js"]
     }
   ],
   "icons": {

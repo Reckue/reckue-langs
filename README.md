@@ -19,5 +19,15 @@ In addition.Two days ago i couldn't write this article))
 ![](https://sun9-6.userapi.com/7N36ebXciQqlCgqGvYB9ThFMw_RNnD3yCWzalQ/sp3mE8Cowoc.jpg)
   
 ## 0.2.7 - Returned to development
+- Add docs, comments and TODO's for onNewPageLoad.js, move file to from `./parser` to `./scripts`
 
-- Add docs, comments and TODO's for parser.js, move file to from `./parser` to `./scripts`
+## 0.2.8 - 2.2.9
+- Add docs and empty files (mocks and constants) to prepare for future refactor
+- Impl new page parser script (without text parser and page builder scripts)
+
+## 0.3.0 - Clean parser and original form builder
+- Make text parser and page buildr scripts
+- Increased the speed of algorithm execution
+- Made the page build in its original form
+- Used mock WORDBOOK and mocks.js file
+- Off google translator script, that produce able to add words
