@@ -64,20 +64,11 @@ const parseChildNodes = (localLastNodesList, node) => {
  * @param node - тэг с текстом
  */
 const pushLastNode = (list, node) => {
-    const text = node.textContent;
-    //TODO:: Сделать так чтобы числа не попадали в выборку
-    //TODO:: Регулярка жрёт много времени здесь. Стоит перенести в другое место.
-    if (notBlank(text)) {
-        list.push({node, text});
-    }
+    list.push(node);
 }
 
 //TODO:: Сделать так чтобы числа не попадали в выборку
 const notNumber = (text) => isNaN(parseInt(text));
-const notBlank = (text) => {
-    const clear = text.replace(/\s+/g, '');
-    return clear !== '';
-}
 
 const notInteractiveElement = (node) => !isScript(node) && !isSVG(node);
 const isScript = (node) => node instanceof HTMLScriptElement;

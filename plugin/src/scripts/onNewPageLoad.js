@@ -1,7 +1,8 @@
 //TODO:: Убрать все лишние переменные из этого файла
 const PARSER_URL = "http://localhost:8080/parser";
 const POST_METHOD = 'POST';
-const isServerSideParsingEnable = false;
+
+chrome.storage.sync.set({wordbook: WORDBOOK});
 
 /**
  * Идём в chrome.storage и берём оттуда два параметра.
@@ -15,17 +16,18 @@ const isServerSideParsingEnable = false;
  */
 //TODO:: Заменить collectionId на wordbook. В параметре wordbook хранить всё что должно быть на сервере,
 // но для локальной работы. По возможности релизовать механизмы синхронизации.
-chrome.storage.sync.get(['enable', 'collectionId'], function(app) {
+chrome.storage.sync.get(['enable', 'wordbook'], function(app) {
     window.console.log(`Reckue language app: Reach join point with app.enable=${app.enable}`);
     if (app.enable) {
         //делаем реквест с моковыми данными
-        window.console.log(`Reckue language app: isServerSideParsingEnable=${isServerSideParsingEnable}`);
-        if (isServerSideParsingEnable) {
+        window.console.log(`Reckue language app: isServerSideParsingEnable=${IS_SERVER_SIDE_PARSING_ENABLE}`);
+        if (IS_SERVER_SIDE_PARSING_ENABLE) {
             const htmlAfterParsing = prepareAndSendRequestToServerSideParser("userId", "collectionId");
             updateDom(htmlAfterParsing);
         } else {
-            const latestNodesList = parseTextNodes();
-            editLatestNodesToRebuildPage(latestNodesList);
+            const textNodesList = parseTextNodes();
+            const editableNodes = parseEditableNodes(textNodesList);
+            editLatestNodesToRebuildPage(editableNodes, app.wordbook);
         }
     }
 });
