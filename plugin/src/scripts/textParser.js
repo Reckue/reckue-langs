@@ -23,20 +23,6 @@ const parseWordsList = (node) => {
     return wordsListWithSpaces;
 }
 
-const getNotBlankWordsList = (wordsList) => {
-    const notBlankWordsList = [];
-    wordsList.forEach((word) => notBlank(word) ? notBlankWordsList.push(word) : undefined);
-    return notBlankWordsList;
-}
-
-const notBlank = (text) => {
-    return clearTextSpaces(text) !== '';
-}
-
-const clearTextSpaces = (text) => {
-    return text.replace(/\s+/g, '');
-}
-
 const bundle = (wordsList) => {
     const bundle = [];
     wordsList.forEach((word) => {

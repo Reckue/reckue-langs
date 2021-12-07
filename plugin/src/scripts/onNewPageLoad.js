@@ -2,8 +2,6 @@
 const PARSER_URL = "http://localhost:8080/parser";
 const POST_METHOD = 'POST';
 
-chrome.storage.sync.set({wordbook: WORDBOOK});
-
 /**
  * Идём в chrome.storage и берём оттуда два параметра.
  * enable - toggle указывающий на то включен плагин или нет.

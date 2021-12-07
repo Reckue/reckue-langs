@@ -64,16 +64,36 @@ const parseChildNodes = (localLastNodesList, node) => {
  * @param node - тэг с текстом
  */
 const pushLastNode = (list, node) => {
-    list.push(node);
+    if (node.parentNode.nodeName !== "CODE" && node.parentNode.nodeName !== "A") {
+        list.push(node);
+        typeOfNode(node);
+    }
+}
+
+const typeOfNode = (node) => {
+    window.console.log(node.textContent);
+    window.console.log(node.toString());
+    window.console.log(node.parentNode.toString());
+    window.console.log(node.parentNode.nodeName);
+    window.console.log(node.parentNode.role);
 }
 
 //TODO:: Сделать так чтобы числа не попадали в выборку
 const notNumber = (text) => isNaN(parseInt(text));
 
-const notInteractiveElement = (node) => !isScript(node) && !isSVG(node);
+const notInteractiveElement = (node) => {
+    return !isScript(node) && !isSVG(node) && !isImage(node) && !isInput(node) && !isLink(node) && !isStyle(node)
+        && !isForm(node);
+}
 const isScript = (node) => node instanceof HTMLScriptElement;
+const isForm = (node) => node instanceof HTMLFormElement;
+const isImage = (node) => node instanceof HTMLImageElement;
+const isInput = (node) => node instanceof HTMLInputElement;
+const isLink = (node) => node instanceof HTMLLinkElement;
+const isStyle = (node) => node instanceof HTMLStyleElement;
 const isSVG = (node) => node instanceof SVGSVGElement;
-const isComment = (node) => node instanceof Comment;
+
+const isNoNameElement = (node) => node instanceof HTMLElement;
 
 // старый скрипт парсинга
 let parents = [];
