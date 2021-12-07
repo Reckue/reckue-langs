@@ -64,12 +64,17 @@ const parseChildNodes = (localLastNodesList, node) => {
  * @param node - тэг с текстом
  */
 const pushLastNode = (list, node) => {
-    if (node.parentNode.nodeName !== "CODE" && node.parentNode.nodeName !== "A") {
-        list.push(node);
-        typeOfNode(node);
-    }
+    list.push(node);
+    typeOfNode(node);
 }
 
+/**
+ * Дебаг метод, при необходимости убрать в другое место.
+ * Считывает всю информацию о ноде и её родителе, пишет её в консоль.
+ * Рекомендуется для использования в методе pushLastNode, после запонения листа.
+ *
+ * @param node - Вся нужная информация для дебага содержится в этой ноде.
+ */
 const typeOfNode = (node) => {
     window.console.log(node.textContent);
     window.console.log(node.toString());
@@ -78,12 +83,16 @@ const typeOfNode = (node) => {
     window.console.log(node.parentNode.role);
 }
 
-//TODO:: Сделать так чтобы числа не попадали в выборку
-const notNumber = (text) => isNaN(parseInt(text));
-
+/**
+ * Этот метод и методы под ним используются для отсеивания тэгов, которые мы точно не хотим парсить.
+ * Различный динамический контент, то что переводить не надо, картинки, вспомогательные файлы, скрипты и тд.
+ *
+ * @param node - Тэг, который подвергается проверке.
+ * @returns {boolean} - ответ на вопрос: парсим мы тэг или нет?
+ */
 const notInteractiveElement = (node) => {
-    return !isScript(node) && !isSVG(node) && !isImage(node) && !isInput(node) && !isLink(node) && !isStyle(node)
-        && !isForm(node);
+    return !isScript(node) && !isSVG(node) && !isImage(node) && !isInput(node) && !isLink(node)
+        && !isStyle(node) && !isForm(node) && !isComment(node) && !isUnverifiableInteractiveElement(node);
 }
 const isScript = (node) => node instanceof HTMLScriptElement;
 const isForm = (node) => node instanceof HTMLFormElement;
@@ -92,121 +101,5 @@ const isInput = (node) => node instanceof HTMLInputElement;
 const isLink = (node) => node instanceof HTMLLinkElement;
 const isStyle = (node) => node instanceof HTMLStyleElement;
 const isSVG = (node) => node instanceof SVGSVGElement;
-
-const isNoNameElement = (node) => node instanceof HTMLElement;
-
-// старый скрипт парсинга
-let parents = [];
-
-const processing = (type, wordbook) => {
-    const tagList = getEntryTagsList(window.document.getElementsByTagName(type));
-    getParentsParagraphs().then(paragraphs => {
-        parseParents(paragraphs, wordbook)
-    });
-    const filteredTagsList = filter(tagList);
-    const paragraphs = getParagraphs(filteredTagsList);
-    parseEntries(paragraphs, wordbook);
-};
-
-const chooseWordColor = (wordbook, content) => {
-    content.a.style.color = 'rgb(255,0,0)';
-    contains(wordbook, content.clearWord, 'good').then(good => {
-        if (good) {
-            content.a.style.color = 'rgb(0,0,0)';
-        }
-    });
-    contains(wordbook, content.clearWord, 'average').then(average => {
-        if (average) {
-            content.a.style.color = 'rgb(0, 183, 237)';
-        }
-    });
-    contains(wordbook, content.clearWord, 'bad').then(average => {
-        if (average) {
-            content.a.style.color = 'rgb(255,169,0)';
-        }
-    });
-};
-
-const contains = async (wordbook, word, level) => {
-    return wordbook.indexOf(word.concat(` ${level}`)) !== -1;
-};
-
-const getEntryTagsList = (tagsList) => {
-    const resultSet = [];
-    for (const tag of tagsList) {
-        const entryTags = tag.getElementsByTagName('*');
-        if (entryTags.length > 0) {
-            parents.push(tag);
-            resultSet.push(...getEntryTagsList(entryTags));
-        } else {
-            resultSet.push(tag);
-        }
-    }
-    return resultSet;
-};
-
-const filter = (tagList) => {
-    return tagList.filter(tag => tag.innerText);
-};
-
-const getParentsParagraphs = async () => {
-    const paragraphs = [];
-    for (let parent of parents) {
-        if (parent.tagName !== 'A') {
-            parent.childNodes.forEach(node => {
-                const value = node.nodeValue;
-                if (!node.hasChildNodes() && value !== null && value !== undefined) {
-                    const contentSet = value.split(/\s/)
-                        .map(word => createContentSet(word))
-                        .filter(set => set.word.match(/\w/));
-                    const ref = node;
-                    paragraphs.push({ref, contentSet});
-                }
-            });
-        }
-    }
-    return paragraphs;
-};
-
-const getParagraphs = (tagList) => {
-    const paragraphs = [];
-    for(let tag of tagList) {
-        const contentSet = tag.innerText.split(' ').map(word => createContentSet(word));
-        paragraphs.push({ref: tag, contentSet});
-    }
-    return paragraphs;
-};
-
-const createContentSet = (word) => {
-    const clearWord = word.toString().toLowerCase().replace(/[\W]/g, '');
-    const notANumber = !word.match(/\d/);
-    const a = document.createElement('a');
-    a.innerText = word + ' ';
-    a.href = `https://translate.google.com/#view=home&op=translate&sl=en&tl=ru&text=${clearWord}`;
-    a.target = "_blank";
-    return {word, clearWord, a, notANumber}
-};
-
-const parseParents = (paragraphs, wordbook) => {
-    for (let paragraph of paragraphs) {
-        for (const content of paragraph.contentSet) {
-            if (content.notANumber) {
-                chooseWordColor(wordbook, content);
-            }
-            paragraph.ref.parentElement.insertBefore(content.a, paragraph.ref);
-            paragraph.ref.nodeValue = '';
-        }
-    }
-};
-
-const parseEntries = (paragraphs, wordbook) => {
-    for (let paragraph of paragraphs) {
-        paragraph.ref.innerText = '';
-        for (const content of paragraph.contentSet) {
-            if (content.notANumber) {
-                chooseWordColor(wordbook, content);
-            }
-            paragraph.ref.appendChild(content.a);
-        }
-    }
-};
+const isComment = (node) => node instanceof Comment;
+const isUnverifiableInteractiveElement = (node) => node.nodeName === "CODE" || node.nodeName === "A"
