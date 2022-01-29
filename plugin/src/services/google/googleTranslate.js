@@ -5,6 +5,7 @@ instantlyCreateButton.innerText = 'Add to wordbook';
 instantlyCreateButton.addEventListener("click", () => collectDataAndAddWord());
 resultHeader.appendChild(instantlyCreateButton);
 
+//TODO:: Перепесать метод добавления слов
 const addWord = (word, translate, definition) => {
     const config = {method: '', headers: {'Content-Type': 'application/json;charset=utf-8'}, body: ''};
     config.method = 'POST';

@@ -33,21 +33,12 @@ const updateTerms = (terms, needClear) => {
 };
 
 const createTermRow = (id, term, removeFunc) => {
-    const divRow = document.createElement('div');
-    configureRow(divRow, term.id);
-    configureColumn('span', id, 'index', divRow);
-    configureColumn('span', term.value, 'term', divRow);
-    const select = configureSelect('level', divRow, term);
-    configureOption(select, 'NATIVE', term.level);
-    configureOption(select, 'ADVANCED', term.level);
-    configureOption(select, 'KNOW_PART', term.level);
-    configureOption(select, 'UNDERSTAND', term.level);
-    configureOption(select, 'LEARNING', term.level);
-    configureOption(select, 'FAMILIAR', term.level);
-    configureOption(select, 'DONT_KNOW', term.level);
-    configureOption(select, 'USELESS', term.level);
-    configureOption(select, 'UNDEFINED', term.level);
-    configureRemove(divRow, {id: term.id}, removeFunc);
+    const row = document.createElement('div');
+    configureRow(row, term.id);
+    configureColumn('span', id, 'index', row);
+    configureColumn('span', term.value, 'term', row);
+    configureSelect(row, term);
+    configureRemove(row, {id: term.id}, removeFunc);
 };
 
 const deleteTermAndUpdatePopup = (id) => deleteTerm(id).then(ignore => window.document.getElementById(id).remove());

@@ -1,6 +1,15 @@
-//TODO:: Убрать все лишние переменные из этого файла
-const PARSER_URL = "http://localhost:8080/parser";
-const POST_METHOD = 'POST';
+/**
+ * Выгружаем wordbook из storage.
+ *
+ * Поскольку невозможно хранить его целиком,
+ * грузим кусками по 100 слов в каждом.
+ */
+for (let i = 0; i < wordbooksArray.length; i++) {
+    const name = "wordbook" + i;
+    chrome.storage.sync.get([name], function(app) {
+        loadWordbook(app[name]);
+    });
+}
 
 /**
  * Идём в chrome.storage и берём оттуда два параметра.
@@ -12,20 +21,20 @@ const POST_METHOD = 'POST';
  * Либо отработает логика серверного парсинга, либо распарсим у себя локально.
  * Второй вариант чуть дольше и ресурсо-затратнее.
  */
-//TODO:: Заменить collectionId на wordbook. В параметре wordbook хранить всё что должно быть на сервере,
-// но для локальной работы. По возможности релизовать механизмы синхронизации.
-chrome.storage.sync.get(['enable', 'wordbook'], function(app) {
+chrome.storage.sync.get(['enable'], function(app) {
     window.console.log(`Reckue language app: Reach join point with app.enable=${app.enable}`);
     if (app.enable) {
-        //делаем реквест с моковыми данными
         window.console.log(`Reckue language app: isServerSideParsingEnable=${IS_SERVER_SIDE_PARSING_ENABLE}`);
         if (IS_SERVER_SIDE_PARSING_ENABLE) {
             const htmlAfterParsing = prepareAndSendRequestToServerSideParser("userId", "collectionId");
             updateDom(htmlAfterParsing);
         } else {
             const textNodesList = parseTextNodes();
-            const editableNodes = parseEditableNodes(textNodesList);
-            editLatestNodesToRebuildPage(editableNodes, app.wordbook);
+            const editableList = parseEditableNodes(textNodesList);
+            const wordbook = getWordbook();
+            // Возможность выгрузить текущий wordbook в файл.
+            // saveFile(mapToString(wordbook));
+            rebuildPage(editableList, wordbook);
         }
     }
 });

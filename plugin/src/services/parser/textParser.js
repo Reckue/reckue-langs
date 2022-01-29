@@ -52,4 +52,32 @@ const bundle = (wordsList) => {
  * @param word - изначальное слово
  * @returns {string} - чистое слово
  */
-const getClearWord = (word) => word.toString().toLowerCase().replace(/[\W]/g, '');
+const getClearWord = (word) => {
+    const clearWord = word.toString().toLowerCase().replace(/[\W]/g, '');
+    if (found(clearWord)) return clearWord;
+    if (clearWord.endsWith('ed')) {
+        return checkByEnding(clearWord,'ed');
+    }
+    if (clearWord.endsWith('s')) {
+        return checkByEnding(clearWord,'s');
+    }
+    if (clearWord.endsWith('ing')) {
+        return checkByEnding(clearWord,'ing');
+    }
+    return clearWord;
+}
+
+const checkByEnding = (word, ending) => {
+    const removedPastEndingWord = removeEnding(word, ending);
+    return findMatches(removedPastEndingWord);
+}
+
+const removeEnding = (word, ending) => word.substr(0,word.length - ending.length);
+
+const findMatches = (word) => {
+    if (found(word)) return word;
+    if (found(word + 'e')) return word + 'e';
+    return word;
+}
+
+const found = (word) => getWordbook().get(word);

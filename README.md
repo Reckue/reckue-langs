@@ -19,7 +19,7 @@ In addition.Two days ago i couldn't write this article))
 ![](https://sun9-6.userapi.com/7N36ebXciQqlCgqGvYB9ThFMw_RNnD3yCWzalQ/sp3mE8Cowoc.jpg)
   
 ## 0.2.7 - Returned to development
-- Add docs, comments and TODO's for onNewPageLoad.js, move file to from `./parser` to `./scripts`
+- Add docs, comments and TODO's for start.js, move file to from `./parser` to `./scripts`
 
 ## 0.2.8 - 2.2.9
 - Add docs and empty files (mocks and constants) to prepare for future refactor
@@ -31,3 +31,6 @@ In addition.Two days ago i couldn't write this article))
 - Made the page build in its original form
 - Used mock WORDBOOK and mocks.js file
 - Off google translator script, that produce able to add words
+
+## 0.3.1 - Critical parsing bugfix
+- Fix images, video and other media parsing

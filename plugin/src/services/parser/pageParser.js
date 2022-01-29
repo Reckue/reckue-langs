@@ -7,8 +7,24 @@
 const parseTextNodes = () => {
     window.console.log("Reckue language app: Start offline parsing.");
     let body = window.document.querySelector('body');
-    window.console.log("Reckue language app: Building latest nodes list...");
+    window.console.log("Reckue language app: Start building latest nodes list...");
     return buildLatestNodesList(body);
+}
+
+/**
+ * Логирует процент парсинга страницы в спискок референсов, пока что работает топорно от тега BODY.
+ * По какой-то причине ускоряет работу алгоритма парсинга. Магия не иначе :b
+ *
+ * @param node - берём отсюда название тега (определяем BODY) и общий объём работы (количество всех тэгов)
+ * @param currIndex - текущий тэг, который и опредяет наш процент выполненной работы.
+ * Когда currIndex === maxIndex (node.childNodes.length) - мы распарсили страницу.
+ */
+const logPercent = (node, currIndex) => {
+    if (node.nodeName === "BODY") {
+        const maxIndex = node.childNodes.length;
+        const percent = (currIndex * 100 / maxIndex).toFixed(2);
+        window.console.log(`Reckue language app: Build latest nodes list ${percent}%`);
+    }
 }
 
 /**
@@ -20,7 +36,8 @@ const parseTextNodes = () => {
  */
 const buildLatestNodesList = (node) => {
     const localLastNodesList = [];
-    node.childNodes.forEach((childNode) => {
+    node.childNodes.forEach((childNode, index) => {
+        logPercent(node, index);
         if (notInteractiveElement(childNode)) {
             parseCurrentNode(localLastNodesList, childNode);
         }
@@ -51,7 +68,6 @@ const parseCurrentNode = (localLastNodesList, node) => {
  * @param node
  */
 const parseChildNodes = (localLastNodesList, node) => {
-    window.console.log("Reckue language app: Processing child nodes...");
     const childLastNodesList = buildLatestNodesList(node);
     localLastNodesList.push(...childLastNodesList);
 }
@@ -65,7 +81,6 @@ const parseChildNodes = (localLastNodesList, node) => {
  */
 const pushLastNode = (list, node) => {
     list.push(node);
-    typeOfNode(node);
 }
 
 /**
@@ -91,7 +106,7 @@ const typeOfNode = (node) => {
  * @returns {boolean} - ответ на вопрос: парсим мы тэг или нет?
  */
 const notInteractiveElement = (node) => {
-    return !isScript(node) && !isSVG(node) && !isImage(node) && !isInput(node) && !isLink(node)
+    return !isScript(node) && !isSVG(node) && !isImage(node) && !isInput(node) && !isLink(node) && !isBr(node)
         && !isStyle(node) && !isForm(node) && !isComment(node) && !isUnverifiableInteractiveElement(node);
 }
 const isScript = (node) => node instanceof HTMLScriptElement;
@@ -100,6 +115,7 @@ const isImage = (node) => node instanceof HTMLImageElement;
 const isInput = (node) => node instanceof HTMLInputElement;
 const isLink = (node) => node instanceof HTMLLinkElement;
 const isStyle = (node) => node instanceof HTMLStyleElement;
+const isBr = (node) => node instanceof HTMLBRElement;
 const isSVG = (node) => node instanceof SVGSVGElement;
 const isComment = (node) => node instanceof Comment;
 const isUnverifiableInteractiveElement = (node) => node.nodeName === "CODE" || node.nodeName === "A"

@@ -1,4 +1,4 @@
-.wrapper .nav-menu {
+.wrapper .navbar {
     background: #35414b;
     flex-direction: row;
     height: 30px;
@@ -6,32 +6,32 @@
     width: 360px;
 }
 
-.wrapper .nav-menu * {
+.wrapper .navbar * {
     margin: 2px 4px;
 }
 
-.wrapper .nav-menu button {
+.wrapper .navbar button {
     color: #ffffff;
     background: none;
     border: none;
 }
 
-.wrapper .nav-menu button:hover {
+.wrapper .navbar button:hover {
     color: #a2d9ff;
 }
 
-.wrapper .nav-menu button:active {
+.wrapper .navbar button:active {
     color: #64c8ff;
 }
 
-.wrapper .nav-menu button:disabled {
+.wrapper .navbar button:disabled {
     color: #64c8ff;
 }
 
-.wrapper .nav-menu button:disabled:hover {
+.wrapper .navbar button:disabled:hover {
     color: #64c8ff;
 }
 
-.wrapper .nav-menu .refresh-btn {
+.wrapper .navbar .refresh-btn {
     margin-left: auto;
 }

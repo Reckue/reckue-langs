@@ -1,17 +1,17 @@
-.collections {
+.wordbook {
     font-size: 12px;
     flex-direction: column;
     transition: all 0.2s ease;
 }
 
-.collections .header {
+.wordbook .header {
     flex-direction: row;
     justify-content: space-around;
     height: 30px;
     align-items: center;
 }
 
-.collections .header input {
+.wordbook .header input {
     width: 100px;
     font-size: 12px;
     border: none;
@@ -19,14 +19,14 @@
     outline: none;
 }
 
-.collections .terms {
+.wordbook .words {
     flex-direction: column;
     height: 500px;
     overflow-y: scroll;
     overflow-x: hidden;
 }
 
-.collections .terms div {
+.wordbook .words div {
     flex-direction: row;
     justify-content: space-between;
     font-size: 16px;
@@ -35,30 +35,30 @@
     border-top: 1px #ebebeb solid;
 }
 
-.collections .terms div .term {
+.wordbook .words div .term {
     width: 150px;
 }
 
-.collections .terms div .index {
+.wordbook .words div .index {
     padding: 0 10px 0 0;
 }
 
-.collections .terms div .level {
+.wordbook .words div .level {
     outline: none;
 }
 
-.collections .terms div button {
+.wordbook .words div button {
     background: none;
     border: none;
     color: brown;
 }
 
-.collections .terms div select {
+.wordbook .words div select {
     font-size: 10px;
     margin-right: 4px;
 }
 
-.collections .terms div button:hover {
+.wordbook .words div button:hover {
     background: none;
     border: none;
     color: #ff3434;

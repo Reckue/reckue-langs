@@ -26,17 +26,6 @@ const configureInput = (content, className, parent, api) => {
     parent.appendChild(element);
 };
 
-const configureSelect = (className, parent, term) => {
-    const element = document.createElement('select');
-    element.classList.add(className);
-    element.addEventListener('change', function (event) {
-        term.level = event.target.value;
-        updateRow(term);
-    });
-    parent.appendChild(element);
-    return element;
-};
-
 const configureRemove = (parent, params, removeFunc) => {
     const remove = document.createElement('button');
     remove.innerText = 'remove';
