@@ -1,4 +1,4 @@
-chrome.storage.sync.set({enable: true}, function() {});
+chrome.storage.local.set({enable: true}, function() {});
 
 chrome.declarativeContent.onPageChanged.removeRules(undefined, function() {
     chrome.declarativeContent.onPageChanged.addRules([{

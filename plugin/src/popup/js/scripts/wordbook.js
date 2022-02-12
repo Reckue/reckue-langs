@@ -1,7 +1,7 @@
-import {enumForEach} from '../services/enum.js';
+import {enumForEach} from '../enum.js';
 
 const displayWordbook = () => {
-    chrome.storage.sync.get(['wordbook3'], function(app) {
+    chrome.storage.local.get(['wordbook3'], function(app) {
         getWordbook(app.wordbook3);
         const wordbook = getWordbook();
         wordbook.forEach((level, word) => displayWord(word, level));

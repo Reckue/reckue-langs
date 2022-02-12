@@ -6,7 +6,7 @@
  */
 for (let i = 0; i < wordbooksArray.length; i++) {
     const name = "wordbook" + i;
-    chrome.storage.sync.get([name], function(app) {
+    chrome.storage.local.get([name], function(app) {
         loadWordbook(app[name]);
     });
 }
@@ -21,7 +21,7 @@ for (let i = 0; i < wordbooksArray.length; i++) {
  * Либо отработает логика серверного парсинга, либо распарсим у себя локально.
  * Второй вариант чуть дольше и ресурсо-затратнее.
  */
-chrome.storage.sync.get(['enable'], function(app) {
+chrome.storage.local.get(['enable'], function(app) {
     window.console.log(`Reckue language app: Reach join point with app.enable=${app.enable}`);
     if (app.enable) {
         window.console.log(`Reckue language app: isServerSideParsingEnable=${IS_SERVER_SIDE_PARSING_ENABLE}`);
@@ -29,12 +29,13 @@ chrome.storage.sync.get(['enable'], function(app) {
             const htmlAfterParsing = prepareAndSendRequestToServerSideParser("userId", "collectionId");
             updateDom(htmlAfterParsing);
         } else {
-            const textNodesList = parseTextNodes();
-            const editableList = parseEditableNodes(textNodesList);
-            const wordbook = getWordbook();
+            const parser = new Parser();
+            const textNodesList = parser.parsePage();
+            const parsedTextNodesList = parser.textParsing(textNodesList);
             // Возможность выгрузить текущий wordbook в файл.
             // saveFile(mapToString(wordbook));
-            rebuildPage(editableList, wordbook);
+            const builder = new DOMBuilder();
+            builder.rebuildPage(parsedTextNodesList);
         }
     }
 });

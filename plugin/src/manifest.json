@@ -4,35 +4,41 @@
   "description": "Interactive language learning assistant",
   "permissions": ["storage", "activeTab", "declarativeContent"],
   "background": {
-    "scripts": ["application.js"],
+    "scripts": ["global/application.js"],
     "persistent": false
   },
   "page_action": {
     "default_popup": "popup/index.html",
     "default_icon": {
-      "16": "images/coach16.png",
-      "32": "images/coach32.png",
-      "48": "images/coach48.png",
-      "128": "images/coach128.png"
+      "16": "popup/images/coach16.png",
+      "32": "popup/images/coach32.png",
+      "48": "popup/images/coach48.png",
+      "128": "popup/images/coach128.png"
     }
   },
   "content_scripts": [
     {
       "matches": ["http://*/*", "https://*/*"],
-      "exclude_matches": ["https://translate.google.com//*", "http://localhost:*/*"],
+      "exclude_matches": ["https://translate.google.com/*", "http://localhost:*/*"],
       "run_at": "document_idle",
-      "js": ["enum/Levels.js", "mocks.js", "services/wordbook.js",
-        "services/parser/pageParser.js",
-        "services/parser/textParser.js",
-        "services/parser/pageBuilder.js",
-        "scripts/start.js"]
+      "js": [
+        "page/enum/Levels.js",
+        "page/classes/DOMBuilder.js",
+        "page/classes/MockWordbook.js",
+        "page/classes/Parser.js",
+
+        "page/wordbook.js",
+
+        "page/mocks.js",
+        "page/start.js"
+      ]
     }
   ],
   "icons": {
-    "16": "images/coach16.png",
-    "32": "images/coach32.png",
-    "48": "images/coach48.png",
-    "128": "images/coach128.png"
+    "16": "popup/images/coach16.png",
+    "32": "popup/images/coach32.png",
+    "48": "popup/images/coach48.png",
+    "128": "popup/images/coach128.png"
   },
   "manifest_version": 2
 }

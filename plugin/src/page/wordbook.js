@@ -22,7 +22,7 @@ class Wordbook {
     loadFromStorage = (name) => {
         let isSuccess = false;
         const local = this.local;
-        chrome.storage.sync.get([name], function(app) {
+        chrome.storage.local.get([name], function(app) {
             const list = app[name];
             isSuccess = list !== undefined && list !== null && list.length > 0;
             if (isSuccess) {
@@ -39,7 +39,7 @@ class Wordbook {
     }
 
     saveInStorage = (list) => {
-        chrome.storage.sync.set();
+        chrome.storage.local.set();
     }
 }
 
@@ -59,14 +59,14 @@ const mapToString = (map) => {
     let str = "[";
     let index = 0;
     map.forEach((level, word) => {
-        if (index % 100 === 0) {
-            str += "\n [";
-        }
+        // if (index % 100 === 0) {
+        //     str += "\n [";
+        // }
         str += `\n  {word:"${word}", level: Levels.INTERMEDIATE.name}, `;
         index++;
-        if (index % 100 === 0) {
-            str += "\n ],";
-        }
+        // if (index % 100 === 0) {
+        //     str += "\n ],";
+        // }
     });
     if (index % 100 !== 0) {
         str += "\n ]";
@@ -122,5 +122,5 @@ const mapToArray = (map) => {
 }
 
 const save = (list) => {
-    chrome.storage.sync.set(list);
+    chrome.storage.local.set(list);
 }

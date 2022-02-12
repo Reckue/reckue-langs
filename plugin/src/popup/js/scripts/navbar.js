@@ -1,5 +1,5 @@
-import {Navbar} from '../enum/Navbar.js'
-import {enumForEach} from '../services/enum.js'
+import {Navbar} from '../../../page/enum/Navbar.js'
+import {enumForEach} from '../enum.js'
 
 // Генерируем панель навигации
 enumForEach(Navbar, (buttonInfo) => {

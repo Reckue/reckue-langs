@@ -1,7 +1,7 @@
 const lever = window.document.getElementsByClassName('lever')[0];
 const settings = {};
 
-chrome.storage.sync.get(['enable'], function(result) {
+chrome.storage.local.get(['enable'], function(result) {
     settings.enable = result.enable;
     changeStyles();
 });
@@ -10,7 +10,7 @@ lever.addEventListener('click', () => changeEnable());
 
 const changeEnable = () => {
     settings.enable = !settings.enable;
-    chrome.storage.sync.set({enable: settings.enable}, function() {
+    chrome.storage.local.set({enable: settings.enable}, function() {
         changeStyles();
     });
 };
