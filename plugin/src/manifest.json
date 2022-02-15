@@ -23,7 +23,10 @@
       "run_at": "document_idle",
       "js": [
         "page/enum/Levels.js",
-        "page/classes/DOMBuilder.js",
+        "page/classes/Logger.js",
+        "page/classes/builder/InteractiveWord.js",
+        "page/classes/builder/WordPopup.js",
+        "page/classes/builder/DOMBuilder.js",
         "page/classes/MockWordbook.js",
         "page/classes/Parser.js",
 

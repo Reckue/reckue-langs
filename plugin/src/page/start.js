@@ -34,7 +34,7 @@ chrome.storage.local.get(['enable'], function(app) {
             const parsedTextNodesList = parser.textParsing(textNodesList);
             // Возможность выгрузить текущий wordbook в файл.
             // saveFile(mapToString(wordbook));
-            const builder = new DOMBuilder();
+            const builder = new DOMBuilder({sl: "en", tl: "ru"});
             builder.rebuildPage(parsedTextNodesList);
         }
     }
