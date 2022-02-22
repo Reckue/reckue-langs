@@ -1,13 +1,30 @@
 # Chrome extension.
 ## Interactive language-learning helper.
-It's your vocabulary-book built-in any pages you visit. You can interactively add, edit and mark words. Marked words will take one of selected list of colors and turn into vocabulary card right in your browser!
+It's your vocabulary-book built-in any pages you visit. 
+
+You can interactively add, edit and mark words. 
+
+Marked words will take one of selected list of colors and turn into vocabulary card right in your browser!
 
 ## How it works? 
-No more necessary to create vocabulary cards for learning language by you own. Just read complex documents, books or whatever you like. Click on words and add them into your wordbook.
+No more necessary to create vocabulary cards for learning language by you own. 
+
+Just read complex documents, books or whatever you like. 
+
+Click on words and add them into your wordbook.
 
 Set your baseline familiarity with the word, start notice them more and move between levels when feel your knowledge.
 
 Save time learning new words by making it automatic!
+
+## Information.
+The day is not far off when the application will be posted in google store. 
+
+I often update it and working on usability, so that not only you, but me too should be able to enjoy learning languages.
+
+Now I am working on an interface that would not require unnecessary gestures from a user.
+
+Clicking on each word will show small popup window, where you will be able to add, edit and markup words.
 
 ## ~0.1.5-0.1.6 - preview
 ![](https://sun9-31.userapi.com/rIXe5gjImJUmVA2AIUShndTDDTXp_5mojL55Vg/5XZGeZK_Uso.jpg)
