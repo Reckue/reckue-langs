@@ -34,3 +34,8 @@ In addition.Two days ago i couldn't write this article))
 
 ## 0.3.1 - Critical parsing bugfix
 - Fix images, video and other media parsing
+
+## 0.3.6 - Migration to OOP
+- Move all page files into classes. Except start.js and mocks.js
+- Added popup words. It's can't change real data, but the front is done.
+- Some small changes in mocks.js and other scripts. 

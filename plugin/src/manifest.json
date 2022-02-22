@@ -22,8 +22,11 @@
       "exclude_matches": ["https://translate.google.com/*", "http://localhost:*/*"],
       "run_at": "document_idle",
       "js": [
+        "page/enumForEach.js",
         "page/enum/Levels.js",
         "page/classes/Logger.js",
+        "page/classes/builder/Container.js",
+        "page/classes/builder/LevelContainer.js",
         "page/classes/builder/InteractiveWord.js",
         "page/classes/builder/WordPopup.js",
         "page/classes/builder/DOMBuilder.js",

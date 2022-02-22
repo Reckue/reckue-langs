@@ -55,7 +55,7 @@ class DOMBuilder {
         }
         if (this.#wordbook.get(clearWord) !== undefined) {
             const interactiveWord = new InteractiveWord(this.#language, this.#popup);
-            const link = interactiveWord.createLink(bundle, this.#wordbook.get(clearWord));
+            const link = interactiveWord.createInteractiveWord(bundle, this.#wordbook.get(clearWord));
             text.insertBefore(link, node);
         } else {
             if (clearWord !== " ") {
