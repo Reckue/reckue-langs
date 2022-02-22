@@ -1,0 +1,14 @@
+* {
+    display: flex;
+    box-sizing: content-box;
+    padding: 0;
+    margin: 0;
+}
+
+.wrapper {
+    flex-direction: column;
+}
+
+.wrapper .content {
+    flex-direction: column;
+}

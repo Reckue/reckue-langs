@@ -1,0 +1,65 @@
+.wordbook {
+    font-size: 12px;
+    flex-direction: column;
+    transition: all 0.2s ease;
+}
+
+.wordbook .header {
+    flex-direction: row;
+    justify-content: space-around;
+    height: 30px;
+    align-items: center;
+}
+
+.wordbook .header input {
+    width: 100px;
+    font-size: 12px;
+    border: none;
+    background: none;
+    outline: none;
+}
+
+.wordbook .words {
+    flex-direction: column;
+    height: 500px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
+.wordbook .words div {
+    flex-direction: row;
+    justify-content: space-between;
+    font-size: 16px;
+    padding: 2px 4px;
+    align-items: center;
+    border-top: 1px #ebebeb solid;
+}
+
+.wordbook .words div .term {
+    width: 150px;
+}
+
+.wordbook .words div .index {
+    padding: 0 10px 0 0;
+}
+
+.wordbook .words div .level {
+    outline: none;
+}
+
+.wordbook .words div button {
+    background: none;
+    border: none;
+    color: brown;
+}
+
+.wordbook .words div select {
+    font-size: 10px;
+    margin-right: 4px;
+}
+
+.wordbook .words div button:hover {
+    background: none;
+    border: none;
+    color: #ff3434;
+}

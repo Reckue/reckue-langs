@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="popup.css">
+    <link rel="stylesheet" href="css/navbar.css">
+    <link rel="stylesheet" href="css/collections.css">
+    <link rel="stylesheet" href="css/translations.css">
+    <link rel="stylesheet" href="css/settings.css">
+</head>
+<body>
+<div class="wrapper">
+    <nav class="navbar"></nav>
+    <div class="content">
+        <div class="wordbook">
+            <div class="header">
+                <div>English</div>
+                <input id="create-term" placeholder="Type new term..." class="add">
+                <input id="filter-terms" placeholder="Filter..." class="add">
+            </div>
+            <div class="words"></div>
+            <button id="load-more">Load more...</button>
+        </div>
+        <div class="definitions"></div>
+        <div class="settings">
+            <div class="block">
+                <div class="enable">
+                    <span>Enable:</span>
+                    <div class="lever">
+                        <div class="slider">|||</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="../page/enum/Levels.js"></script>
+<script src="../page/wordbook.js"></script>
+<script src="js/html.js"></script>
+<script src="js/enum.js"></script>
+<script src="js/navbar.js"></script>
+
+<script type="module" src="js/scripts/wordbook.js"></script>
+<script type="module" src="js/scripts/settings.js"></script>
+<script type="module" src="js/scripts/navbar.js"></script>
+</body>
+</html>
