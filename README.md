@@ -56,4 +56,7 @@ Clicking on each word will show small popup window, where you will be able to ad
 ## 0.3.6 - Migration to OOP
 - Move all page files into classes. Except start.js and mocks.js
 - Added popup words. It's can't change real data, but the front is done.
-- Some small changes in mocks.js and other scripts. 
+- Some small changes in mocks.js and other scripts.
+
+## 0.3.8 - Fix Builder
+- Builder doesn't break pseudo-element "before" anymore

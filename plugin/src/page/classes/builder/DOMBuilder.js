@@ -48,7 +48,6 @@ class DOMBuilder {
         previous.textContent = "";
     }
 
-
     #createWord = (text, bundle) => {
         const word = bundle.word;
         const clear = bundle.clearWord;
