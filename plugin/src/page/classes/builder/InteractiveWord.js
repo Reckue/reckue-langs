@@ -2,16 +2,19 @@ const BASE_GOOGLE_TRANSLATE_URL = "https://translate.google.com/#view=home&op=tr
 
 class InteractiveWord {
 
+    #wordbook;
     #popup;
     #language;
 
     constructor(language, popup) {
         this.#language = language;
         this.#popup = popup;
+        this.#wordbook = getWordbook();
     }
 
-    createInteractiveWord = (bundle, level) => {
+    createInteractiveWord = (bundle, clear) => {
         // window.console.log(`Reckue language app: Creating link to word ${bundle.clearWord}.`);
+        const level = this.#wordbook.get(clear);
         const ref = document.createElement('a');
         colorResolver(ref, level);
         ref.innerText = bundle.word;
@@ -20,6 +23,8 @@ class InteractiveWord {
         this.#onHover(ref, bundle.clearWord, level);
         return ref;
     };
+
+    isSaved = (clear) => this.#wordbook.get(clear) !== undefined;
 
     #buildHref = (word) => `${BASE_GOOGLE_TRANSLATE_URL}&sl=${this.#language.sl}&tl=${this.#language.tl}&text=${word}`;
 

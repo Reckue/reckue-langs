@@ -1,7 +1,6 @@
 class DOMBuilder {
 
     #logger = new Logger();
-    #wordbook;
     #notSavedWords = new Set();
     #nodes;
     #language;
@@ -9,7 +8,6 @@ class DOMBuilder {
 
     constructor(language) {
         this.#language = language;
-        this.#wordbook = getWordbook();
         this.#popup = new WordPopup();
     }
 
@@ -39,30 +37,45 @@ class DOMBuilder {
         window.console.log(wordbook);
     };
 
-    #appendText = (node, bundleList) => {
-        const text = node.parentNode;
+    #appendText = (previous, bundleList) => {
+        const text = previous.parentNode;
+
         bundleList.forEach((bundle) => {
-            this.#appendWord(text, bundle, node);
+            const word = this.#createWord(text, bundle);
+            this.#doAppend(text, word, previous);
         });
-        node.remove();
+
+        previous.textContent = "";
     }
 
-    #appendWord = (text, bundle, node) => {
+
+    #createWord = (text, bundle) => {
         const word = bundle.word;
-        const clearWord = bundle.clearWord;
+        const clear = bundle.clearWord;
         if (word === "") {
-            text.insertBefore(this.#createTextNode(" "), node);
+            return this.#createTextNode(" ");
         }
-        if (this.#wordbook.get(clearWord) !== undefined) {
-            const interactiveWord = new InteractiveWord(this.#language, this.#popup);
-            const link = interactiveWord.createInteractiveWord(bundle, this.#wordbook.get(clearWord));
-            text.insertBefore(link, node);
+        return this.#createInteractiveNode(bundle, clear);
+    }
+
+    #createInteractiveNode = (bundle, clear) => {
+        const interactiveWord = new InteractiveWord(this.#language, this.#popup);
+        if (interactiveWord.isSaved(clear)) {
+            return interactiveWord.createInteractiveWord(bundle, clear);
         } else {
-            if (clearWord !== " ") {
-                this.#notSavedWords.add(clearWord);
-            }
-            text.insertBefore(this.#createTextNode(bundle.word), node);
+            return this.#createNotSavedWord(bundle, clear);
         }
+    }
+
+    #createNotSavedWord = (bundle, clear) => {
+        if (clear !== " ") {
+            this.#notSavedWords.add(clear);
+        }
+        return this.#createTextNode(bundle.word);
+    }
+
+    #doAppend = (where, updated, previous) => {
+        previous.after(updated, previous);
     }
 
     #createTextNode = (word) => {

@@ -57,7 +57,7 @@ addListener(refresh, "click", callParser);
 // Активируем выделеную кнопку, диактивируем все отстальные.
 checkButtonsAndSetContentVisibility();
 
-// Добавляем каждой из кнопок событие, меняющее контент popup окна и активность выделеной кнопки.
+// Добавляем каждой из кнопок событие, меняющее контент menu окна и активность выделеной кнопки.
 for (let button of buttons) {
     addListener(button, "click", onClick);
 }
