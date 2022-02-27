@@ -57,6 +57,7 @@ Clicking on each word will show small popup window, where you will be able to ad
 - Move all page files into classes. Except start.js and mocks.js
 - Added popup words. It's can't change real data, but the front is done.
 - Some small changes in mocks.js and other scripts.
+
 ![image](https://user-images.githubusercontent.com/32300896/155873006-b2bda578-0951-45bc-8527-d988e4da1984.png)
 
 ## 0.3.8 - Fix Builder
