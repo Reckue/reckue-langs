@@ -31,30 +31,25 @@ class LevelContainer extends Container {
     #increaseLevel = () => {
         const current = parseInt(this.#number.getRef().textContent);
         const next = current + 1;
-        enumForEach(Levels, (level) => {
-            if (level.number === next) {
-                this.#number.getRef().textContent = next;
-                colorResolver(this.#realWordRef, level.name)
-            }
-        })
-        //TODO:: this.#realWordRef.style.color = new-level-color;
-        //TODO:: wordbook.set(word, new-level);
+        this.#changeLevel(next);
     }
 
     #decreaseLevel = () => {
         const current = parseInt(this.#number.getRef().textContent);
         if (current > 0) {
             const next = current - 1;
-            this.#number.getRef().textContent = next;
-            enumForEach(Levels, (level) => {
-                if (level.number === next) {
-                    this.#number.getRef().textContent = next;
-                    colorResolver(this.#realWordRef, level.name);
-                }
-            })
+            this.#changeLevel(next);
         }
-        //TODO:: this.#realWordRef.style.color = new-level-color;
-        //TODO:: wordbook.set(word, new-level);
+    }
+
+    #changeLevel = (next) => {
+        enumForEach(Levels, (level) => {
+            if (level.number === next) {
+                this.#number.getRef().textContent = next;
+                colorResolver(this.#realWordRef, level.name);
+                //TODO:: wordbook.set(word, new-level);
+            }
+        });
     }
 
     #initStyles = () => {
