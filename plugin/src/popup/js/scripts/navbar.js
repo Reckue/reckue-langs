@@ -1,5 +1,4 @@
-import {Navbar} from '../../../page/enum/Navbar.js'
-import {enumForEach} from '../enum.js'
+const navbar = selectByClass('navbar');
 
 // Генерируем панель навигации
 enumForEach(Navbar, (buttonInfo) => {
@@ -17,8 +16,8 @@ const buttons = navbar.getElementsByClassName('nav-button');
 const content = selectByClass('content');
 
 const callParser = () => {
-    chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-        chrome.tabs.executeScript(tabs[0].id, {file: '../scripts/start.js'});
+    chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
+        chrome.tabs.executeScript(tabs[0].id, {file: './page/start.js'});
     });
 };
 
@@ -37,9 +36,9 @@ const setContentVisibility = (className, value) => {
     const entry = content.getElementsByClassName(className)[0];
     entry.style.visibility = value;
     if (value === 'visible') {
-        entry.style.transform = 'google(0px)';
+        entry.style.transform = 'translate(0px)';
     } else {
-        entry.style.transform = 'google(-400px)';
+        entry.style.transform = 'translate(-400px)';
     }
 };
 

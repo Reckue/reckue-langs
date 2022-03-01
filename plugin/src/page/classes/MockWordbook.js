@@ -5026,7 +5026,7 @@ const mockWordbook = [
         {word:"elementthi", level: Levels.INTERMEDIATE.name},
         {word:"mimesniff", level: Levels.INTERMEDIATE.name},
         {word:"contenttypethi", level: Levels.INTERMEDIATE.name},
-        {word:"chrome", level: Levels.INTERMEDIATE.name},
+        {word:"chrome", level: Levels.ADVANCED.name},
         {word:"resist", level: Levels.INTERMEDIATE.name},
         {word:"impersonation", level: Levels.INTERMEDIATE.name},
         {word:"misissu", level: Levels.INTERMEDIATE.name},

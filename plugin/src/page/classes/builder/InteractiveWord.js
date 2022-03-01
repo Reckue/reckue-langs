@@ -9,7 +9,7 @@ class InteractiveWord {
     constructor(language, popup) {
         this.#language = language;
         this.#popup = popup;
-        this.#wordbook = getWordbook();
+        this.#wordbook = wordbook.getWordbook();
     }
 
     createInteractiveWord = (bundle, clear) => {
