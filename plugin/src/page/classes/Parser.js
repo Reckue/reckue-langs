@@ -206,5 +206,5 @@ class Parser {
         return word;
     }
 
-    #found = (word) => getWordbook().get(word);
+    #found = (word) => wordbook.getWordbook().get(word);
 }

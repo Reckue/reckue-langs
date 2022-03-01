@@ -7,6 +7,10 @@
     <link rel="stylesheet" href="css/collections.css">
     <link rel="stylesheet" href="css/translations.css">
     <link rel="stylesheet" href="css/settings.css">
+    <script src="js/html.js"></script>
+    <script src="enum/Navbar.js"></script>
+    <script src="js/enum.js"></script>
+
 </head>
 <body>
 <div class="wrapper">
@@ -15,8 +19,8 @@
         <div class="wordbook">
             <div class="header">
                 <div>English</div>
-                <input id="create-term" placeholder="Type new term..." class="add">
-                <input id="filter-terms" placeholder="Filter..." class="add">
+                <input id="create-term" placeholder="Type new term...">
+                <input id="filter-terms" placeholder="Filter...">
             </div>
             <div class="words"></div>
             <button id="load-more">Load more...</button>
@@ -34,15 +38,7 @@
         </div>
     </div>
 </div>
-
-<script src="../page/enum/Levels.js"></script>
-<script src="../page/wordbook.js"></script>
-<script src="js/html.js"></script>
-<script src="js/enum.js"></script>
-<script src="js/navbar.js"></script>
-
-<script type="module" src="js/scripts/wordbook.js"></script>
-<script type="module" src="js/scripts/settings.js"></script>
-<script type="module" src="js/scripts/navbar.js"></script>
+<script src="js/scripts/navbar.js"></script>
+<script src="js/scripts/settings.js"></script>
 </body>
 </html>

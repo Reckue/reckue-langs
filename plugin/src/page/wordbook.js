@@ -1,49 +1,49 @@
-class Wordbook {
+// class Wordbook {
+//
+//     length = 0;
+//
+//     local = new Map();
+//
+//     constructor() {
+//         this.loadAll();
+//     }
+//
+//     loadAll = () => {
+//         const name = "wordbook" + this.length;
+//         this.loadFromStorage(name).then((isSuccess) => {
+//             window.console.log(isSuccess);
+//             this.length++;
+//             if (isSuccess) {
+//                 this.loadAll();
+//             }
+//         });
+//     }
+//
+//     loadFromStorage = (name) => {
+//         let isSuccess = false;
+//         const local = this.local;
+//         chrome.storage.local.get([name], function(app) {
+//             const list = app[name];
+//             isSuccess = list !== undefined && list !== null && list.length > 0;
+//             if (isSuccess) {
+//                 list.forEach((bundle) => {
+//                     local.set(bundle.word, bundle.level);
+//                 });
+//             }
+//             return isSuccess;
+//         });
+//     }
+//
+//     getWordbook = () => {
+//         return this.local;
+//     }
+//
+//     saveInStorage = (list) => {
+//         chrome.storage.local.set();
+//     }
+// }
 
-    length = 0;
-
-    local = new Map();
-
-    constructor() {
-        this.loadAll();
-    }
-
-    loadAll = () => {
-        const name = "wordbook" + this.length;
-        this.loadFromStorage(name).then((isSuccess) => {
-            window.console.log(isSuccess);
-            this.length++;
-            if (isSuccess) {
-                this.loadAll();
-            }
-        });
-    }
-
-    loadFromStorage = (name) => {
-        let isSuccess = false;
-        const local = this.local;
-        chrome.storage.local.get([name], function(app) {
-            const list = app[name];
-            isSuccess = list !== undefined && list !== null && list.length > 0;
-            if (isSuccess) {
-                list.forEach((bundle) => {
-                    local.set(bundle.word, bundle.level);
-                });
-            }
-            return isSuccess;
-        });
-    }
-
-    getWordbook = () => {
-        return this.local;
-    }
-
-    saveInStorage = (list) => {
-        chrome.storage.local.set();
-    }
-}
-
-const wordbook = new Map();
+// const wordbook = new Map();
 
 const getWordbook = () => {
     return wordbook;
