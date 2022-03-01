@@ -62,3 +62,7 @@ Clicking on each word will show small popup window, where you will be able to ad
 
 ## 0.3.8 - Fix Builder
 - Builder doesn't break pseudo-element "before" anymore
+
+## 0.3.9 - Wordbook class
+- Move Wordbook logic in consistent class.
+- Fix switching animation in main popup window.
