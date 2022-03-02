@@ -1,5 +1,6 @@
 class Wordbook {
 
+    #meta = new MetaInfo();
     #logger = new Logger();
     #wordbook = new Map();
     #length = 0;
@@ -26,7 +27,7 @@ class Wordbook {
         return new Promise( resolve => {
             this.#preload(0);
             resolve(this.#wordbook);
-        }).then();
+        }).then(this.#meta.debug);
     }
 
     #preload = (number) => {
@@ -34,6 +35,7 @@ class Wordbook {
         this.#logger.log(`Loaded ${name} from storage`);
         this.#getByName(name).then(wordbook => {
             if (wordbook) {
+                this.#meta.report(name, wordbook.length);
                 this.#loadWordbook(wordbook);
                 this.#loadNext(number);
             }

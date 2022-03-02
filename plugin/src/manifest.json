@@ -25,6 +25,8 @@
         "page/enumForEach.js",
         "page/enum/Levels.js",
         "page/classes/Logger.js",
+        "page/classes/wordbook/WBInfo.js",
+        "page/classes/wordbook/MetaInfo.js",
         "page/classes/wordbook/Wordbook.js",
         "page/classes/menu/Container.js",
         "page/classes/menu/LevelContainer.js",
