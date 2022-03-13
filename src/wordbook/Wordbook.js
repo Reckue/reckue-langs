@@ -1,16 +1,51 @@
-class Wordbook {
+import {WBStorage} from "./WBStorage";
+import {MetaInfo} from "./MetaInfo";
+import {Logger} from "../Logger";
 
+export class Wordbook {
+
+    #storage = new WBStorage();
     #meta = new MetaInfo();
     #logger = new Logger();
     #wordbook = new Map();
-    #length = 0;
 
     constructor() {}
 
+    getLoadTimeout = () => {
+        return 100;
+    }
+
+    updateStorage = () => {
+        const map = this.#wordbook;
+        const list = [];
+        map.forEach((level, word) => {
+           list.push({word: word, level: level}) ;
+        });
+        const toSave = this.#toObject(this.#toArray(list));
+        this.#storage.setWordbooks(toSave);
+    }
+
     set = (words) => {
-        const array = wordbook.#getArray(words);
-        const wordbooks = wordbook.#getWordbooks(array);
-        wordbook.#setWordbooks(wordbooks);
+        this.#updateWordbook(words);
+        setTimeout(this.updateStorage, 100);
+    }
+
+    #loadWBMock = (mockWB) => {
+        const array = this.#toArray(mockWB);
+        const wordbooks = this.#toObject(array);
+        this.#storage.setWordbooks(wordbooks);
+    }
+
+    #getObject = (wordbook) => {
+        const object = {};
+        wordbook.forEach((level, word, index) => {
+            const number = Math.floor(index/100);
+            const name = "wordbook" + number;
+            if (object[name]) {
+
+            }
+        });
+        return object;
     }
 
     getWordbook = () => {
@@ -24,10 +59,8 @@ class Wordbook {
      * грузим кусками по 100 слов в каждом.
      */
     loadWordbooks = () => {
-        return new Promise( resolve => {
-            this.#preload(0);
-            resolve(this.#wordbook);
-        }).then(this.#meta.debug);
+        this.#preload(0);
+        return this.#wordbook;
     }
 
     #preload = (number) => {
@@ -36,7 +69,7 @@ class Wordbook {
         this.#getByName(name).then(wordbook => {
             if (wordbook) {
                 this.#meta.report(name, wordbook.length);
-                this.#loadWordbook(wordbook);
+                this.#updateWordbook(wordbook);
                 this.#loadNext(number);
             }
         });
@@ -59,19 +92,19 @@ class Wordbook {
         return "wordbook" + number;
     }
 
-    #getArray = (words) => {
+    #toArray = (words) => {
         const array = [[]];
         words.forEach((bundle) => {
             this.#increaseCounter(array);
             this.#createNewArray(array);
-            const part = array[this.#length];
+            const part = array[this.#meta.getLength()];
             this.#addInArray(part, bundle);
         });
         return array;
     }
 
     #createNewArray = (array) => {
-        if (array.length <= this.#length) {
+        if (array.length <= this.#meta.getLength()) {
             array.push([]);
         }
     }
@@ -81,24 +114,22 @@ class Wordbook {
     }
 
     #increaseCounter = (array) => {
-        if (array[this.#length].length >= 100) {
-            this.#length++;
+        const number = this.#meta.getLength();
+        if (array[number].length >= 100) {
+            const name = this.#getWBName(number);
+            this.#meta.report(name, 0);
         }
     }
 
-    #getWordbooks = (array) => {
+    #toObject = (array) => {
         const wordbooks = {};
         array.forEach((wordbook, index) => {
-            wordbooks[`wordbook${index}`] = wordbook;
+            wordbooks[this.#getWBName(index)] = wordbook;
         });
         return wordbooks;
     }
 
-    #setWordbooks = (wordbooks) => {
-        chrome.storage.local.set(wordbooks);
-    }
-
-    #loadWordbook = (list) => {
+    #updateWordbook = (list) => {
         list.forEach((bundle) => {
             this.#wordbook.set(bundle.word, bundle.level);
         });

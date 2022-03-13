@@ -1,4 +1,4 @@
-class WBInfo {
+export class WBInfo {
 
     #name;
     #size;

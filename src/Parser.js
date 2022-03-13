@@ -1,4 +1,10 @@
-class Parser {
+export class Parser {
+
+    #wordbook;
+
+    constructor(wordbook) {
+        this.#wordbook = wordbook;
+    }
 
     /**
      * Парсим html страницу и выдаём как результат список всех
@@ -206,5 +212,5 @@ class Parser {
         return word;
     }
 
-    #found = (word) => wordbook.getWordbook().get(word);
+    #found = (word) => this.#wordbook.getWordbook().get(word);
 }

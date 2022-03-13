@@ -1,11 +1,6 @@
-const enumForEach = (Enum, callback) => {
-    Object.entries(Enum).forEach((value) => {
-        const entry = value[1];
-        callback(entry);
-    });
-}
+import {Levels} from "../enum/Levels";
 
-const colorResolver = (ref, level) => {
+export const colorResolver = (ref, level) => {
     switch (level) {
         case Levels.NATIVE.name:
             ref.style.color = Levels.NATIVE.hex;

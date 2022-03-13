@@ -1,4 +1,7 @@
-class WordPopup {
+import {LevelContainer, WORD_POPUP_WIDTH} from "./LevelContainer";
+import {Container} from "./Container";
+
+export class WordPopup {
 
     #ref;
     

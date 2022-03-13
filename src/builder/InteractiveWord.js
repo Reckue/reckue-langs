@@ -1,12 +1,14 @@
-const BASE_GOOGLE_TRANSLATE_URL = "https://translate.google.com/#view=home&op=translate";
+import {colorResolver} from "../utils/Resolver";
 
-class InteractiveWord {
+export const BASE_GOOGLE_TRANSLATE_URL = "https://translate.google.com/#view=home&op=translate";
+
+export class InteractiveWord {
 
     #wordbook;
     #popup;
     #language;
 
-    constructor(language, popup) {
+    constructor(language, popup, wordbook) {
         this.#language = language;
         this.#popup = popup;
         this.#wordbook = wordbook.getWordbook();

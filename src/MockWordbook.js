@@ -1,4 +1,6 @@
-const mockWordbook = [
+import {Levels} from "./enum/Levels";
+
+export const mockWordbook = [
         {word:"runtime", level: Levels.ADVANCED.name},
         {word:"it", level: Levels.NATIVE.name},
         {word:"in", level: Levels.NATIVE.name},

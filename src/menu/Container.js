@@ -1,4 +1,4 @@
-class Container {
+export class Container {
 
     #ref;
 

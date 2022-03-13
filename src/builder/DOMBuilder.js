@@ -1,14 +1,20 @@
-class DOMBuilder {
+import {Logger} from "../Logger";
+import {WordPopup} from "../menu/WordPopup";
+import {InteractiveWord} from "./InteractiveWord";
+
+export class DOMBuilder {
 
     #logger = new Logger();
     #notSavedWords = new Set();
+    #wordbook;
     #nodes;
     #language;
     #popup;
 
-    constructor(language) {
+    constructor(language, wordbook) {
         this.#language = language;
         this.#popup = new WordPopup();
+        this.#wordbook = wordbook;
     }
 
     rebuildPage = (nodes) => {
@@ -58,7 +64,7 @@ class DOMBuilder {
     }
 
     #createInteractiveNode = (bundle, clear) => {
-        const interactiveWord = new InteractiveWord(this.#language, this.#popup);
+        const interactiveWord = new InteractiveWord(this.#language, this.#popup, this.#wordbook);
         if (interactiveWord.isSaved(clear)) {
             return interactiveWord.createInteractiveWord(bundle, clear);
         } else {

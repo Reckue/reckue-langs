@@ -1,6 +1,10 @@
-const WORD_POPUP_WIDTH = 100;
+import {Container} from "./Container";
+import {Levels} from "../enum/Levels";
+import {colorResolver} from "../utils/Resolver";
 
-class LevelContainer extends Container {
+export const WORD_POPUP_WIDTH = 100;
+
+export class LevelContainer extends Container {
 
     #realWordRef
 
