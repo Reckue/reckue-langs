@@ -212,5 +212,7 @@ export class Parser {
         return word;
     }
 
-    #found = (word) => this.#wordbook.getWordbook().get(word);
+    #found = (word) => this.#map().get(word);
+
+    #map = () => this.#wordbook.get();
 }

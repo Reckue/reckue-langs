@@ -1,36 +1,37 @@
 import {Parser} from "./Parser";
 import {DOMBuilder} from "./builder/DOMBuilder";
 import {Logger} from "./Logger";
-import {Store} from "./Store";
+import {Store} from "./core/Store";
 
 const IS_SERVER_SIDE_PARSING_ENABLE = false;
 
-export class App {
+export class RebuildPageService {
 
     #logger;
     #storage;
     #wordbook;
 
-    constructor(wordbook) {
+    constructor() {
         this.#logger = new Logger();
         this.#storage = new Store();
+    }
+
+    setWordbook = (wordbook) => {
         this.#wordbook = wordbook;
-        this.#wordbook.loadWordbooks();
     }
 
-    start = () => {
-        const timeout = this.#wordbook.getLoadTimeout();
-        setTimeout(this.#logic, timeout);
-    }
-
-    #logic = () => {
+    run = () => {
         this.#storage.isAppEnable().then(enable => {
             this.#joinPoint(enable, this.#server, this.#local);
         });
     }
 
-    #server = () => {
-        //TODO:: Use google docs as storage
+    #joinPoint = (enable, serverLogic, localLogic) => {
+        this.#logger.log(`Reach join point with app.enable=${enable}`);
+        if (enable) {
+            this.#logger.log(`isServerSideParsingEnable=${IS_SERVER_SIDE_PARSING_ENABLE}`);
+            IS_SERVER_SIDE_PARSING_ENABLE ? serverLogic() : localLogic();
+        }
     }
 
     #local = () => {
@@ -44,11 +45,7 @@ export class App {
         builder.rebuildPage(parsedTextNodesList);
     }
 
-    #joinPoint = (enable, serverLogic, localLogic) => {
-        this.#logger.log(`Reach join point with app.enable=${enable}`);
-        if (enable) {
-            this.#logger.log(`isServerSideParsingEnable=${IS_SERVER_SIDE_PARSING_ENABLE}`);
-            IS_SERVER_SIDE_PARSING_ENABLE ? serverLogic() : localLogic();
-        }
+    #server = () => {
+        //TODO:: Use google docs as storage
     }
 }

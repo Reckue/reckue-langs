@@ -1,6 +1,6 @@
-import {Wordbook} from "./src/wordbook/Wordbook";
-import {App} from "./src/App";
+import {App} from "./src/core/App";
+import {RebuildPageService} from "./src/RebuildPageService";
 
-const wordbook = new Wordbook();
-const app = new App(wordbook);
+const service = new RebuildPageService();
+const app = new App(service);
 app.start();

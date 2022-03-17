@@ -11,7 +11,7 @@ export class InteractiveWord {
     constructor(language, popup, wordbook) {
         this.#language = language;
         this.#popup = popup;
-        this.#wordbook = wordbook.getWordbook();
+        this.#wordbook = wordbook.get();
     }
 
     createInteractiveWord = (bundle, clear) => {
