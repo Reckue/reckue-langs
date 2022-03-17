@@ -8,10 +8,13 @@ export class WordPopup {
     #wordContainer;
     #levelContainer;
 
+    #wordbook;
+
     #left = "0";
     #top = "0";
     
-    constructor() {
+    constructor(wordbook) {
+        this.#wordbook = wordbook;
         this.#createPopup();
         this.#createWordContainer();
         this.#createLevelContainer();
@@ -73,7 +76,7 @@ export class WordPopup {
     }
 
     #createLevelContainer = () => {
-        this.#levelContainer = new LevelContainer(this.#ref);
+        this.#levelContainer = new LevelContainer(this.#ref, this.#wordbook);
         this.#setBaseStyles(this.#levelContainer);
         this.#setRelativeBaseStyles(this.#levelContainer,
             "relative", "18px","1001", "10px");

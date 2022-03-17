@@ -1,22 +1,26 @@
 import {Container} from "./Container";
 import {Levels} from "../enum/Levels";
 import {colorResolver} from "../utils/Resolver";
+import {enumForEach} from "../../popup/js/enum";
 
 export const WORD_POPUP_WIDTH = 100;
 
 export class LevelContainer extends Container {
 
-    #realWordRef
+    #realWordRef;
+
+    #wordbook;
 
     #plus;
     #minus;
     #number;
 
-    constructor(parent) {
+    constructor(parent, wordbook) {
         super(parent);
         this.#initStyles();
         this.#createLevelDisplay();
         this.#registerButtons();
+        this.#wordbook = wordbook;
     }
 
     setLevel = (level) => {
@@ -51,7 +55,7 @@ export class LevelContainer extends Container {
             if (level.number === next) {
                 this.#number.getRef().textContent = next;
                 colorResolver(this.#realWordRef, level.name);
-                //TODO:: wordbook.set(word, new-level);
+                this.#wordbook.set([{word: this.#realWordRef.textContent, level: level.name}]);
             }
         });
     }

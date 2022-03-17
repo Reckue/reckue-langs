@@ -1,6 +1,6 @@
 import {Logger} from "../Logger";
-import {Store} from "../core/Store";
-import {Wordbook} from "../core/Wordbook";
+import {Store} from "./Store";
+import {Wordbook} from "./Wordbook";
 
 export class WordbookService {
 

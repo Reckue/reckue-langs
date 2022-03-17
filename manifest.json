@@ -4,7 +4,7 @@
   "description": "Interactive language learning assistant",
   "permissions": ["storage", "activeTab", "declarativeContent"],
   "background": {
-    "scripts": ["src/application.js"],
+    "scripts": ["src/background/application.js"],
     "persistent": false
   },
   "page_action": {

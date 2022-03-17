@@ -1,4 +1,4 @@
-import {WordbookService} from "../wordbook/WordbookService.js";
+import {WordbookService} from "./WordbookService.js";
 
 export class App {
 

@@ -1543,7 +1543,7 @@ export const mockWordbook = [
         {word:"withdefaultpasswordencoder", level: Levels.INTERMEDIATE.name},
         {word:"multiple", level: Levels.INTERMEDIATE.name},
         {word:"reuse", level: Levels.INTERMEDIATE.name},
-        {word:"builder", level: Levels.INTERMEDIATE.name},
+        {word:"page", level: Levels.INTERMEDIATE.name},
         {word:"reus", level: Levels.INTERMEDIATE.name},
         {word:"expos", level: Levels.INTERMEDIATE.name},
         {word:"compil", level: Levels.INTERMEDIATE.name},

@@ -13,7 +13,7 @@ export class DOMBuilder {
 
     constructor(language, wordbook) {
         this.#language = language;
-        this.#popup = new WordPopup();
+        this.#popup = new WordPopup(wordbook);
         this.#wordbook = wordbook;
     }
 
@@ -37,11 +37,6 @@ export class DOMBuilder {
         this.#logger.log("Rebuilding page complete!");
         this.#logger.log(`Found not saved words - ${this.#notSavedWords.size}`);
     }
-
-    #printWordbook = async () => {
-        const wordbook = await getWordbook();
-        window.console.log(wordbook);
-    };
 
     #appendText = (previous, bundleList) => {
         const text = previous.parentNode;

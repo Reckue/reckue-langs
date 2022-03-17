@@ -1,5 +1,5 @@
-import {Parser} from "./Parser";
-import {DOMBuilder} from "./builder/DOMBuilder";
+import {Parser} from "./page/Parser";
+import {DOMBuilder} from "./page/DOMBuilder";
 import {Logger} from "./Logger";
 import {Store} from "./core/Store";
 
