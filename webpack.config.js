@@ -2,9 +2,11 @@ const path = require("path");
 
 module.exports = {
     mode: "development",
-    entry: "./rebuildpage.js",
+    entry: {
+        parser: "./rebuildpage.js"
+    },
     output: {
-        path: path.resolve(__dirname, "parser"),
-        filename: "parser.js"
+        path: path.resolve(__dirname, "dist"),
+        filename: "[name].bundle.js"
     }
 };

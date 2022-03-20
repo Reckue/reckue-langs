@@ -1,9 +1,11 @@
+import {Context} from "../core/Context";
+
 export class Parser {
 
-    #wordbook;
+    #cache;
 
-    constructor(wordbook) {
-        this.#wordbook = wordbook;
+    constructor() {
+        this.#cache = Context.getWordbook().get();
     }
 
     /**
@@ -143,22 +145,34 @@ export class Parser {
     #parseWordsList = (node) => {
         const text = node.textContent;
         const wordsList = text.split(' ');
-        return this.#restoreSpaces(wordsList);
+        return this.#restoreSpacesAndDashes(wordsList);
     }
 
     /**
      * Метод который добавляет пробелы в список, чтобы они не терялись после разделения методом split
+     * Также проверяет слова на наличие тире, в случае наличия - делит слова на два и добавляет дэш.
      *
      * @param wordsList
      * @returns {[]}
      */
-    #restoreSpaces = (wordsList) => {
+    #restoreSpacesAndDashes = (wordsList) => {
         const wordsListWithSpaces = [];
         wordsList.forEach((word, index) => {
             if (index !== 0) {
                 wordsListWithSpaces.push("");
             }
-            wordsListWithSpaces.push(word);
+            if (word.includes('-')) {
+                const words = word.split('-');
+                if (words.length === 2) {
+                    wordsListWithSpaces.push(words[0]);
+                    wordsListWithSpaces.push("-");
+                    wordsListWithSpaces.push(words[1]);
+                } else {
+                    wordsListWithSpaces.push(word);
+                }
+            } else {
+                wordsListWithSpaces.push(word);
+            }
         })
         return wordsListWithSpaces;
     }
@@ -212,7 +226,5 @@ export class Parser {
         return word;
     }
 
-    #found = (word) => this.#map().get(word);
-
-    #map = () => this.#wordbook.get();
+    #found = (word) => this.#cache.get(word);
 }

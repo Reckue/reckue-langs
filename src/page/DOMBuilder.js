@@ -1,20 +1,21 @@
 import {Logger} from "../Logger";
 import {WordPopup} from "../menu/WordPopup";
 import {InteractiveWord} from "./InteractiveWord";
+import {Context} from "../core/Context";
 
 export class DOMBuilder {
 
     #logger = new Logger();
-    #notSavedWords = new Set();
     #wordbook;
     #nodes;
     #language;
     #popup;
 
-    constructor(language, wordbook) {
+    constructor(language) {
         this.#language = language;
-        this.#popup = new WordPopup(wordbook);
-        this.#wordbook = wordbook;
+        this.#wordbook = Context.getWordbook();
+        this.#popup = new WordPopup();
+        Context.add("notSavedWords", new Set());
     }
 
     rebuildPage = (nodes) => {
@@ -35,7 +36,7 @@ export class DOMBuilder {
         this.#logger.log("Rebuilding page...");
         logic();
         this.#logger.log("Rebuilding page complete!");
-        this.#logger.log(`Found not saved words - ${this.#notSavedWords.size}`);
+        this.#logger.log(`Found not saved words - ${Context.get("notSavedWords").size}`);
     }
 
     #appendText = (previous, bundleList) => {
@@ -59,19 +60,12 @@ export class DOMBuilder {
     }
 
     #createInteractiveNode = (bundle, clear) => {
-        const interactiveWord = new InteractiveWord(this.#language, this.#popup, this.#wordbook);
+        const interactiveWord = new InteractiveWord(this.#language, this.#popup);
         if (interactiveWord.isSaved(clear)) {
             return interactiveWord.createInteractiveWord(bundle, clear);
         } else {
-            return this.#createNotSavedWord(bundle, clear);
+            return interactiveWord.createNotSavedWord(bundle, clear);
         }
-    }
-
-    #createNotSavedWord = (bundle, clear) => {
-        if (clear !== " ") {
-            this.#notSavedWords.add(clear);
-        }
-        return this.#createTextNode(bundle.word);
     }
 
     #doAppend = (where, updated, previous) => {

@@ -5849,4 +5849,5 @@ export const mockWordbook = [
         {word:"20211220", level: Levels.INTERMEDIATE.name},
         {word:"132835", level: Levels.INTERMEDIATE.name},
         {word:"utc", level: Levels.INTERMEDIATE.name},
+        {word:"vocabulary", level: Levels.INTERMEDIATE.name},
 ];

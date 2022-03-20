@@ -1,12 +1,14 @@
 import {WordbookService} from "./WordbookService.js";
+import {Context} from "./Context";
 
 export class App {
 
-    #wordbookService = new WordbookService();
+    #wordbookService;
     #logicService;
 
     constructor(logicService) {
         this.#logicService = logicService;
+        this.#wordbookService = new WordbookService();
     }
 
     start = () => {
@@ -15,7 +17,7 @@ export class App {
     }
 
     #runService = () => {
-        this.#logicService.setWordbook(this.#wordbookService);
+        Context.add("wordbook", this.#wordbookService);
         this.#logicService.run();
     }
 }
