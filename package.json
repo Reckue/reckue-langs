@@ -1,0 +1,23 @@
+{
+  "name": "reckue-lang",
+  "version": "1.0.0",
+  "description": "It's your vocabulary-book built-in any pages you visit.",
+  "main": "index.js",
+  "scripts": {
+    "build": "D:/Users/HardTime/WebstormProjects/terms-plugin/node_modules/.bin/webpack"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Reckue/terms-plugin.git"
+  },
+  "author": "Hardelele",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Reckue/terms-plugin/issues"
+  },
+  "homepage": "https://github.com/Reckue/terms-plugin#readme",
+  "devDependencies": {
+    "webpack": "^5.70.0",
+    "webpack-cli": "^4.9.2"
+  }
+}
