@@ -61,7 +61,8 @@ export class LevelContainer extends Container {
         enumForEach(Levels, (level) => {
             if (level.number === next) {
                 this.#number.getRef().textContent = next;
-                colorResolver(this.#realWordRef, level.name);
+                const render = Context.get("render");
+                render(this.#word, level.name);
                 this.#wordbook.set([{word: this.#word, level: level.name}]);
             }
         });

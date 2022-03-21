@@ -16,6 +16,7 @@ export class DOMBuilder {
         this.#wordbook = Context.getWordbook();
         this.#popup = new WordPopup();
         Context.add("notSavedWords", new Set());
+        Context.add("refs", new Map());
     }
 
     rebuildPage = (nodes) => {
@@ -30,6 +31,7 @@ export class DOMBuilder {
             const node = editable.node;
             this.#appendText(node, bundleList);
         });
+        window.console.log(Context.get("refs"));
     }
 
     #logAspect = (logic) => {
@@ -44,10 +46,22 @@ export class DOMBuilder {
 
         bundleList.forEach((bundle) => {
             const word = this.#createWord(text, bundle);
+            this.#addRef(bundle.clearWord, word);
             this.#doAppend(text, word, previous);
         });
 
         previous.textContent = "";
+    }
+
+    #addRef = (clear, word) => {
+        const refs = Context.get("refs");
+        const words = refs.get(clear);
+        if (words) {
+            words.push(word);
+            refs.set(clear, words);
+        } else {
+            refs.set(clear, [word]);
+        }
     }
 
     #createWord = (text, bundle) => {

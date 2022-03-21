@@ -16,6 +16,7 @@ export class InteractiveWord {
         this.#popup = popup;
         this.#cache = Context.getWordbook().get();
         this.#wordbook = Context.getWordbook();
+        Context.add("render", this.#render);
     }
 
     createInteractiveWord = (bundle, clear) => {
@@ -33,9 +34,20 @@ export class InteractiveWord {
         }
         const ref = this.#createLink(bundle);
         ref.addEventListener("click", () => {
-            this.#wordbook.set([{word: clear, level: Levels.BEGINNER.name}]);
+            const level = Levels.BEGINNER.name;
+            this.#wordbook.set([{word: clear, level}]);
+            this.#render(clear, level);
+            this.#onHover(ref, bundle.clearWord, level);
         });
         return ref;
+    }
+
+    #render = (clear, level) => {
+        const refs = Context.get("refs");
+        const words = refs.get(clear);
+        words.forEach((word) => {
+            colorResolver(word, level)
+        });
     }
 
     #createLink = (bundle, level) => {
