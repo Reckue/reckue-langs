@@ -17,6 +17,9 @@
   },
   "homepage": "https://github.com/Reckue/terms-plugin#readme",
   "devDependencies": {
+    "pug": "^3.0.2",
+    "pug-loader": "^2.4.0",
+    "apply-loader": "^2.0.0",
     "webpack": "^5.70.0",
     "webpack-cli": "^4.9.2"
   }

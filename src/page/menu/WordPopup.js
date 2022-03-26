@@ -1,11 +1,12 @@
 import {LevelContainer, WORD_POPUP_WIDTH} from "./LevelContainer";
 import {Container} from "./Container";
-import {Context} from "../core/Context";
+import {Context} from "../../core/Context";
 
 export class WordPopup {
 
     #ref;
 
+    #link;
     #wordContainer;
     #levelContainer;
 
@@ -22,11 +23,15 @@ export class WordPopup {
         this.#appendPopup();
     }
 
-    setContent = (word, level) => {
-        this.#levelContainer.setLevel(level);
-        this.#levelContainer.setWord(word);
+    setContent = (word, level, href) => {
 
-        this.#wordContainer.getRef().textContent = word;
+        this.#levelContainer.setWord(word);
+        this.#levelContainer.setLevel();
+
+        this.#link.href = href;
+        this.#link.textContent = word;
+        this.#link.target = "_blank";
+
         this.#setWordPosition();
     }
 
@@ -75,6 +80,8 @@ export class WordPopup {
 
         this.#wordContainer.setStyle("height", "30px");
         this.#wordContainer.setStyle("minWidth", "60px");
+        this.#link = window.document.createElement("a");
+        this.#wordContainer.getRef().appendChild(this.#link);
     }
 
     #createLevelContainer = () => {

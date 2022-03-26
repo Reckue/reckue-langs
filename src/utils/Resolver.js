@@ -17,8 +17,5 @@ export const colorResolver = (ref, level) => {
         case Levels.BEGINNER.name:
             ref.style.color = Levels.BEGINNER.hex;
             break;
-        default:
-            ref.style.color = "rgb(30,30,30)";
-            break;
     }
 }

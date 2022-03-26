@@ -1,4 +1,4 @@
-import {Logger} from "../Logger";
+import {Logger} from "./Logger";
 import {Store} from "./Store";
 import {Wordbook} from "./Wordbook";
 

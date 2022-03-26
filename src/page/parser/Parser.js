@@ -1,4 +1,4 @@
-import {Context} from "../core/Context";
+import {Context} from "../../core/Context";
 
 export class Parser {
 
@@ -145,36 +145,67 @@ export class Parser {
     #parseWordsList = (node) => {
         const text = node.textContent;
         const wordsList = text.split(' ');
-        return this.#restoreSpacesAndDashes(wordsList);
+        return this.#restoreSpacesAndSymbols(wordsList);
     }
 
     /**
      * Метод который добавляет пробелы в список, чтобы они не терялись после разделения методом split
      * Также проверяет слова на наличие тире, в случае наличия - делит слова на два и добавляет дэш.
+     * На случай если слово сливается с запятой или точкой также проверяет и эти случаи. Аналогично с тире.
      *
      * @param wordsList
      * @returns {[]}
      */
-    #restoreSpacesAndDashes = (wordsList) => {
+    #restoreSpacesAndSymbols = (wordsList) => {
         const wordsListWithSpaces = [];
         wordsList.forEach((word, index) => {
             if (index !== 0) {
                 wordsListWithSpaces.push("");
             }
-            if (word.includes('-')) {
-                const words = word.split('-');
-                if (words.length === 2) {
-                    wordsListWithSpaces.push(words[0]);
-                    wordsListWithSpaces.push("-");
-                    wordsListWithSpaces.push(words[1]);
-                } else {
-                    wordsListWithSpaces.push(word);
-                }
-            } else {
-                wordsListWithSpaces.push(word);
-            }
+            this.#restoreSymbols(wordsListWithSpaces, word, "-") ||
+            this.#restoreSymbols(wordsListWithSpaces, word, ".") ||
+            this.#restoreSymbols(wordsListWithSpaces, word, "...") ||
+            this.#restoreSymbols(wordsListWithSpaces, word, ",") ||
+            this.#restoreEndings(wordsListWithSpaces, word);
         })
         return wordsListWithSpaces;
+    }
+
+    #restoreEndings = (words, word) => {
+        if (word.endsWith("n't") && !word.includes("can't")) {
+            this.#restoreSpecificEnding(words, word, "n't", "not");
+        } else if (word.endsWith("'ll")) {
+            this.#restoreSpecificEnding(words, word, "'ll", "will");
+        } else {
+            words.push(word);
+        }
+    }
+
+    #restoreSpecificEnding = (words, word, ending, restored) => {
+        const clear = this.#checkByEnding(word, ending);
+        words.push(clear, "", restored);
+    }
+
+    /**
+     *  Непосредственно проверка наличия символа, разделение слова на
+     *  два и добавление их вместе с символом в общий массив слов.
+     *
+     * @param words - общий массив слов
+     * @param word - слово, которое проверяем на наличие символа.
+     * @param symbol - символ, который проверяем
+     *
+     * @returns {boolean} - если сделали restore - вернём true, в дальнейшем проверяем это условие.
+     * Если ни один из символов не будет найден, то в итоге просто добавим word в общий массив слов.
+     */
+    #restoreSymbols = (words, word, symbol) => {
+        const splinted = word.split(symbol);
+        if (splinted.length === 2) {
+            const first = splinted[0];
+            const second = splinted[1];
+            words.push(first, symbol, second);
+            return true;
+        }
+        return false;
     }
 
     /**

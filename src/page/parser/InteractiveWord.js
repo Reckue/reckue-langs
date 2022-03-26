@@ -1,6 +1,6 @@
-import {colorResolver} from "../utils/Resolver";
-import {Context} from "../core/Context";
-import {Levels} from "../enum/Levels";
+import {colorResolver} from "../../utils/Resolver";
+import {Context} from "../../core/Context";
+import {Levels} from "../../enum/Levels";
 
 export const BASE_GOOGLE_TRANSLATE_URL = "https://translate.google.com/#view=home&op=translate";
 
@@ -70,7 +70,7 @@ export class InteractiveWord {
     #showPopup = (ref, event, word, level) => {
         this.#popup.displayOn();
         this.#popup.setPosition(event.clientX, event.clientY);
-        this.#popup.setContent(word, level);
+        this.#popup.setContent(word, level, this.#buildHref(word));
         this.#popup.setRealWordRef(ref);
     }
 

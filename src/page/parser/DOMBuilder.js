@@ -1,7 +1,7 @@
-import {Logger} from "../Logger";
+import {Logger} from "../../core/Logger";
 import {WordPopup} from "../menu/WordPopup";
 import {InteractiveWord} from "./InteractiveWord";
-import {Context} from "../core/Context";
+import {Context} from "../../core/Context";
 
 export class DOMBuilder {
 

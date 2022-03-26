@@ -1,8 +1,7 @@
 import {Container} from "./Container";
-import {Levels} from "../enum/Levels";
-import {colorResolver} from "../utils/Resolver";
-import {enumForEach} from "../../popup/js/enum";
-import {Context} from "../core/Context";
+import {Levels} from "../../enum/Levels";
+import {enumForEach} from "../../../popup/js/enum";
+import {Context} from "../../core/Context";
 
 export const WORD_POPUP_WIDTH = 100;
 
@@ -26,7 +25,9 @@ export class LevelContainer extends Container {
         this.#word = word;
     }
 
-    setLevel = (level) => {
+    setLevel = () => {
+        const cache = this.#wordbook.get();
+        const level = cache.get(this.#word);
         this.#number.getRef().textContent = Levels[level.toUpperCase()].number;
     }
 

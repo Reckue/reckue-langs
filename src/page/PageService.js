@@ -1,12 +1,12 @@
-import {Parser} from "./page/Parser";
-import {DOMBuilder} from "./page/DOMBuilder";
-import {Logger} from "./Logger";
-import {Store} from "./core/Store";
-import {Context} from "./core/Context";
+import {Parser} from "./parser/Parser";
+import {DOMBuilder} from "./parser/DOMBuilder";
+import {Logger} from "../core/Logger";
+import {Store} from "../core/Store";
+import {Context} from "../core/Context";
 
 const IS_SERVER_SIDE_PARSING_ENABLE = false;
 
-export class RebuildPageService {
+export class PageService {
 
     #logger;
     #storage;
