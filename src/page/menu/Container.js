@@ -3,11 +3,10 @@ export class Container {
     #ref;
 
     constructor(parent) {
-        const html = require("apply-loader!pug-loader!./div.pug");
+        const html = require("apply-loader!styles-loader!./div.pug");
         const template = window.document.createElement("div");
         template.innerHTML = html.trim();
-        window.document.querySelector("head").appendChild(template.firstChild);
-        this.#ref = template.lastChild;
+        this.#ref = template.firstChild;
 
         parent.appendChild(this.#ref);
     }
