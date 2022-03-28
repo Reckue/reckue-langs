@@ -1,22 +1,22 @@
-import {LevelContainer, WORD_POPUP_WIDTH} from "./LevelContainer";
-import {Container} from "./Container";
+import {LevelDisplay, POPUP_WIDTH} from "./level/LevelDisplay";
+import {BaseBlock} from "./BaseBlock";
 import {Context} from "../../core/Context";
+import {HTMLMapper} from "../../core/HTMLMapper";
 
 export class WordPopup {
 
     #ref;
+    #HTMLMapper;
 
     #link;
     #wordContainer;
     #levelContainer;
 
-    #wordbook;
-
     #left = "0";
     #top = "0";
     
     constructor() {
-        this.#wordbook = Context.getWordbook();
+        this.#HTMLMapper = new HTMLMapper();
         this.#createPopup();
         this.#createWordContainer();
         this.#createLevelContainer();
@@ -24,9 +24,8 @@ export class WordPopup {
     }
 
     setContent = (word, level, href) => {
-
         this.#levelContainer.setWord(word);
-        this.#levelContainer.setLevel();
+        this.#levelContainer.updateLevel();
 
         this.#link.href = href;
         this.#link.textContent = word;
@@ -36,7 +35,7 @@ export class WordPopup {
     }
 
     setPosition = (left, top) => {
-        const offset = WORD_POPUP_WIDTH / 2;
+        const offset = POPUP_WIDTH / 2;
         this.#left = `${left - offset}px`;
         this.#top = `${top}px`;
         this.#updatePosition();
@@ -60,12 +59,8 @@ export class WordPopup {
     }
 
     #createPopup = () => {
-        this.#ref = window.document.createElement("div");
-
-        this.#ref.style.position = "fixed";
-        this.#ref.style.userSelect = "none";
-        this.#ref.style.color = "#1e81c6";
-        this.#ref.style.zIndex = "1000";
+        const html = require("apply-loader!pug-loader!./popup.pug");
+        this.#ref = this.#HTMLMapper.toElement(html);
 
         this.displayOff();
         this.#onMouseOver();
@@ -73,10 +68,9 @@ export class WordPopup {
     }
 
     #createWordContainer = () => {
-        this.#wordContainer = new Container(this.#ref);
+        this.#wordContainer = new BaseBlock(this.#ref);
         this.#setBaseStyles(this.#wordContainer);
-        this.#setRelativeBaseStyles(this.#wordContainer,
-            "absolute", "10px","1000", "14px");
+        this.#setRelativeBaseStyles(this.#wordContainer, "absolute", "10px","1000", "14px");
 
         this.#wordContainer.setStyle("height", "30px");
         this.#wordContainer.setStyle("minWidth", "60px");
@@ -85,7 +79,7 @@ export class WordPopup {
     }
 
     #createLevelContainer = () => {
-        this.#levelContainer = new LevelContainer(this.#ref);
+        this.#levelContainer = new LevelDisplay(this.#ref);
         this.#setBaseStyles(this.#levelContainer);
         this.#setRelativeBaseStyles(this.#levelContainer,
             "relative", "18px","1001", "10px");
@@ -115,7 +109,7 @@ export class WordPopup {
 
     #setWordPosition = () => {
         const offset = this.#getOffset(this.#wordContainer.getRef().offsetWidth);
-        const position = this.#getOffset(WORD_POPUP_WIDTH) - offset;
+        const position = this.#getOffset(POPUP_WIDTH) - offset;
         this.#wordContainer.getRef().style.left = `${position}px`;
     }
 

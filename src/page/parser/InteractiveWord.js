@@ -6,22 +6,20 @@ export const BASE_GOOGLE_TRANSLATE_URL = "https://translate.google.com/#view=hom
 
 export class InteractiveWord {
 
-    #cache;
-    #wordbook;
+    #wordbookService;
     #popup;
     #language;
 
     constructor(language, popup) {
         this.#language = language;
         this.#popup = popup;
-        this.#cache = Context.getWordbook().get();
-        this.#wordbook = Context.getWordbook();
+        this.#wordbookService = Context.getWordbookService();
         Context.add("render", this.#render);
     }
 
     createInteractiveWord = (bundle, clear) => {
         // window.console.log(`Reckue language app: Creating link to word ${bundle.clearWord}.`);
-        const level = this.#cache.get(clear);
+        const level = this.#wordbookService.getWordbook().get(clear);
         const ref = this.#createLink(bundle, level);
         //a.href = this.#buildHref(bundle.clearWord);
         this.#onHover(ref, bundle.clearWord, level);
@@ -35,7 +33,7 @@ export class InteractiveWord {
         const ref = this.#createLink(bundle);
         ref.addEventListener("click", () => {
             const level = Levels.BEGINNER.name;
-            this.#wordbook.set([{word: clear, level}]);
+            this.#wordbookService.set([{word: clear, level}]);
             this.#render(clear, level);
             this.#onHover(ref, bundle.clearWord, level);
         });
@@ -63,7 +61,7 @@ export class InteractiveWord {
         return ref;
     }
 
-    isSaved = (clear) => this.#cache.get(clear) !== undefined;
+    isSaved = (clear) => this.#wordbookService.getWordbook().get(clear) !== undefined;
 
     #buildHref = (word) => `${BASE_GOOGLE_TRANSLATE_URL}&sl=${this.#language.sl}&tl=${this.#language.tl}&text=${word}`;
 

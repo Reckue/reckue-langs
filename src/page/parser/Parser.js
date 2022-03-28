@@ -2,10 +2,10 @@ import {Context} from "../../core/Context";
 
 export class Parser {
 
-    #cache;
+    #wordbook;
 
     constructor() {
-        this.#cache = Context.getWordbook().get();
+        this.#wordbook = Context.getWordbookService().getWordbook();
     }
 
     /**
@@ -257,5 +257,5 @@ export class Parser {
         return word;
     }
 
-    #found = (word) => this.#cache.get(word);
+    #found = (word) => this.#wordbook.get(word);
 }

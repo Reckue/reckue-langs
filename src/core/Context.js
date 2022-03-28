@@ -10,7 +10,7 @@ export class Context {
         return context.get(beanName);
     }
 
-    static getWordbook = () => {
+    static getWordbookService = () => {
         const wordbook = Context.get("wordbook");
         if (wordbook) {
             return wordbook;

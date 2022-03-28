@@ -6,14 +6,12 @@ import {Context} from "../../core/Context";
 export class DOMBuilder {
 
     #logger = new Logger();
-    #wordbook;
     #nodes;
     #language;
     #popup;
 
     constructor(language) {
         this.#language = language;
-        this.#wordbook = Context.getWordbook();
         this.#popup = new WordPopup();
         Context.add("notSavedWords", new Set());
         Context.add("refs", new Map());

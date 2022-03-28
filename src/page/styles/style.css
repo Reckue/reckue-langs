@@ -1,3 +1,36 @@
 .menu-container {
     text-align: center;
 }
+
+.page-popup-menu {
+    position: fixed;
+    user-select: none;
+    color: #1e81c6;
+    z-index: 1000;
+}
+
+.wb-level-controller {
+    cursor: pointer
+}
+
+.wb-level-number {
+    color: #444
+}
+
+.change-level-menu {
+    margin-top: 16px;
+    height: 30px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    font-family: Impact, serif;
+    position: relative;
+    font-size: 18px;
+    z-index: 1001;
+    border-radius: 10px;
+    background: white;
+    border: 1px #1e81c6 solid;
+}
+
+
