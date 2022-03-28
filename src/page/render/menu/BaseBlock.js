@@ -1,4 +1,4 @@
-import {HTMLMapper} from "../../core/HTMLMapper";
+import {HTMLMapper} from "../../../core/HTMLMapper";
 
 export class BaseBlock {
 

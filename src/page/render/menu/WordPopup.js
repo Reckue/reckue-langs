@@ -1,7 +1,7 @@
 import {LevelDisplay, POPUP_WIDTH} from "./level/LevelDisplay";
 import {BaseBlock} from "./BaseBlock";
-import {Context} from "../../core/Context";
-import {HTMLMapper} from "../../core/HTMLMapper";
+import {Context} from "../../../core/Context";
+import {HTMLMapper} from "../../../core/HTMLMapper";
 
 export class WordPopup {
 

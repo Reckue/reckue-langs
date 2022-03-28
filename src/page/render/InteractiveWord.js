@@ -17,25 +17,25 @@ export class InteractiveWord {
         Context.add("render", this.#render);
     }
 
-    createInteractiveWord = (bundle, clear) => {
+    createInteractiveWord = (word, clear) => {
         // window.console.log(`Reckue language app: Creating link to word ${bundle.clearWord}.`);
         const level = this.#wordbookService.getWordbook().get(clear);
-        const ref = this.#createLink(bundle, level);
+        const ref = this.#createLink(word, level);
         //a.href = this.#buildHref(bundle.clearWord);
-        this.#onHover(ref, bundle.clearWord, level);
+        this.#onHover(ref, clear, level);
         return ref;
     };
 
-    createNotSavedWord = (bundle, clear) => {
+    createNotSavedWord = (word, clear) => {
         if (clear !== " ") {
             Context.get("notSavedWords").add(clear);
         }
-        const ref = this.#createLink(bundle);
+        const ref = this.#createLink(word);
         ref.addEventListener("click", () => {
             const level = Levels.BEGINNER.name;
             this.#wordbookService.set([{word: clear, level}]);
             this.#render(clear, level);
-            this.#onHover(ref, bundle.clearWord, level);
+            this.#onHover(ref, clear, level);
         });
         return ref;
     }
@@ -48,10 +48,9 @@ export class InteractiveWord {
         });
     }
 
-    #createLink = (bundle, level) => {
+    #createLink = (word, level) => {
         const ref = document.createElement('a');
         colorResolver(ref, level);
-        let word = bundle.word;
         word = word.replace(/\r?\n/g, "");
         if (word === "") {
             return document.createTextNode(word);

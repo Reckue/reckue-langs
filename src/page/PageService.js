@@ -1,18 +1,21 @@
 import {Parser} from "./parser/Parser";
-import {DOMBuilder} from "./parser/DOMBuilder";
+import {DOMBuilder} from "./render/DOMBuilder";
 import {Logger} from "../core/Logger";
 import {Store} from "../core/Store";
-import {Styles} from "./styles/Styles";
+import {Styles} from "./render/styles/Styles";
+import {Context} from "../core/Context";
 
 const IS_SERVER_SIDE_PARSING_ENABLE = false;
 
 export class PageService {
 
+    #context;
     #logger;
     #styles;
     #storage;
 
     constructor() {
+        this.#context = new Context();
         this.#logger = new Logger();
         this.#storage = new Store();
         this.#styles = new Styles();
@@ -35,13 +38,11 @@ export class PageService {
 
     #local = () => {
         const parser = new Parser();
-        const textNodesList = parser.parsePage();
-        const parsedTextNodesList = parser.textParsing(textNodesList);
-        // Возможность выгрузить текущий wordbook в файл.
-        // saveFile(mapToString(wordbook));
+        const textBlocks = parser.parsePage();
+        const words = parser.textBlocksParsing(textBlocks);
         const lang = {sl: "en", tl: "ru"};
         const builder = new DOMBuilder(lang);
-        builder.rebuildPage(parsedTextNodesList);
+        builder.rebuildPage(words);
     }
 
     #server = () => {

@@ -1,7 +1,7 @@
 import {BaseBlock} from "../BaseBlock";
-import {Levels} from "../../../enum/Levels";
-import {enumForEach} from "../../../../popup/js/enum";
-import {Context} from "../../../core/Context";
+import {Levels} from "../../../../enum/Levels";
+import {enumForEach} from "../../../../../popup/js/enum";
+import {Context} from "../../../../core/Context";
 
 //TODO:: Перенести в класс или в контекст!
 export const POPUP_WIDTH = 100;
