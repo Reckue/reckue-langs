@@ -7,18 +7,15 @@ export class DOMBuilder {
 
     #logger = new Logger();
     #wordsList;
-    #language;
-    #popup;
 
-    constructor(language) {
-        this.#language = language;
-        this.#popup = new WordPopup();
+    constructor(wordsList) {
+        this.#wordsList = wordsList;
+        Context.add("popup", new WordPopup());
         Context.add("notSavedWords", new Set());
         Context.add("refs", new Map());
     }
 
-    rebuildPage = (wordsList) => {
-        this.#wordsList = wordsList;
+    rebuildPage = () => {
         this.#logAspect(() => this.#wordsList.forEach((bundle) => this.#appendText(bundle.ref, bundle.words)));
     }
 
@@ -29,41 +26,30 @@ export class DOMBuilder {
         this.#logger.log(`Found not saved words - ${Context.get("notSavedWords").size}`);
     }
 
-    #appendText = (ref, list) => {
-        const text = ref.parentNode;
+    #appendText = (textRef, list) => {
+        const text = textRef.parentNode;
         list.forEach((word) => {
-            const interactive = this.#createWord(word);
-            this.#addRef(word.getClear(), interactive);
-            this.#doAppend(text, interactive, ref);
+            const wordRef = this.#createRef(word);
+            this.#saveRef(word.getClear(), wordRef);
+            this.#doAppend(text, wordRef, textRef);
         });
-        ref.textContent = "";
+        textRef.textContent = "";
     }
 
-    #addRef = (clear, word) => {
-        const refs = Context.get("refs");
-        const words = refs.get(clear);
-        if (words) {
-            words.push(word);
-            refs.set(clear, words);
-        } else {
-            refs.set(clear, [word]);
-        }
+    #saveRef = (clear, wordRef) => {
+        const map = Context.get("refs");
+        let refs = map.get(clear);
+        !refs && (refs = []);
+        refs.push(wordRef);
+        map.set(clear, refs);
     }
 
-    #createWord = (word) => {
-        if (word.get() === "") {
-            return this.#createTextNode(" ");
+    #createRef = (word) => {
+        if (word.get() !== "") {
+            const interactiveWord = new InteractiveWord(word);
+            return interactiveWord.create();
         }
-        return this.#createInteractiveNode(word.get(), word.getClear());
-    }
-
-    #createInteractiveNode = (original, clear) => {
-        const interactiveWord = new InteractiveWord(this.#language, this.#popup);
-        if (interactiveWord.isSaved(clear)) {
-            return interactiveWord.createInteractiveWord(original, clear);
-        } else {
-            return interactiveWord.createNotSavedWord(original, clear);
-        }
+        return this.#createTextNode(" ");
     }
 
     #doAppend = (where, updated, previous) => {

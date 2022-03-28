@@ -8,34 +8,40 @@ export class InteractiveWord {
 
     #wordbookService;
     #popup;
-    #language;
+    #word;
 
-    constructor(language, popup) {
-        this.#language = language;
-        this.#popup = popup;
+    constructor(word) {
+        this.#word = word;
+        this.#popup = Context.get("popup");
         this.#wordbookService = Context.getWordbookService();
         Context.add("render", this.#render);
     }
 
-    createInteractiveWord = (word, clear) => {
-        // window.console.log(`Reckue language app: Creating link to word ${bundle.clearWord}.`);
-        const level = this.#wordbookService.getWordbook().get(clear);
-        const ref = this.#createLink(word, level);
-        //a.href = this.#buildHref(bundle.clearWord);
-        this.#onHover(ref, clear, level);
-        return ref;
-    };
-
-    createNotSavedWord = (word, clear) => {
-        if (clear !== " ") {
-            Context.get("notSavedWords").add(clear);
+    create = () => {
+        if (this.#isSaved(this.#word.getClear())) {
+            return this.#createSaved();
+        } else {
+            return this.#createNotSaved();
         }
-        const ref = this.#createLink(word);
+    }
+
+    #createSaved = () => {
+        const level = this.#wordbookService.getWordbook().get(this.#word.getClear());
+        const ref = this.#createRef(this.#word.get(), level);
+        this.#onHover(ref, this.#word.getClear(), level);
+        return ref;
+    }
+
+    #createNotSaved = () => {
+        if (this.#word.getClear() !== " ") {
+            Context.get("notSavedWords").add(this.#word.getClear());
+        }
+        const ref = this.#createRef(this.#word.get());
         ref.addEventListener("click", () => {
             const level = Levels.BEGINNER.name;
-            this.#wordbookService.set([{word: clear, level}]);
-            this.#render(clear, level);
-            this.#onHover(ref, clear, level);
+            this.#wordbookService.set([{word: this.#word.getClear(), level}]);
+            this.#render(this.#word.getClear(), level);
+            this.#onHover(ref, this.#word.getClear(), level);
         });
         return ref;
     }
@@ -48,7 +54,7 @@ export class InteractiveWord {
         });
     }
 
-    #createLink = (word, level) => {
+    #createRef = (word, level) => {
         const ref = document.createElement('a');
         colorResolver(ref, level);
         word = word.replace(/\r?\n/g, "");
@@ -60,15 +66,17 @@ export class InteractiveWord {
         return ref;
     }
 
-    isSaved = (clear) => this.#wordbookService.getWordbook().get(clear) !== undefined;
+    #isSaved = (clear) => this.#wordbookService.getWordbook().get(clear) !== undefined;
 
-    #buildHref = (word) => `${BASE_GOOGLE_TRANSLATE_URL}&sl=${this.#language.sl}&tl=${this.#language.tl}&text=${word}`;
+    #buildHref = (word) => {
+        const language = Context.get("language");
+        return `${BASE_GOOGLE_TRANSLATE_URL}&sl=${language.sl}&tl=${language.tl}&text=${word}`;
+    }
 
     #showPopup = (ref, event, word, level) => {
         this.#popup.displayOn();
         this.#popup.setPosition(event.clientX, event.clientY);
         this.#popup.setContent(word, level, this.#buildHref(word));
-        this.#popup.setRealWordRef(ref);
     }
 
     #onHover(ref, word, level) {

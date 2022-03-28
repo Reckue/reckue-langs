@@ -34,9 +34,10 @@ export class Word {
     }
 
     #trimEnding = (ending) => {
-        const shorted = this.#clear.substr(0,this.#clear.length - ending.length);
-        return this.#enrichEnding(shorted);
+        this.#clear = this.#clear.substr(0,this.#clear.length - ending.length);
+        return this.#enrichEnding(this.#clear);
     }
+
 
     #enrichEnding = (shorted) => {
         if (!this.#found(shorted)) {

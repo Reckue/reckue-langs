@@ -49,10 +49,6 @@ export class WordPopup {
         this.#ref.style.display = "none";
     }
 
-    setRealWordRef = (ref) => {
-        this.#levelContainer.setRealWordRef(ref);
-    }
-
     #appendPopup = () => {
         const body = window.document.querySelector('body');
         body.appendChild(this.#ref);
