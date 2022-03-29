@@ -14,7 +14,7 @@ export class TextBlocksParser {
     parse = (textBlocks) => {
         textBlocks.forEach(ref => {
             const originals = this.#parseWords(ref)
-            this.#getWords(ref, originals);
+            this.#collectWords(ref, originals);
         });
         return this.#wordsList;
     }
@@ -110,7 +110,7 @@ export class TextBlocksParser {
      * @param originals - список изначальных слов (В том виде в котором они на странице).
      * @returns {[]} - список связок (слов и чистых слов)
      */
-    #getWords = (ref, originals) => {
+    #collectWords = (ref, originals) => {
         const words = [];
         originals.forEach((original) => words.push(new Word(original)));
         this.#wordsList.push({ref, words});

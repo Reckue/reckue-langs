@@ -16,6 +16,11 @@ export class Parser {
     }
 
     parsePage = () => {
-        return this.#page.parse();
+        let body = window.document.querySelector('body');
+        return this.#page.parse(body);
+    }
+
+    parseNode = (node) => {
+        return this.#page.parse(node);
     }
 }

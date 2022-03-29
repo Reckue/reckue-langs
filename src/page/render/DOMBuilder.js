@@ -1,22 +1,33 @@
 import {Logger} from "../../core/Logger";
-import {WordPopup} from "./menu/WordPopup";
-import {InteractiveWord} from "./InteractiveWord";
+import {Menu} from "./menu/Menu";
+import {PageWord} from "./PageWord";
 import {Context} from "../../core/Context";
 
 export class DOMBuilder {
 
+    #isActive = false;
     #logger = new Logger();
     #wordsList;
 
     constructor(wordsList) {
         this.#wordsList = wordsList;
-        Context.add("popup", new WordPopup());
+        Context.add("menu", new Menu());
         Context.add("notSavedWords", new Set());
         Context.add("refs", new Map());
     }
 
     rebuildPage = () => {
+        this.#isActive = true;
         this.#logAspect(() => this.#wordsList.forEach((bundle) => this.#appendText(bundle.ref, bundle.words)));
+        this.#isActive = false;
+    }
+
+    updateWords = (wordsList) => {
+        this.#wordsList = wordsList;
+    }
+
+    isActive = () => {
+        return this.#isActive;
     }
 
     #logAspect = (logic) => {
@@ -46,8 +57,8 @@ export class DOMBuilder {
 
     #createRef = (word) => {
         if (word.get() !== "") {
-            const interactiveWord = new InteractiveWord(word);
-            return interactiveWord.create();
+            const pageWord = new PageWord(word);
+            return pageWord.create();
         }
         return this.#createTextNode(" ");
     }

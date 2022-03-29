@@ -2,21 +2,20 @@ import {BaseBlock} from "../BaseBlock";
 import {Levels} from "../../../../enum/Levels";
 import {enumForEach} from "../../../../../popup/js/enum";
 import {Context} from "../../../../core/Context";
-
-//TODO:: Перенести в класс или в контекст!
-export const POPUP_WIDTH = 100;
+import {WordRenderer} from "../../WordRenderer";
+import {POPUP_WIDTH} from "../Menu";
 
 export class LevelDisplay extends BaseBlock {
 
     #wordbookService;
-    #display;
-
+    #wordRenderer;
     #word;
 
     constructor(parent, word) {
         super(parent);
         this.#wordbookService = Context.getWordbookService();
         this.#word = word;
+        this.#wordRenderer = new WordRenderer();
     }
 
     updateLevel = () => {
@@ -69,8 +68,7 @@ export class LevelDisplay extends BaseBlock {
     #changeLevel = (next) => {
         this.#matchConcurrence(next, (next, level) => {
             this.#renderLevelDisplay(next)
-            const render = Context.get("render");
-            render(this.#word, level.name);
+            this.#wordRenderer.renderAll(this.#word, level.name);
             this.#wordbookService.set([{word: this.#word, level: level.name}]);
         });
     }
@@ -98,10 +96,14 @@ export class LevelDisplay extends BaseBlock {
      */
     #renderLevelDisplay = (number) => {
         const pug = require("pug-loader!./display.pug");
-        this.#display = this.mapper().toElement(pug(this.#buildOptions(number)));
-        this.getRef().replaceWith(this.#display);
-        this.setRef(this.#display);
+        const display = this.mapper().toElement(pug(this.#buildOptions(number)));
+        this.#replaceReferences(display);
         this.#setupControllers(number);
+    }
+
+    #replaceReferences = (ref) => {
+        this.getRef().replaceWith(ref);
+        this.setRef(ref);
     }
 
     /**
@@ -109,7 +111,7 @@ export class LevelDisplay extends BaseBlock {
      * Для корректной работы нужен заполненный display
      */
     #setupControllers = (current) => {
-        const controllers = this.#display.getElementsByClassName("wb-level-controller");
+        const controllers = this.getRef().getElementsByClassName("wb-level-controller");
         controllers[0].addEventListener("click", () => this.#increaseLevel(current));
         controllers[1].addEventListener("click", () => this.#decreaseLevel(current));
     }
@@ -122,7 +124,7 @@ export class LevelDisplay extends BaseBlock {
     #buildOptions = (number) => {
         return {
             number: number,
-            width: POPUP_WIDTH + "px"
+            width: Context.get("POPUP_WIDTH") + "px"
         }
     }
 }

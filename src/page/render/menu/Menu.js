@@ -1,9 +1,9 @@
-import {LevelDisplay, POPUP_WIDTH} from "./level/LevelDisplay";
+import {LevelDisplay} from "./level/LevelDisplay";
 import {BaseBlock} from "./BaseBlock";
 import {Context} from "../../../core/Context";
 import {HTMLMapper} from "../../../core/HTMLMapper";
 
-export class WordPopup {
+export class Menu {
 
     #ref;
     #HTMLMapper;
@@ -17,25 +17,29 @@ export class WordPopup {
     
     constructor() {
         this.#HTMLMapper = new HTMLMapper();
+        Context.add("POPUP_WIDTH", 120);
+        Context.add("BASE_GOOGLE_TRANSLATE_URL", "https://translate.google.com/#view=home&op=translate");
         this.#createPopup();
-        this.#createWordContainer();
-        this.#createLevelContainer();
-        this.#appendPopup();
     }
 
-    setContent = (word, level, href) => {
+    setContent = (word) => {
         this.#levelContainer.setWord(word);
         this.#levelContainer.updateLevel();
 
-        this.#link.href = href;
+        this.#link.href = this.#buildHref(word);
         this.#link.textContent = word;
         this.#link.target = "_blank";
 
         this.#setWordPosition();
     }
 
+    #buildHref = (word) => {
+        const language = Context.get("language");
+        return `${Context.get("BASE_GOOGLE_TRANSLATE_URL")}&sl=${language.sl}&tl=${language.tl}&text=${word}`;
+    }
+
     setPosition = (left, top) => {
-        const offset = POPUP_WIDTH / 2;
+        const offset = Context.get("POPUP_WIDTH") / 2;
         this.#left = `${left - offset}px`;
         this.#top = `${top}px`;
         this.#updatePosition();
@@ -61,6 +65,10 @@ export class WordPopup {
         this.displayOff();
         this.#onMouseOver();
         this.#updatePosition();
+
+        this.#createWordContainer();
+        this.#createLevelContainer();
+        this.#appendPopup();
     }
 
     #createWordContainer = () => {
@@ -105,7 +113,7 @@ export class WordPopup {
 
     #setWordPosition = () => {
         const offset = this.#getOffset(this.#wordContainer.getRef().offsetWidth);
-        const position = this.#getOffset(POPUP_WIDTH) - offset;
+        const position = this.#getOffset(Context.get("POPUP_WIDTH")) - offset;
         this.#wordContainer.getRef().style.left = `${position}px`;
     }
 

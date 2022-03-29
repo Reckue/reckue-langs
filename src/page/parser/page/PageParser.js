@@ -1,4 +1,5 @@
 import {Logger} from "../../../core/Logger";
+import {Context} from "../../../core/Context";
 
 export class PageParser {
 
@@ -8,6 +9,7 @@ export class PageParser {
     constructor() {
         this.#logger = new Logger();
         this.#textBlocks = [];
+        Context.add("listening", []);
     }
 
     /**
@@ -16,10 +18,9 @@ export class PageParser {
      *
      * @returns {*[]} - latestNodesList (список всех текстовых элементов / это всегда конечные ноды)
      */
-    parse = () => {
+    parse = (joinNode) => {
         this.#logger.log("Local parsing in progress...");
-        let body = window.document.querySelector('body');
-        this.#parsingTextBlocks(body);
+        this.#parsingTextBlocks(joinNode);
         return this.#textBlocks;
     }
 
@@ -47,6 +48,7 @@ export class PageParser {
      * @returns {[]}
      */
     #parsingTextBlocks = (node) => {
+        Context.get("listening").push(node);
         node.childNodes.forEach((childNode, index) => {
             this.#logPercent(node, index);
             if (this.#notInteractiveElement(childNode)) {

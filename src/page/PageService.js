@@ -4,19 +4,18 @@ import {Logger} from "../core/Logger";
 import {Store} from "../core/Store";
 import {Styles} from "./render/styles/Styles";
 import {Context} from "../core/Context";
-import {WordPopup} from "./render/menu/WordPopup";
+import {Menu} from "./render/menu/Menu";
+import {PageChangeListener} from "./render/PageChangeListener";
 
 const IS_SERVER_SIDE_PARSING_ENABLE = false;
 
 export class PageService {
 
-    #context;
     #logger;
     #styles;
     #storage;
 
     constructor() {
-        this.#context = new Context();
         this.#logger = new Logger();
         this.#storage = new Store();
         this.#styles = new Styles();
@@ -44,6 +43,8 @@ export class PageService {
         Context.add("language", {sl: "en", tl: "ru"});
         const builder = new DOMBuilder(wordsList);
         builder.rebuildPage();
+        const listener = new PageChangeListener(builder);
+        listener.listenAll();
     }
 
     #server = () => {
