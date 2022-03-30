@@ -4,7 +4,7 @@
  * @param name - название тэга
  * @returns {*} - готовый html тэг, пока не привязаный ни к чему.
  */
-const create = (name) => document.createElement(name);
+export const create = (name) => document.createElement(name);
 
 /**
  * Добавляет атрибут class для тэга,
@@ -13,7 +13,7 @@ const create = (name) => document.createElement(name);
  * @param element - тэг для которого нужно добавть класс
  * @param className - имя класса
  */
-const addClass = (element, className) => {
+export const addClass = (element, className) => {
     element.classList.add(className);
 }
 
@@ -24,13 +24,13 @@ const addClass = (element, className) => {
  * @param eventType - тип требуемого эвента, на который будем реагировать
  * @param callback - функция которая будет выполнена.
  */
-const addListener = (element, eventType, callback) => {
+export const addListener = (element, eventType, callback) => {
     element.addEventListener(eventType, event => {
         callback(event);
     });
 }
 
-const selectByClass = (className, index) => {
+export const selectByClass = (className, index) => {
     if (index !== undefined) {
         window.console.log(index);
         return window.document.getElementsByClassName(className)[index];

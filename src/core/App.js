@@ -1,12 +1,14 @@
-import {WordbookService} from "./WordbookService.js";
+import {WordbookService} from "./words/WordbookService.js";
 import {Context} from "./Context";
 
 export class App {
 
+    #context;
     #wordbookService;
     #logicService;
 
     constructor(logicService) {
+        this.#context = new Context();
         this.#logicService = logicService;
         this.#wordbookService = new WordbookService();
     }

@@ -1,37 +1,45 @@
-import {LevelContainer, WORD_POPUP_WIDTH} from "./LevelContainer";
-import {Container} from "./Container";
-import {Context} from "../core/Context";
+import {LevelDisplay} from "./level/LevelDisplay";
+import {BaseBlock} from "./BaseBlock";
+import {Context} from "../../../core/Context";
+import {HTMLMapper} from "../../../core/HTMLMapper";
 
-export class WordPopup {
+export class Menu {
 
     #ref;
+    #HTMLMapper;
 
+    #link;
     #wordContainer;
     #levelContainer;
-
-    #wordbook;
 
     #left = "0";
     #top = "0";
     
     constructor() {
-        this.#wordbook = Context.getWordbook();
+        this.#HTMLMapper = new HTMLMapper();
+        Context.add("POPUP_WIDTH", 120);
+        Context.add("BASE_GOOGLE_TRANSLATE_URL", "https://translate.google.com/#view=home&op=translate");
         this.#createPopup();
-        this.#createWordContainer();
-        this.#createLevelContainer();
-        this.#appendPopup();
     }
 
-    setContent = (word, level) => {
-        this.#levelContainer.setLevel(level);
+    setContent = (word) => {
         this.#levelContainer.setWord(word);
+        this.#levelContainer.updateLevel();
 
-        this.#wordContainer.getRef().textContent = word;
+        this.#link.href = this.#buildHref(word);
+        this.#link.textContent = word;
+        this.#link.target = "_blank";
+
         this.#setWordPosition();
     }
 
+    #buildHref = (word) => {
+        const language = Context.get("language");
+        return `${Context.get("BASE_GOOGLE_TRANSLATE_URL")}&sl=${language.sl}&tl=${language.tl}&text=${word}`;
+    }
+
     setPosition = (left, top) => {
-        const offset = WORD_POPUP_WIDTH / 2;
+        const offset = Context.get("POPUP_WIDTH") / 2;
         this.#left = `${left - offset}px`;
         this.#top = `${top}px`;
         this.#updatePosition();
@@ -45,40 +53,37 @@ export class WordPopup {
         this.#ref.style.display = "none";
     }
 
-    setRealWordRef = (ref) => {
-        this.#levelContainer.setRealWordRef(ref);
-    }
-
     #appendPopup = () => {
         const body = window.document.querySelector('body');
         body.appendChild(this.#ref);
     }
 
     #createPopup = () => {
-        this.#ref = window.document.createElement("div");
-
-        this.#ref.style.position = "fixed";
-        this.#ref.style.userSelect = "none";
-        this.#ref.style.color = "#1e81c6";
-        this.#ref.style.zIndex = "1000";
+        const html = require("apply-loader!pug-loader!./popup.pug");
+        this.#ref = this.#HTMLMapper.toElement(html);
 
         this.displayOff();
         this.#onMouseOver();
         this.#updatePosition();
+
+        this.#createWordContainer();
+        this.#createLevelContainer();
+        this.#appendPopup();
     }
 
     #createWordContainer = () => {
-        this.#wordContainer = new Container(this.#ref);
+        this.#wordContainer = new BaseBlock(this.#ref);
         this.#setBaseStyles(this.#wordContainer);
-        this.#setRelativeBaseStyles(this.#wordContainer,
-            "absolute", "10px","1000", "14px");
+        this.#setRelativeBaseStyles(this.#wordContainer, "absolute", "10px","1000", "14px");
 
         this.#wordContainer.setStyle("height", "30px");
         this.#wordContainer.setStyle("minWidth", "60px");
+        this.#link = window.document.createElement("a");
+        this.#wordContainer.getRef().appendChild(this.#link);
     }
 
     #createLevelContainer = () => {
-        this.#levelContainer = new LevelContainer(this.#ref);
+        this.#levelContainer = new LevelDisplay(this.#ref);
         this.#setBaseStyles(this.#levelContainer);
         this.#setRelativeBaseStyles(this.#levelContainer,
             "relative", "18px","1001", "10px");
@@ -108,7 +113,7 @@ export class WordPopup {
 
     #setWordPosition = () => {
         const offset = this.#getOffset(this.#wordContainer.getRef().offsetWidth);
-        const position = this.#getOffset(WORD_POPUP_WIDTH) - offset;
+        const position = this.#getOffset(Context.get("POPUP_WIDTH")) - offset;
         this.#wordContainer.getRef().style.left = `${position}px`;
     }
 

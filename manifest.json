@@ -22,7 +22,7 @@
       "exclude_matches": ["https://translate.google.com/*", "http://localhost:*/*"],
       "run_at": "document_idle",
       "js": [
-        "dist/parser.bundle.js"
+        "page/page.js"
       ]
     }
   ],

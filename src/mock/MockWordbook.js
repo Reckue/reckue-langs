@@ -1,4 +1,4 @@
-import {Levels} from "./enum/Levels";
+import {Levels} from "../enum/Levels";
 
 export const mockWordbook = [
         {word:"runtime", level: Levels.ADVANCED.name},

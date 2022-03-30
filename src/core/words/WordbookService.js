@@ -1,5 +1,5 @@
 import {Logger} from "../Logger";
-import {Store} from "./Store";
+import {Store} from "../Store";
 import {Wordbook} from "./Wordbook";
 
 export class WordbookService {
@@ -30,7 +30,7 @@ export class WordbookService {
         this.#storage.saveWordbooks(wordbooks);
     }
 
-    get = () => {
+    getWordbook = () => {
         return this.#wordbook.get();
     }
 
