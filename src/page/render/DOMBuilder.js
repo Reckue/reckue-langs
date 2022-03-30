@@ -38,11 +38,12 @@ export class DOMBuilder {
     }
 
     #appendText = (textRef, list) => {
-        const text = textRef.parentNode;
         list.forEach((word) => {
             const wordRef = this.#createRef(word);
-            this.#saveRef(word.getClear(), wordRef);
-            this.#doAppend(text, wordRef, textRef);
+            if (wordRef.textContent !== "") {
+                this.#saveRef(word.getClear(), wordRef);
+                this.#doAppend(wordRef, textRef);
+            }
         });
         textRef.textContent = "";
     }
@@ -63,7 +64,7 @@ export class DOMBuilder {
         return this.#createTextNode(" ");
     }
 
-    #doAppend = (where, updated, previous) => {
+    #doAppend = (updated, previous) => {
         previous.after(updated, previous);
     }
 

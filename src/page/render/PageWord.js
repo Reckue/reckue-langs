@@ -16,7 +16,7 @@ export class PageWord {
 
     create = () => {
         if (this.#word.get() === "") return this.#blank();
-        const ref = this.#renderer.createRef(this.#word.get());
+        const ref = this.#renderer.createRef(this.#word.get().trim());
         const level = this.#wordbookService.getWordbook().get(this.#word.getClear());
         if (this.#isSaved(level)) return this.#saved(ref, level);
         return this.#notSaved(ref);
