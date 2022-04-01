@@ -1,4 +1,4 @@
-import {enumForEach} from '../enum.js';
+import {enumForEach} from '../../core/enum.js';
 
 const displayWordbook = () => {
     chrome.storage.local.get(['wordbook3'], function(app) {

@@ -63,3 +63,12 @@
     border: none;
     color: #ff3434;
 }
+
+#pages {
+    padding: 2px 10px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    color: #ffffff;
+    background: #35414b;
+}

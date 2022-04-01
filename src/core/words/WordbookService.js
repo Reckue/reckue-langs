@@ -30,6 +30,11 @@ export class WordbookService {
         this.#storage.saveWordbooks(wordbooks);
     }
 
+    getPart = (number) => {
+        const name = this.#wordbook.getName(number)
+        return this.#storage.getByName(name);
+    }
+
     getWordbook = () => {
         return this.#wordbook.get();
     }

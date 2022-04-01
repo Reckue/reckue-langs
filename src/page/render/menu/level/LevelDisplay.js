@@ -1,6 +1,6 @@
 import {BaseBlock} from "../BaseBlock";
 import {Levels} from "../../../../enum/Levels";
-import {enumForEach} from "../../../../../popup/js/enum";
+import {enumForEach} from "../../../../core/enum";
 import {Context} from "../../../../core/Context";
 import {WordRenderer} from "../../WordRenderer";
 import {POPUP_WIDTH} from "../Menu";
