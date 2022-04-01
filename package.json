@@ -4,7 +4,7 @@
   "description": "It's your vocabulary-book built-in any pages you visit.",
   "main": "index.js",
   "scripts": {
-    "build": "D:/Users/HardTime/WebstormProjects/terms-plugin/node_modules/.bin/webpack"
+    "build": "YOUR-URL!!!"
   },
   "repository": {
     "type": "git",

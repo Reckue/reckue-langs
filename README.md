@@ -19,6 +19,30 @@ Set your baseline familiarity with the word, start notice them more and move bet
 
 Save time learning new words by making it automatic!
 
+## Build guide
+
+1. Download dependencies and init npm project `npm install` 
+
+
+2. Change url in packege.json `"build": "DISC://full_patch/node_modules/.bin/webpack"` <br>
+ Where `disc` it's your drive <br> and `full_patch` it's your full patch to project. 
+   
+
+3. Use `npm run build`, so you create 2 runnable files. <br>
+   `page/page.js` and `popup/popup.js`
+
+
+4. Go to your browser and open `chrome://extensions/`, or you can click here:
+
+![img.png](img.png)
+  
+ 
+5. Click `select unpackedge extension` and open dir where you have `manifest.json`
+
+![img_1.png](img_1.png)
+   
+##6. DONE! Try to use it!
+
 ## Updates History:
 
 #### ~0.1.5-0.1.6 - Preview
