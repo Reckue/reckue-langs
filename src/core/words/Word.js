@@ -1,11 +1,14 @@
 import {Context} from "../Context";
+import {UnicodeLanguages} from "./UnicodeLanguages";
 
 export class Word {
 
+    #unicode;
     #original;
     #clear;
 
     constructor(word) {
+        this.#unicode = new UnicodeLanguages();
         this.#original = word;
         this.#setupClear();
     }
@@ -19,10 +22,10 @@ export class Word {
     }
 
     #setupClear = () => {
-        this.#clear = this.#original.toString().toLowerCase().replace(/[\W]/g, '');
+        this.#clear = this.#original.toString().toLowerCase().replace(this.#unicode.getRegex(), '');
         if (!this.#found(this.#clear)) {
             this.#checkEnding();
-            this.#checkPrefix();
+            // this.#checkPrefix();
         }
     }
 
@@ -44,7 +47,7 @@ export class Word {
     }
 
     #trimPrefix = (prefix) => {
-        //TODO:: Почему-то не работает.
+        //TODO:: Косячный метод, пока что убрал его из алгоритма.
         this.#clear = this.#clear.substr(prefix.length - 1);
     }
 
