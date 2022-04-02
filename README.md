@@ -1,6 +1,12 @@
 # Chrome extension.
 ## Interactive language-learning helper.
 
+<div style="border: 1px #1e81c6 solid; border-radius: 10px; background: #acd1ff">
+
+![img_2.png](img_2.png)
+
+</div>
+
 
 <p>
 It's your vocabulary-book built-in any pages you visit. 
