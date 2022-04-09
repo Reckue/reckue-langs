@@ -1,0 +1,12 @@
+.settings
+    .block
+        .enable#app
+            span Rebuild pages:
+            .lever
+                .slider |||
+        .title Languages
+        each lang in languages
+            .enable(id=lang.id)
+                span #{lang.title}:
+                .lever
+                    .slider |||

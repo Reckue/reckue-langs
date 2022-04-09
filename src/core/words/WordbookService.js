@@ -25,17 +25,29 @@ export class WordbookService {
         this.#updateStorage();
     }
 
+    remove = (word) => {
+        this.#wordbook.remove(word);
+        this.#updateStorage();
+    }
+
     #updateStorage = () => {
         const wordbooks = this.#wordbook.toObject();
         this.#storage.saveWordbooks(wordbooks);
     }
 
-    getPart = (number) => {
-        const name = this.#wordbook.getName(number)
-        return this.#storage.getByName(name);
+    getWordbook = () => {
+        return this.#wordbook;
     }
 
-    getWordbook = () => {
+    getFilteredWordbook = (filter) => {
+        const filtered = [];
+        this.#wordbook.get().forEach((level, word) => word && word.includes(filter) && filtered.push({word, level}));
+        const wordbook = new Wordbook();
+        wordbook.set(filtered);
+        return wordbook;
+    }
+
+    getWordbookCache = () => {
         return this.#wordbook.get();
     }
 

@@ -1,38 +1,41 @@
+import {Context} from "../Context";
+
 export class UnicodeLanguages {
 
     getRegex = () => {
-        return this.#unicode(this.#combine());
+        return new RegExp(this.#unicode(this.#combinedLanguages()));
     }
 
     #unicode = (string) => {
-        return `/[\\${string}hhhh]/g`;
+        return `[^${string}]+`;
+    }
+
+    #combinedLanguages = () => {
+        return this.#combine() === "" ? "\\w" : this.#combine();
     }
 
     #combine = () => {
         return this.#russian() + this.#russian().toUpperCase() +
             this.#english() + this.#english().toUpperCase() +
-            this.#korean();
-
-        //TODO:: Для включения китайского и других языков необходимо реализовать механизм отключения.
-        // Чтобы можно было быстро определить язык в google translate api
-        // и отключить все не используемы языки на странице (ну или сделать это в настройках в ручную).
+            this.#korean() + this.#china();
     }
 
     #russian = () => {
-        return "йцукенгшщзхъфывапролджэячсмитьбю";
+        return Context.get("settings").russian ? "йцукенгшщзхъфывапролджэячсмитьбю" : "";
     }
 
     #english = () => {
-        return "qwertyuiopasdfghjklzxcvbnm";
+        return Context.get("settings").english ? "yqwertuiopasdfghjklzxcvbnm" : "";
     }
 
     #korean = () => {
-        return "ㄱㄴㄷㄹㅁㅂㅅㅇㅈㅊㅋㅌㅍㅎㅏㅓㅗㅜㅡㅣㅑㅕㅛㅠㄲㄸㅃㅆㅉㄳㄵㄶㄺㄻㄼㄽㄾㄿㅀㅄㅐㅒㅔㅖㅘㅙㅚㅝㅞㅟㅢ";
+        return Context.get("settings").korean ? "ㄱㄴㄷㄹㅁㅂㅅㅇㅈㅊㅋㅌㅍㅎㅏㅓㅗㅜㅡㅣㅑㅕㅛㅠㄲㄸㅃㅆㅉㄳㄵ" +
+            "ㄶㄺㄻㄼㄽㄾㄿㅀㅄㅐㅒㅔㅖㅘㅙㅚㅝㅞㅟㅢ" : "";
     }
 
     #china = () => {
-        return "一丁丂七丄丅丆万丈三上下丌不与丏丐丑丒专且丕世丗丘丙业丛东丝丞丟丠両丢丣两严並丧丨丩个丫丬中丮丯丰丱串丳" +
-            "临丵丶丷丸丹为主丼丽举丿乀乁乂乃乄久乆乇么义乊之乌乍乎乏乐乑乒乓乔乕乖乗乘乙乚乛乜九乞也习乡乢乣乤乥书乧乨乩" +
+        return Context.get("settings").china ? "一丁丂七丄丅丆万丈三上下丌不与丏丐丑丒专且丕世丗丘丙业丛东丝丞丟" +
+            "丠両丢丣两严並丧丨丩个丫丬中丮丯丰丱串丳临丵丶丷丸丹为主丼丽举丿乀乁乂乃乄久乆乇么义乊之乌乍乎乏乐乑乒乓乔乕" +
             "乪乫乬乭乮乯买乱乲乳乴乵乶乷乸乹乺乻乼乽乾乿亀亁亂亃亄亅了亇予争亊事二亍于亏亐云互亓五井亖亗亘亙亚些亜亝亞亟" +
             "亠亡亢亣交亥亦产亨亩亪享京亭亮亯亰亱亲亳亴亵亶亷亸亹人亻亼亽亾亿什仁仂仃仄仅仆仇仈仉今介仌仍从仏仐仑仒仓仔仕" +
             "他仗付仙仚仛仜仝仞仟仠仡仢代令以仦仧仨仩仪仫们仭仮仯仰仱仲仳仴仵件价仸仹仺任仼份仾仿伀企伂伃伄伅伆伇伈伉伊伋" +
@@ -50,6 +53,6 @@ export class UnicodeLanguages {
             "兞兟兠兡兢兣兤入兦內全兩兪八公六兮兯兰共兲关兴兵其具典兹兺养兼兽兾兿冀冁冂冃冄内円冇冈冉冊冋册再冎冏冐冑冒冓" +
             "冔冕冖冗冘写冚军农冝冞冟冠冡冢冣冤冥冦冧冨冩冪冫冬冭冮冯冰冱冲决冴况冶冷冸冹冺冻冼冽冾冿净凁凂凃凄凅准凇凈凉" +
             "凊凋凌凍凎减凐凑凒凓凔凕凖凗凘凙凚凛凜凝凞凟几凡凢凣凤凥処凧凨凩凪凫凬凭凮凯凰凱凲凳凴凵凶凷凸凹出击凼函凾凿" +
-            "刀刁刂刃刄刅分切刈刉刊刋刌刍刎刏";
+            "刀刁刂刃刄刅分切刈刉刊刋刌刍刎刏乖乗乘乙乚乛乜九乞也习乡乢乣乤乥书乧乨乩" : "";
     }
 }

@@ -1,19 +1,46 @@
+import {Pages} from "./Pages";
+
 export class Wordbook {
 
+    #pages;
     #cache;
 
     constructor() {
         this.#cache = new Map();
+        this.#pages = new Pages(0, 0);
+    }
+
+    remove = (word) => {
+        this.#cache.delete(word);
+        this.#pages = new Pages(this.#cache.size, 50);
+        this.#pages.calcPagesCount();
     }
 
     set = (list) => {
         list.forEach((bundle) => {
             this.#cache.set(bundle.word, bundle.level);
         });
+        this.#pages = new Pages(this.#cache.size, 50);
+        this.#pages.calcPagesCount();
+        return this;
     }
 
     get = () => {
         return this.#cache;
+    }
+
+    getPages = () => {
+        return this.#pages;
+    }
+
+    getPage = (page) => {
+        let index = 0;
+        const result = new Map();
+        this.#cache.forEach((level, word) => {
+            this.#pages.isIndexOnPage(page, index) && result.set(word, level);
+            index++;
+        });
+        return result;
     }
 
     toObject = () => {

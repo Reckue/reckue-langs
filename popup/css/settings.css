@@ -15,10 +15,26 @@
 .settings .block .enable {
     flex-direction: row;
     align-items: center;
-    margin: 5px 0;
+    width: 100%;
+    justify-content: center;
+    font-size: 12px;
+    padding: 5px;
+}
+
+.settings .block .title {
+    font-size: 14px;
+    color: #6b8498;
+    padding: 4px;
+}
+
+.settings .block #app {
+    border-bottom: 1px #6b8498 solid;
+    background: #e8ecf3;
+    padding: 10px;
 }
 
 .settings .block .enable span {
+    width: 80px;
     padding: 0 10px;
 }
 
@@ -28,12 +44,13 @@
     height: 16px;
     border-radius: 10px;
     align-items: center;
+    justify-content: center;
 }
 
 .settings .block .enable .lever .slider {
     width: 24px;
     height: 16px;
-    font-size: 8px;
+    font-size: 10px;
     color: white;
     background: #35414b;
     justify-content: center;

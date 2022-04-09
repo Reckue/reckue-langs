@@ -1,9 +1,8 @@
-import {BaseBlock} from "../BaseBlock";
+import {BaseBlock} from "./BaseBlock";
 import {Levels} from "../../../../enum/Levels";
 import {enumForEach} from "../../../../core/enum";
 import {Context} from "../../../../core/Context";
 import {WordRenderer} from "../../WordRenderer";
-import {POPUP_WIDTH} from "../Menu";
 
 export class LevelDisplay extends BaseBlock {
 
@@ -19,7 +18,7 @@ export class LevelDisplay extends BaseBlock {
     }
 
     updateLevel = () => {
-        const level = this.#wordbookService.getWordbook().get(this.#word);
+        const level = this.#wordbookService.getWordbookCache().get(this.#word);
         this.#renderLevelDisplay(Levels[level.toUpperCase()].number);
     }
 
@@ -59,7 +58,7 @@ export class LevelDisplay extends BaseBlock {
     /**
      * Делаем проверку, что уровень можно менять.
      *
-     * Если можно, то вызываем функцию которая перерендерит дисплей по pug шаблону.
+     * Если можно, то вызываем функцию которая перерендерит дисплей по templates шаблону.
      * Также выгрузим render функцию из контекста. (Эта функция заменит цвет слов на странице в соотвествии с их новым уровнем).
      * И под конец выгрузим изменения в storage и cache. После чего они сохранятся и после перезагрузки страницы.
      *
@@ -85,7 +84,7 @@ export class LevelDisplay extends BaseBlock {
     }
 
     /**
-     * Заполняем display из pug шаблона.
+     * Заполняем display из templates шаблона.
      * Полностью заменяем старые элементы на новые.
      * Также отвязываем старую ссылку дисплея в родительском классе.
      * После возвращаем EventListener's на кнопки + и - (Уровни).
@@ -95,8 +94,8 @@ export class LevelDisplay extends BaseBlock {
      * @param number - текущее число обозначающее уровень
      */
     #renderLevelDisplay = (number) => {
-        const pug = require("pug-loader!./display.pug");
-        const display = this.mapper().toElement(pug(this.#buildOptions(number)));
+        const pug = require("pug-loader!./templates/level-display.pug");
+        const display = this.getHTMLMapper().toElement(pug(this.#buildOptions(number)));
         this.#replaceReferences(display);
         this.#setupControllers(number);
     }

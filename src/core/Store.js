@@ -1,7 +1,14 @@
+import {Context} from "./Context";
+
 export class Store {
 
-    isAppEnable = () => {
-        return new Promise(resolve => chrome.storage.local.get(['enable'], (app) => resolve(app.enable)));
+    appParams = () => {
+        return new Promise(resolve => {
+            chrome.storage.local.get(['enable', "russian", "english", "china", "korean"], (app) => {
+                Context.add("settings", app);
+                resolve(app.enable);
+            })
+        });
     }
 
     //TODO:: Заменить старый метод в Wordbook

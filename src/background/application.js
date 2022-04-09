@@ -1,4 +1,4 @@
-chrome.storage.local.set({enable: true}, function() {});
+chrome.storage.local.set({enable: true, russian: true, english: true, china: true, korean: true});
 
 chrome.declarativeContent.onPageChanged.removeRules(undefined, function() {
     chrome.declarativeContent.onPageChanged.addRules([{

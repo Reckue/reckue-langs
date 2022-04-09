@@ -1,5 +1,6 @@
 import {PageParser} from "./page/PageParser";
 import {TextBlocksParser} from "./text/TextBlocksParser";
+import {Context} from "../../core/Context";
 
 export class Parser {
 
@@ -7,6 +8,8 @@ export class Parser {
     #textBlocks;
 
     constructor() {
+        Context.add("elements-queue", []);
+        Context.add("texts-queue", []);
         this.#page = new PageParser();
         this.#textBlocks = new TextBlocksParser();
     }

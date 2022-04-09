@@ -9,17 +9,18 @@ export class PageParser {
     constructor() {
         this.#logger = new Logger();
         this.#textBlocks = [];
-        Context.add("listening", []);
     }
 
     /**
-     * Парсим html страницу и выдаём как результат список всех
-     * текстовых элементов на странице, с ссылками на эти самые элементы
+     * Заходим в алгоритм парсинга с началной нодой.
+     * Это может быть body или добавочные ноды из листнера.
      *
-     * @returns {*[]} - latestNodesList (список всех текстовых элементов / это всегда конечные ноды)
+     * @returns {*[]} - textBlocks
+     * Список всего текста на странице с привязкой к элементам.
+     * Эти элементы это всегда конечные child ноды.
      */
     parse = (joinNode) => {
-        this.#logger.log("Local parsing in progress...");
+        this.#logger.log("Local parsing in progress.");
         this.#parsingTextBlocks(joinNode);
         return this.#textBlocks;
     }
@@ -48,7 +49,7 @@ export class PageParser {
      * @returns {[]}
      */
     #parsingTextBlocks = (node) => {
-        Context.get("listening").push(node);
+        Context.get("elements-queue").push(node);
         node.childNodes.forEach((childNode, index) => {
             this.#logPercent(node, index);
             if (this.#notInteractiveElement(childNode)) {

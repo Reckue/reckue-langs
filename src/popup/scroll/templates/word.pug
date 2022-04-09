@@ -1,0 +1,5 @@
+.word
+    input(class="clear", value= clear)
+    select(class="level")
+        each option in options
+            option(value= option, selected = (level === option))= option

@@ -22,7 +22,7 @@ export class Word {
     }
 
     #setupClear = () => {
-        this.#clear = this.#original.toString().toLowerCase().replace(this.#unicode.getRegex(), '');
+        this.#clear = this.#original.toString().toLowerCase().replace(this.#unicode.getRegex(), "");
         if (!this.#found(this.#clear)) {
             this.#checkEnding();
             // this.#checkPrefix();
@@ -58,5 +58,5 @@ export class Word {
         }
     }
 
-    #found = (word) => Context.getWordbookService().getWordbook().get(word);
+    #found = (word) => Context.getWordbookService().getWordbookCache().get(word);
 }

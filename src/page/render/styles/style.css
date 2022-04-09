@@ -7,6 +7,11 @@
     user-select: none;
     color: #1e81c6;
     z-index: 1000;
+    transition: all 0.2s ease;
+    background: white;
+    border: 1px #1e81c6 solid;
+    padding: 2px;
+    border-radius: 4px;
 }
 
 .wb-level-controller {
@@ -18,7 +23,6 @@
 }
 
 .change-level-menu {
-    margin-top: 16px;
     height: 30px;
     display: flex;
     flex-direction: row;
@@ -28,9 +32,29 @@
     position: relative;
     font-size: 18px;
     z-index: 1001;
-    border-radius: 10px;
-    background: white;
+    border-radius: 8px;
+    background: #f9f9ff;
     border: 1px #1e81c6 solid;
 }
 
+.display-word-menu {
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+    border-bottom: 1px #1e81c6 solid;
+    margin: 4px 8px;
+    padding-bottom: 2px;
+    font-size: 12px;
+}
 
+.display-word-menu a {
+    line-height: normal;
+    text-decoration: none;
+    color: #1e81c6;
+}
+
+.display-word-menu .edit-button {
+    margin-left: 4px;
+    font-family: Impact, serif;
+}

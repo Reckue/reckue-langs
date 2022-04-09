@@ -6,6 +6,7 @@ import {Styles} from "./render/styles/Styles";
 import {Context} from "../core/Context";
 import {Menu} from "./render/menu/Menu";
 import {PageChangeListener} from "./render/PageChangeListener";
+import {UnicodeLanguages} from "../core/words/UnicodeLanguages";
 
 const IS_SERVER_SIDE_PARSING_ENABLE = false;
 
@@ -22,7 +23,7 @@ export class PageService {
     }
 
     run = () => {
-        this.#storage.isAppEnable().then(enable => {
+        this.#storage.appParams().then(enable => {
             this.#joinPoint(enable, this.#server, this.#local);
         });
     }

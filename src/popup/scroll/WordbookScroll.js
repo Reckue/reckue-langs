@@ -1,100 +1,66 @@
 import {Context} from "../../core/Context";
-import {enumForEach} from "../../core/enum";
-import {addClass, create} from "../deprecated/html";
-import {Levels} from "../../enum/Levels";
-import {Wordbook} from "../../core/words/Wordbook";
+import {WordsAppender} from "./WordsAppender";
+import {ChangePageButtons} from "./ChangePageButtons";
+import {Filter} from "./Filter";
 
 export class WordbookScroll {
 
     #wordbookService;
-    #pages;
-    #current;
+    #wordsAppender;
+    #pageButtons;
+    #filter;
 
     constructor() {
         this.#wordbookService = Context.getWordbookService();
-        this.#pages = window.document.getElementById("pages");
-    }
-
-    buildPageButtons = () => {
-        const countPages = Math.ceil(this.#wordbookService.getWordbook().size / 100);
-        if (countPages < 10) {
-            this.renderPageButtons(0, countPages);
-        } else {
-            this.renderPageButtons(0, 5);
-            this.#pages.appendChild(window.document.createTextNode("..."));
-            this.renderPageButtons(countPages - 5, countPages);
-        }
-    }
-
-    renderPageButtons = (start, end) => {
-        for (let number = start; number < end; number++) {
-            const page = window.document.createElement("a");
-            page.target = "_blank";
-            page.textContent = `${number}`;
-            page.style.cursor = "pointer";
-            page.addEventListener("click", () => this.fillScroll(number));
-            this.#pages.appendChild(page);
-        }
+        this.#wordsAppender = new WordsAppender();
+        this.#pageButtons = new ChangePageButtons(this.fillScroll);
+        this.#filter = new Filter(this.#pageButtons.buildPageButtons, this.fillScroll);
+        Context.add("filter", this.#filter);
     }
 
     fillScroll = (page) => {
-        this.#current = page;
-        this.#clearScroll();
-        this.buildPageButtons();
-        this.#wordbookService.getPart(page).then(loaded => {
-            const wordbook = new Wordbook();
-            wordbook.set(loaded);
-            const cache = wordbook.get();
-            cache.forEach((level, word) => this.#displayWord(word, level));
+        this.#pageButtons.buildPageButtons(page);
+        const loaded = this.#loadWords(page);
+        this.#fillWords(loaded);
+    }
+
+    #loadWords = (page) => {
+        return this.#wordbookService.getFilteredWordbook(this.#filter.get()).getPage(page);
+    }
+
+    #fillWords = (loaded) => {
+        this.#wordsAppender.clearScroll();
+        loaded.forEach((level, word) => {
+            const ref = this.#wordsAppender.addWord(word, level);
+            this.#whenChangeOption(ref, word);
+            this.#whenEditWord(ref, word);
         });
     }
 
-    #displayWord = (word, level) => {
-        const wordbook = this.#getWordbookElement();
-        const row = this.#buildRow(word, level);
-        wordbook.appendChild(row);
+    #whenEditWord = (ref, word) => {
+        const input = ref.getElementsByTagName("input")[0];
+        input.addEventListener("change", (event) => this.#changeWord(event, word));
     }
 
-    #clearScroll = () => {
-        this.#getWordbookElement().innerHTML = "";
-        this.#pages.innerHTML = "";
+    #whenChangeOption = (ref, word) => {
+        const select = ref.getElementsByClassName("level")[0];
+        select.addEventListener("change", (event) => this.#changeLevel(event, word));
     }
 
-    #getWordbookElement = () => window.document.getElementsByClassName('words')[0];
-
-    #buildRow = (word, level) => {
-        const row = create('div');
-        row.textContent = word;
-        this.#configureSelect(row, level);
-        return row;
-    };
-
-    #configureSelect = (row, level) => {
-        const select = create('select');
-        addClass(select,'level');
-        row.appendChild(select);
-        this.#addOptions(select, level);
-        return select;
-    };
-
-    #addOptions = (select, selected) => {
-        enumForEach(Levels, (level) => {
-            this.#configureOption(select, level.name, selected);
-        });
+    #changeWord = (event, word) => {
+        const level = this.#wordbookService.getWordbookCache().get(word);
+        const edited = event.target.value;
+        this.#wordbookService.remove(word);
+        this.#updateWord(edited, level);
+        this.fillScroll(0);
     }
 
-    #configureOption = (select, value, selected) => {
-        const option = document.createElement('option');
-        option.value = value;
-        option.innerText = value;
-        option.selected = selected === value;
-        select.appendChild(option)
-    };
+    #changeLevel = (event, word) => {
+        const level = event.target.value;
+        this.#updateWord(word, level);
+    }
 
-    #configureColumn = (content, className, parent) => {
-        const span = create('span');
-        span.innerText = content;
-        span.classList.add(className);
-        parent.appendChild(span);
-    };
+    #updateWord = (word, level) => {
+        this.#wordbookService.set([{word, level}]);
+    }
 }

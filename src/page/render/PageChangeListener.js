@@ -10,7 +10,7 @@ export class PageChangeListener {
     }
 
     listenAll = () => {
-        const nodes = Context.get("listening");
+        const nodes = Context.get("elements-queue");
         nodes.forEach((node) => this.#listen(node));
     }
 

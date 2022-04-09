@@ -7,7 +7,7 @@ export class TextBlocksParser {
     #wordbook;
 
     constructor() {
-        this.#wordbook = Context.getWordbookService().getWordbook();
+        this.#wordbook = Context.getWordbookService().getWordbookCache();
         this.#wordsList = [];
     }
 
