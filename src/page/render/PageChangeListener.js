@@ -1,34 +1,28 @@
 import {Context} from "../../core/Context";
-import {Parser} from "../parser/Parser";
 
 export class PageChangeListener {
 
-    #builder;
+    #observer;
 
-    constructor(builder) {
-        this.#builder = builder;
+    constructor() {
+        this.#observer = new MutationObserver((mutations) => this.#parseCandidate(mutations));
     }
 
-    listenAll = () => {
-        const nodes = Context.get("elements-queue");
-        nodes.forEach((node) => this.#listen(node));
-    }
-
-    #listen = (node) => {
-        const observer = new MutationObserver((mutations) => {
-            if (!this.#builder.isActive()) {
-                mutations.forEach((mutation) => {
-                    mutation.addedNodes.forEach(node => {
-                        const parser = new Parser();
-                        const textBlocks = parser.parseNode(node);
-                        const wordsList = parser.textBlocksParsing(textBlocks);
-                        this.#builder.updateWords(wordsList);
-                        this.#builder.rebuildPage();
-                    })
-                });
-            }
-        });
+    listen = (node) => {
         const config = { childList: true };
-        observer.observe(node, config);
+        this.#observer.observe(node, config);
+    }
+
+    #parseCandidate = (mutations) => {
+        if (!Context.get("render-queue").isActive()) {
+            mutations.forEach((mutation) => this.#putInQueue(mutation));
+        }
+    }
+
+    #putInQueue = (mutation) => {
+        mutation.addedNodes.forEach(node => {
+            const pageQueue = Context.get("page-elements-queue");
+            pageQueue.queueUp(node);
+        })
     }
 }

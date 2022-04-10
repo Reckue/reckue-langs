@@ -1,14 +1,23 @@
 import {Logger} from "../../../core/Logger";
 import {Context} from "../../../core/Context";
+import {PageChangeListener} from "../../render/PageChangeListener";
 
 export class PageParser {
 
-    #textBlocks;
     #logger;
+    #listener;
+    #pageQueue;
+    #textsQueue;
 
     constructor() {
         this.#logger = new Logger();
-        this.#textBlocks = [];
+        this.#listener = new PageChangeListener();
+        this.#pageQueue = Context.get("page-elements-queue");
+        this.#textsQueue = Context.get("text-elements-queue");
+    }
+
+    putInQueue = (node) => {
+        this.#pageQueue.queueUp(node);
     }
 
     /**
@@ -19,10 +28,9 @@ export class PageParser {
      * Список всего текста на странице с привязкой к элементам.
      * Эти элементы это всегда конечные child ноды.
      */
-    parse = (joinNode) => {
-        this.#logger.log("Local parsing in progress.");
-        this.#parsingTextBlocks(joinNode);
-        return this.#textBlocks;
+    parse = () => {
+        this.#logger.log("Started queued parser.");
+        this.#pageQueue.takeTurns(this.#parsingTextBlocks);
     }
 
     /**
@@ -49,7 +57,6 @@ export class PageParser {
      * @returns {[]}
      */
     #parsingTextBlocks = (node) => {
-        Context.get("elements-queue").push(node);
         node.childNodes.forEach((childNode, index) => {
             this.#logPercent(node, index);
             if (this.#notInteractiveElement(childNode)) {
@@ -90,9 +97,10 @@ export class PageParser {
      */
     #parseCurrentNode = (node) => {
         if (node.hasChildNodes()) {
+            this.#listener.listen(node);
             this.#parsingTextBlocks(node);
         } else {
-            this.#textBlocks.push(node);
+            this.#textsQueue.queueUp(node);
         }
     }
 }

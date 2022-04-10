@@ -8,8 +8,6 @@ export class Parser {
     #textBlocks;
 
     constructor() {
-        Context.add("elements-queue", []);
-        Context.add("texts-queue", []);
         this.#page = new PageParser();
         this.#textBlocks = new TextBlocksParser();
     }
@@ -19,11 +17,10 @@ export class Parser {
     }
 
     parsePage = () => {
-        let body = window.document.querySelector('body');
-        return this.#page.parse(body);
+        this.#page.parse();
     }
 
-    parseNode = (node) => {
-        return this.#page.parse(node);
+    putInQueue = (node) => {
+        this.#page.putInQueue(node);
     }
 }
