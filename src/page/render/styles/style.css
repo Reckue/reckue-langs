@@ -14,8 +14,16 @@
     border-radius: 4px;
 }
 
+a {
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: none;
+}
+
 .wb-level-controller {
-    cursor: pointer
+    cursor: pointer;
 }
 
 .wb-level-number {

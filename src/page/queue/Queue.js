@@ -14,9 +14,7 @@ export class Queue {
 
     takeTurns = (func) => {
         this.#inProgress = true;
-        this.#elements.forEach((element) => {
-            func(element);
-        });
+        this.#elements.forEach((element) => func(element));
         this.#elements.clear();
         this.#inProgress = false;
     }

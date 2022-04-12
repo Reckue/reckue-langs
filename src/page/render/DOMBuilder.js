@@ -26,14 +26,16 @@ export class DOMBuilder {
     }
 
     #appendText = (textRef, list) => {
-        list.forEach((word) => {
-            const wordRef = this.#createRef(word);
-            if (wordRef.textContent !== "") {
-                this.#saveRef(word.getClear(), wordRef);
-                this.#doAppend(wordRef, textRef);
-            }
-        });
-        textRef.textContent = "";
+        if (textRef.parentNode.nodeName !== "A") {
+            list.forEach((word) => {
+                const wordRef = this.#createRef(word);
+                if (wordRef.textContent !== "") {
+                    this.#saveRef(word.getClear(), wordRef);
+                    this.#doAppend(wordRef, textRef);
+                }
+            });
+            textRef.textContent = "";
+        }
     }
 
     #saveRef = (clear, wordRef) => {
