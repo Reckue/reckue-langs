@@ -1,6 +1,6 @@
 {
   "name": "reckue-lang",
-  "version": "1.0.0",
+  "version": "0.4.9",
   "description": "It's your vocabulary-book built-in any pages you visit.",
   "main": "index.js",
   "scripts": {
