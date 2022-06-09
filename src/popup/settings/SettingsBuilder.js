@@ -65,7 +65,7 @@ export class SettingsBuilder extends ContentBuilder {
     }
 
     renderLever = (lever, enable) => {
-        lever.style.justifyContent = enable ? 'flex-start' : 'flex-end';
+        lever.style.justifyContent = enable ? 'flex-end' : 'flex-start';
         lever.style.background = enable ? '#c2d7bf' : '#d7d7d7';
     }
 }
