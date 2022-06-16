@@ -33,12 +33,12 @@
     padding: 10px;
 }
 
-.settings .block .enable span {
+.enable span {
     width: 80px;
     padding: 0 10px;
 }
 
-.settings .block .enable .lever {
+.enable .lever {
     flex-direction: row;
     width: 40px;
     height: 16px;
@@ -47,7 +47,7 @@
     justify-content: center;
 }
 
-.settings .block .enable .lever .slider {
+.enable .lever .slider {
     width: 24px;
     height: 16px;
     font-size: 10px;

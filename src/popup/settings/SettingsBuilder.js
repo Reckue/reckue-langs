@@ -1,21 +1,29 @@
 import {ContentBuilder} from "../builder/ContentBuilder";
 
+
 export class SettingsBuilder extends ContentBuilder {
 
     #levers;
 
     buildSettingsContentStructure = () => {
         const templateLoader = require("pug-loader!./template/settings.pug");
-        const languages = [];
-        languages.push({id: "russian", title: "Russian"});
-        languages.push({id: "korean", title: "Korean"});
-        languages.push({id: "english", title: "English"});
-        languages.push({id: "china", title: "China"});
-        const html = templateLoader({languages});
+        const html = templateLoader();
         const settings = this.getHTMLMapper().toElement(html);
         this.getContent().appendChild(settings);
+        const block = this.getContent().getElementsByClassName("block")[0];
+        this.appendSlider(block, {id: "russian", title: "Russian"})
+        this.appendSlider(block, {id: "korean", title: "Korean"})
+        this.appendSlider(block, {id: "english", title: "English"})
+        this.appendSlider(block, {id: "china", title: "China"})
+
     }
 
+    appendSlider = (parent, language) => {
+        const templateLoader = require("pug-loader!./template/slider.pug");
+        const html = templateLoader({language});
+        const slider = this.getHTMLMapper().toElement(html);
+        parent.appendChild(slider);
+    }
     loadLevers = () => {
         this.#levers = window.document.getElementsByClassName('lever');
     }
@@ -68,4 +76,5 @@ export class SettingsBuilder extends ContentBuilder {
         lever.style.justifyContent = enable ? 'flex-end' : 'flex-start';
         lever.style.background = enable ? '#c2d7bf' : '#d7d7d7';
     }
+
 }
