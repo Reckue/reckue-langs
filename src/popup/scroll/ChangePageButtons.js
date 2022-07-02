@@ -20,7 +20,7 @@ export class ChangePageButtons {
         this.#clearPageButtonsElement();
         const countPages = this.#wordbookService.getFilteredWordbook(Context.get("filter").get()).getPages().getCount();
         if (countPages < 10) {
-            this.#renderPageButtons(0, countPages);
+            countPages !== 1 && this.#renderPageButtons(0, countPages);
         } else {
             const first = this.#getFirstLimits(countPages);
             const second = this.#getSecondLimits(countPages);

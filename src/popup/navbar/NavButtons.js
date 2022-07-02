@@ -41,7 +41,6 @@ export class NavButtons {
     };
 
     #callParser = () => {
-        window.console.log(chrome.tabs);
         chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
             chrome.tabs.executeScript(tabs[0].id, {file: './page/page.js'});
         });
