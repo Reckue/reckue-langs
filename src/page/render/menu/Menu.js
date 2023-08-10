@@ -1,5 +1,4 @@
 import {LevelDisplay} from "./blocks/LevelDisplay";
-import {BaseBlock} from "./blocks/BaseBlock";
 import {Context} from "../../../core/Context";
 import {HTMLMapper} from "../../../core/HTMLMapper";
 import {WordDisplay} from "./blocks/WordDisplay";
