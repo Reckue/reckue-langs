@@ -1,5 +1,6 @@
 import {PageParser} from "./page/PageParser";
 import {TextBlocksParser} from "./text/TextBlocksParser";
+import {Context} from "../../core/Context";
 
 export class Parser {
 
@@ -16,11 +17,10 @@ export class Parser {
     }
 
     parsePage = () => {
-        let body = window.document.querySelector('body');
-        return this.#page.parse(body);
+        this.#page.parse();
     }
 
-    parseNode = (node) => {
-        return this.#page.parse(node);
+    putInQueue = (node) => {
+        this.#page.putInQueue(node);
     }
 }

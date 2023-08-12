@@ -1,14 +1,13 @@
-import {LevelDisplay} from "./level/LevelDisplay";
-import {BaseBlock} from "./BaseBlock";
+import {LevelDisplay} from "./blocks/LevelDisplay";
 import {Context} from "../../../core/Context";
 import {HTMLMapper} from "../../../core/HTMLMapper";
+import {WordDisplay} from "./blocks/WordDisplay";
 
 export class Menu {
 
     #ref;
     #HTMLMapper;
 
-    #link;
     #wordContainer;
     #levelContainer;
 
@@ -18,7 +17,7 @@ export class Menu {
     constructor() {
         this.#HTMLMapper = new HTMLMapper();
         Context.add("POPUP_WIDTH", 120);
-        Context.add("BASE_GOOGLE_TRANSLATE_URL", "https://translate.google.com/#view=home&op=translate");
+        Context.add("TRANSLATE_URL", "https://translate.google.com/#view=home&op=translate");
         this.#createPopup();
     }
 
@@ -26,16 +25,9 @@ export class Menu {
         this.#levelContainer.setWord(word);
         this.#levelContainer.updateLevel();
 
-        this.#link.href = this.#buildHref(word);
-        this.#link.textContent = word;
-        this.#link.target = "_blank";
+        this.#wordContainer.updateLink(word);
 
         this.#setWordPosition();
-    }
-
-    #buildHref = (word) => {
-        const language = Context.get("language");
-        return `${Context.get("BASE_GOOGLE_TRANSLATE_URL")}&sl=${language.sl}&tl=${language.tl}&text=${word}`;
     }
 
     setPosition = (left, top) => {
@@ -46,11 +38,11 @@ export class Menu {
     }
 
     displayOn = () => {
-        this.#ref.style.display = "block";
+        this.#ref.style.visibility = "visible";
     }
 
     displayOff = () => {
-        this.#ref.style.display = "none";
+        this.#ref.style.visibility = "hidden";
     }
 
     #appendPopup = () => {
@@ -59,46 +51,15 @@ export class Menu {
     }
 
     #createPopup = () => {
-        const html = require("apply-loader!pug-loader!./popup.pug");
+        const html = require("apply-loader!pug-loader!./blocks/templates/popup.pug");
         this.#ref = this.#HTMLMapper.toElement(html);
 
         this.displayOff();
         this.#onMouseOver();
-        this.#updatePosition();
 
-        this.#createWordContainer();
-        this.#createLevelContainer();
-        this.#appendPopup();
-    }
-
-    #createWordContainer = () => {
-        this.#wordContainer = new BaseBlock(this.#ref);
-        this.#setBaseStyles(this.#wordContainer);
-        this.#setRelativeBaseStyles(this.#wordContainer, "absolute", "10px","1000", "14px");
-
-        this.#wordContainer.setStyle("height", "30px");
-        this.#wordContainer.setStyle("minWidth", "60px");
-        this.#link = window.document.createElement("a");
-        this.#wordContainer.getRef().appendChild(this.#link);
-    }
-
-    #createLevelContainer = () => {
+        this.#wordContainer = new WordDisplay(this.#ref);
         this.#levelContainer = new LevelDisplay(this.#ref);
-        this.#setBaseStyles(this.#levelContainer);
-        this.#setRelativeBaseStyles(this.#levelContainer,
-            "relative", "18px","1001", "10px");
-    }
-
-    #setBaseStyles = (ref) => {
-        ref.setStyle("background", "white");
-        ref.setStyle("border", "1px #1e81c6 solid");
-    }
-
-    #setRelativeBaseStyles = (ref, position, fontSize, zIndex, borderRadius) => {
-        ref.setStyle("position", position);
-        ref.setStyle("fontSize", fontSize);
-        ref.setStyle("zIndex", zIndex);
-        ref.setStyle("borderRadius", borderRadius);
+        this.#appendPopup();
     }
 
     #updatePosition = () => {

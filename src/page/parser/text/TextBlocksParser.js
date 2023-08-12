@@ -1,22 +1,24 @@
 import {Context} from "../../../core/Context";
 import {Word} from "../../../core/words/Word";
+import {RenderQueue} from "../../queue/Queue";
 
 export class TextBlocksParser {
 
-    #wordsList;
+    #textsQueue;
+    #renderQueue;
     #wordbook;
 
     constructor() {
-        this.#wordbook = Context.getWordbookService().getWordbook();
-        this.#wordsList = [];
+        this.#wordbook = Context.getWordbookService().getWordbookCache();
+        this.#textsQueue = Context.get("text-elements-queue");
+        this.#renderQueue = Context.get("render-queue");
     }
 
-    parse = (textBlocks) => {
-        textBlocks.forEach(ref => {
+    parse = () => {
+        this.#textsQueue.takeTurns((ref) => {
             const originals = this.#parseWords(ref)
             this.#collectWords(ref, originals);
         });
-        return this.#wordsList;
     }
 
     #parseWords = (ref) => {
@@ -113,6 +115,6 @@ export class TextBlocksParser {
     #collectWords = (ref, originals) => {
         const words = [];
         originals.forEach((original) => words.push(new Word(original)));
-        this.#wordsList.push({ref, words});
+        this.#renderQueue.queueUp({ref, words});
     }
 }

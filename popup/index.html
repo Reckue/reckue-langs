@@ -7,33 +7,23 @@
     <link rel="stylesheet" href="css/collections.css">
     <link rel="stylesheet" href="css/translations.css">
     <link rel="stylesheet" href="css/settings.css">
-    <script type="application/javascript" src="popup.js"></script>
 </head>
 <body>
-<div class="wrapper">
-    <nav class="navbar"></nav>
-    <div class="content">
-        <div class="wordbook">
-            <div class="header">
-                <div>English</div>
-                <input id="create-term" placeholder="Type new term...">
-                <input id="filter-terms" placeholder="Filter...">
-            </div>
-            <div class="words"></div>
-            <button id="load-more">Load more...</button>
-        </div>
-        <div class="definitions"></div>
-        <div class="settings">
-            <div class="block">
-                <div class="enable">
-                    <span>Enable:</span>
-                    <div class="lever">
-                        <div class="slider">|||</div>
-                    </div>
+    <div class="wrapper">
+        <div class="navbar-wrapper">
+            <nav class="navbar">
+            </nav>
+            <div class="enable" id="Rebuild pages">
+                <span>Rebuild pages:</span>
+                <div class="lever">
+                    <div class="slider">|||</div>
                 </div>
             </div>
         </div>
+        <div id="content" class="content"></div>
+        <div id="infobar" class="infobar"></div>
     </div>
-</div>
 </body>
 </html>
+
+<script type="application/javascript" src="popup.js"></script>

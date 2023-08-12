@@ -25,12 +25,29 @@ export class WordbookService {
         this.#updateStorage();
     }
 
+    remove = (word) => {
+        this.#wordbook.remove(word);
+        this.#updateStorage();
+    }
+
     #updateStorage = () => {
         const wordbooks = this.#wordbook.toObject();
         this.#storage.saveWordbooks(wordbooks);
     }
 
     getWordbook = () => {
+        return this.#wordbook;
+    }
+
+    getFilteredWordbook = (filter) => {
+        const filtered = [];
+        this.#wordbook.get().forEach((level, word) => word && word.includes(filter) && filtered.push({word, level}));
+        const wordbook = new Wordbook();
+        wordbook.set(filtered);
+        return wordbook;
+    }
+
+    getWordbookCache = () => {
         return this.#wordbook.get();
     }
 

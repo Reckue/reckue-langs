@@ -1,27 +1,36 @@
 import {Logger} from "../../../core/Logger";
 import {Context} from "../../../core/Context";
+import {PageChangeListener} from "../../render/PageChangeListener";
 
 export class PageParser {
 
-    #textBlocks;
     #logger;
+    #listener;
+    #pageQueue;
+    #textsQueue;
 
     constructor() {
         this.#logger = new Logger();
-        this.#textBlocks = [];
-        Context.add("listening", []);
+        this.#listener = new PageChangeListener();
+        this.#pageQueue = Context.get("page-elements-queue");
+        this.#textsQueue = Context.get("text-elements-queue");
+    }
+
+    putInQueue = (node) => {
+        this.#pageQueue.queueUp(node);
     }
 
     /**
-     * Парсим html страницу и выдаём как результат список всех
-     * текстовых элементов на странице, с ссылками на эти самые элементы
+     * Заходим в алгоритм парсинга с началной нодой.
+     * Это может быть body или добавочные ноды из листнера.
      *
-     * @returns {*[]} - latestNodesList (список всех текстовых элементов / это всегда конечные ноды)
+     * @returns {*[]} - textBlocks
+     * Список всего текста на странице с привязкой к элементам.
+     * Эти элементы это всегда конечные child ноды.
      */
-    parse = (joinNode) => {
-        this.#logger.log("Local parsing in progress...");
-        this.#parsingTextBlocks(joinNode);
-        return this.#textBlocks;
+    parse = () => {
+        this.#logger.log("Started queued parser.");
+        this.#pageQueue.takeTurns(this.#parsingTextBlocks);
     }
 
     /**
@@ -48,7 +57,6 @@ export class PageParser {
      * @returns {[]}
      */
     #parsingTextBlocks = (node) => {
-        Context.get("listening").push(node);
         node.childNodes.forEach((childNode, index) => {
             this.#logPercent(node, index);
             if (this.#notInteractiveElement(childNode)) {
@@ -89,9 +97,10 @@ export class PageParser {
      */
     #parseCurrentNode = (node) => {
         if (node.hasChildNodes()) {
+            this.#listener.listen(node);
             this.#parsingTextBlocks(node);
         } else {
-            this.#textBlocks.push(node);
+            this.#textsQueue.queueUp(node);
         }
     }
 }

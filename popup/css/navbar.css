@@ -35,3 +35,15 @@
 .wrapper .navbar .refresh-btn {
     margin-left: auto;
 }
+
+.navbar-wrapper {
+    background: #35414b;
+    width: 360px;
+}
+
+.navbar-wrapper .enable {
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    color: white;
+}
