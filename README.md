@@ -95,3 +95,4 @@ Save time learning new words by making it automatic!
 #### 0.4.4 - Single page apps support
 
 #### 0.4.5 - Chrome's popup window
+
