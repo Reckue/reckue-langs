@@ -11,3 +11,4 @@ module.exports = {
         filename: "[name]/[name].js"
     }
 };
+
