@@ -29,13 +29,15 @@
 
 .settings .block #app {
     border-bottom: 1px #6b8498 solid;
-    background: #e8ecf3;
+    background: #798eae;
+    color: #ffffff;
     padding: 10px;
 }
 
 .enable span {
     width: 80px;
     padding: 0 10px;
+    font-size: 12px;
 }
 
 .enable .lever {
@@ -45,6 +47,7 @@
     border-radius: 10px;
     align-items: center;
     justify-content: center;
+    box-shadow: 0 1px 5px #000000, inset 0 0 2px #000000;
 }
 
 .enable .lever .slider {

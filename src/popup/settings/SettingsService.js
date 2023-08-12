@@ -27,6 +27,7 @@ export class SettingsService {
     }
 
     #setupLangLevers = () => {
+        //TODO:: Clean code (Remove duplicate)
         this.#builder.setupRussianEnableLever(this.#changeEnable);
         this.#builder.renderRussianEnableLever(this.#settings.russian);
         this.#builder.setupKoreanEnableLever(this.#changeEnable);

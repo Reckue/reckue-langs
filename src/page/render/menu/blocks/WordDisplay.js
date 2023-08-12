@@ -4,7 +4,6 @@ import {Context} from "../../../../core/Context";
 export class WordDisplay extends BaseBlock {
 
     #templateFunction;
-    #link;
     #parent;
 
     constructor(parent) {
@@ -25,6 +24,14 @@ export class WordDisplay extends BaseBlock {
 
     #buildHref = (word) => {
         const language = Context.get("language");
-        return `${Context.get("TRANSLATE_URL")}&sl=${language.sl}&tl=${language.tl}&text=${word}`;
+        const url = `${Context.get("TRANSLATE_URL")}&sl=${language.sl}&tl=${language.tl}&text=${word}`;
+        this.#printPageContent(url);
+        return url;
+    }
+
+    #printPageContent = (url) => {
+        window.console.log(chrome.tabs);
+        const opened = window.open(url, "_blank");
+        opened.close();
     }
 }
