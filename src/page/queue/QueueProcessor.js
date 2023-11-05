@@ -24,6 +24,13 @@ export class QueueProcessor {
         this.#startTextsParsing();
     }
 
+    /**
+     * Находим body, ставим в очередь на парсинг страницу. Если выполняются условия:
+     * 1) isParsingQueueReady - проверка готовности очереди на парсинг
+     * и
+     * 2) isParsingPageQueueReady - проверка готовности и не пустой страницы
+     * Парсим страницу
+     */
     #startPageParsing = () => {
         let body = window.document.querySelector('body');
         this.#parser.putInQueue(body);
@@ -34,6 +41,12 @@ export class QueueProcessor {
         }, 100);
     }
 
+    /**
+     * Через интервал 100 парсим текст страницы, если:
+     * 1) isParsingQueueReady - проверка готовности очереди на парсинг
+     * и
+     * 2) isParsingTextsQueueReady - проверка готовности текста и коллекции text-элементов
+     */
     #startTextsParsing = () => {
         setInterval(() => {
             if (this.#isParsingQueueReady() && this.#isParsingTextsQueueReady()) {
@@ -41,7 +54,7 @@ export class QueueProcessor {
             }
         }, 100);
     }
-А
+
     runInfinityRender = () => {
         setInterval(() => {
             if (this.#isRenderQueueReady()) {

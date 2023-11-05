@@ -4,7 +4,7 @@
   "description": "It's your vocabulary-book built-in any pages you visit.",
   "main": "index.js",
   "scripts": {
-    "build": "D:/Projs/Reckue_Language/reckue-langs/node_modules/.bin/webpack"
+    "build": "C:/Users/evgen/Desktop/lena/Reckue/reckue-langs/node_modules/.bin/webpack"
   },
   "repository": {
     "type": "git",

@@ -24,6 +24,10 @@ export class PageService {
         });
     }
 
+    /**
+     * Добавляется в тег head новые css-стили.
+     * Если доступен парсинг на сервере, делаем на сервере, иначе на локальной машине
+     */
     #joinPoint = (enable, serverLogic, localLogic) => {
         this.#logger.log(`Reach join point with app.enable=${enable}`);
         if (enable) {
@@ -33,12 +37,20 @@ export class PageService {
         }
     }
 
+    /**
+     * Устанавливаются настройки языка
+     * Запускается бесконечный процесс парсинга и рендеринга страницы локально
+     */
     #local = () => {
         Context.add("language", {sl: "en", tl: "ru"});
         const processor = new QueueProcessor();
         processor.runInfinityParsing();
         processor.runInfinityRender();
     }
+
+    /**
+     * Запускается бесконечный процесс парсинга и рендеринга страницы на сервере
+     */
 
     #server = () => {
         //TODO:: Use google docs as storage
