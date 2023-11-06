@@ -13,7 +13,7 @@ export class App {
         this.#wordbookService = new WordbookService();
     }
 
-    start = () => {
+    start = () => { 
         this.#wordbookService.executeAfter(this.#runService);
         this.#wordbookService.loadWordbooks();
     }

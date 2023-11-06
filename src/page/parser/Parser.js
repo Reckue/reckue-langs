@@ -20,6 +20,9 @@ export class Parser {
         this.#page.parse();
     }
 
+    /**
+     * 
+     */
     putInQueue = (node) => {
         this.#page.putInQueue(node);
     }

@@ -2,6 +2,9 @@ const context = new Map();
 
 export class Context {
 
+    /**
+    * bean - компонент\класс из Java
+     */
     static add = (name, bean) => {
         context.set(name, bean);
     }
