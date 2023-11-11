@@ -37,19 +37,33 @@ export class Menu {
         this.#updatePosition();
     }
 
+    /*
+    *  Показывать попап
+    */
     displayOn = () => {
         this.#ref.style.visibility = "visible";
     }
 
+    /*
+    *  Скрывать попап
+    */
     displayOff = () => {
         this.#ref.style.visibility = "hidden";
     }
-
+    
+    /*
+    *  Добавление попапа в body
+    */
     #appendPopup = () => {
         const body = window.document.querySelector('body');
         body.appendChild(this.#ref);
     }
 
+    /*
+    * Добавляем препроцессор popup'а в обертку HTMLMapper
+    * По дефолту попап скрыт, но на него вешаем addEventListner'ы с открытием\закрытием попапа
+    * Создаем контейнеры для слов и для уровня
+    */
     #createPopup = () => {
         const html = require("apply-loader!pug-loader!./blocks/templates/popup.pug");
         this.#ref = this.#HTMLMapper.toElement(html);
@@ -72,6 +86,9 @@ export class Menu {
         this.#ref.addEventListener("mouseout", () => this.displayOff());
     }
 
+    /*
+    * Определяем положение слова, используя ширину wordContaner'a и ширину попапа
+    */
     #setWordPosition = () => {
         const offset = this.#getOffset(this.#wordContainer.getRef().offsetWidth);
         const position = this.#getOffset(Context.get("POPUP_WIDTH")) - offset;
