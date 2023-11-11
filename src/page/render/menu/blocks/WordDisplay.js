@@ -13,9 +13,9 @@ export class WordDisplay extends BaseBlock {
         this.#parent.prepend(this.getRef());
     }
 
-    updateLink = (word) => {
-        const href = this.#buildHref(word);
-        const html = this.#templateFunction({word, href});
+    updateLink = (word, netGraph) => {
+        //const href = this.#buildHref(word);
+        const html = this.#templateFunction({word, netGraph});
         const ref = this.getHTMLMapper().toElement(html);
         const old = this.getRef();
         this.setRef(ref);

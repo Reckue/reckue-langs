@@ -32,7 +32,6 @@ export const addListener = (element, eventType, callback) => {
 
 export const selectByClass = (className, index) => {
     if (index !== undefined) {
-        window.console.log(index);
         return window.document.getElementsByClassName(className)[index];
     }
     return selectByClass(className,0);

@@ -21,11 +21,11 @@ export class Menu {
         this.#createPopup();
     }
 
-    setContent = (word) => {
+    setContent = (word, netGraph) => {
         this.#levelContainer.setWord(word);
-        this.#levelContainer.updateLevel();
+        //this.#levelContainer.updateLevel();
 
-        this.#wordContainer.updateLink(word);
+        this.#wordContainer.updateLink(word, netGraph);
 
         this.#setWordPosition();
     }
