@@ -3,24 +3,26 @@ import {Store} from "../core/Store";
 import {Styles} from "./render/styles/Styles";
 import {Context} from "../core/Context";
 import {QueueProcessor} from "./queue/QueueProcessor";
-
-const IS_SERVER_SIDE_PARSING_ENABLE = false;
+import {Menu} from "./render/menu/Menu";
+import {PageManager} from "./realtime/manager/PageManager";
 
 export class PageService {
 
     #logger;
     #styles;
     #storage;
+    #manager;
 
     constructor() {
         this.#logger = new Logger();
         this.#storage = new Store();
         this.#styles = new Styles();
+        this.#manager = new PageManager();
     }
 
     run = () => {
         this.#storage.appParams().then(enable => {
-            this.#joinPoint(enable, this.#server, this.#local);
+            this.#joinPoint(enable);
         });
     }
 
@@ -28,12 +30,11 @@ export class PageService {
      * Добавляется в тег head новые css-стили.
      * Если доступен парсинг на сервере, делаем на сервере, иначе на локальной машине
      */
-    #joinPoint = (enable, serverLogic, localLogic) => {
-        this.#logger.log(`Reach join point with app.enable=${enable}`);
+    #joinPoint = (enable) => {
         if (enable) {
+            Context.add("menu", new Menu());
             this.#styles.append();
-            this.#logger.log(`isServerSideParsingEnable=${IS_SERVER_SIDE_PARSING_ENABLE}`);
-            IS_SERVER_SIDE_PARSING_ENABLE ? serverLogic() : localLogic();
+            this.#manager.run();
         }
     }
 
@@ -41,18 +42,10 @@ export class PageService {
      * Устанавливаются настройки языка
      * Запускается бесконечный процесс парсинга и рендеринга страницы локально
      */
-    #local = () => {
+    #old = () => {
         Context.add("language", {sl: "en", tl: "ru"});
         const processor = new QueueProcessor();
         processor.runInfinityParsing();
         processor.runInfinityRender();
-    }
-
-    /**
-     * Запускается бесконечный процесс парсинга и рендеринга страницы на сервере
-     */
-
-    #server = () => {
-        //TODO:: Use google docs as storage
     }
 }

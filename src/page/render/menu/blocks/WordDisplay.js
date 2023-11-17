@@ -12,15 +12,14 @@ export class WordDisplay extends BaseBlock {
         this.#parent = parent;
         this.#parent.prepend(this.getRef());
     }
-
-    /*
-    * Берем собранный Href > делаем через pug ссылку со словом 
-    * > оборачиваем через HTMLMapper в див
-    * Заменяем old контейнер на новый ref
-    */
-    updateLink = (word) => {
-        const href = this.#buildHref(word);
-        const html = this.#templateFunction({word, href});
+    /**
+     * Берем собранный Href > делаем через pug ссылку со словом
+     * > оборачиваем через HTMLMapper в див
+     * Заменяем old контейнер на новый ref
+     */
+    updateLink = (word, netGraph) => {
+        //const href = this.#buildHref(word);
+        const html = this.#templateFunction({word, netGraph});
         const ref = this.getHTMLMapper().toElement(html);
         const old = this.getRef();
         this.setRef(ref);
@@ -38,7 +37,7 @@ export class WordDisplay extends BaseBlock {
     }
 
     /*
-    * window.open(url, name, params) - метод возвращает ссылку на объект window нового окна. 
+    * window.open(url, name, params) - метод возвращает ссылку на объект window нового окна.
     * Name - имя, params - настройки окна (не обязательные)
     */
     #printPageContent = (url) => {

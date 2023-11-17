@@ -1,1 +1,1 @@
-chrome.storage.local.set({enable: true, russian: true, english: true, china: false, korean: true});
+chrome.storage.local.set({enable: false, russian: true, english: true, china: false, korean: true});
