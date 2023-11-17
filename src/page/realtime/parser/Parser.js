@@ -1,4 +1,4 @@
-import {TextClone} from "./TextClone";
+import {TextClone} from "../manager/TextClone";
 
 export class Parser {
 
