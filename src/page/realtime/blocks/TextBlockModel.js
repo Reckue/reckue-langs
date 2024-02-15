@@ -1,4 +1,5 @@
-import {PseudoTextBlockClone} from "./PseudoTextBlockClone";
+import {ElementExactSizeService} from "../../../lib/services/ElementExactSizeService";
+import {SizeModel} from "../../../lib/models/SizeModel";
 
 export class TextBlockModel {
 
@@ -38,8 +39,8 @@ export class TextBlockModel {
 
     #setupSize = (focusBlock) => {
         const ref = focusBlock.getRef();
-        const clone = new PseudoTextBlockClone(ref, this.#getText());
-        this.#size = clone.getSize(focusBlock.getSize());
+        const clone = new ElementExactSizeService();
+        this.#size = clone.getSize(ref, this.#getText(), focusBlock.getSize());
     }
 
     #getText = () => {

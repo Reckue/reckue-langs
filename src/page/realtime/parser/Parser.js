@@ -1,4 +1,4 @@
-import {PseudoTextBlockClone} from "../blocks/PseudoTextBlockClone";
+import {ElementExactSizeService} from "../../../lib/services/ElementExactSizeService";
 
 export class Parser {
 
@@ -29,8 +29,8 @@ export class Parser {
                 textLength: this.#text.length
             }
             this.#textBlockSizes = this.getTextBlocks().map((textBlock) => {
-                const clone = new PseudoTextBlockClone(event.target, textBlock);
-                const size = clone.getSize(this.#block);
+                const clone = new ElementExactSizeService();
+                const size = clone.getSize(event.target, textBlock, this.#block);
                 if (!size.height)  {
                     size.height = 20;
                 }
@@ -57,7 +57,9 @@ export class Parser {
             this.#netGraph.currentLine = currentLine;
             this.#netGraph.textBlocksCount = this.getTextBlocks().length;
             this.#currentTextBlock = this.getTextBlocks()[currentLine];
-            this.#clone = new PseudoTextBlockClone(event.target, this.#currentTextBlock);
+            this.#clone = new ElementExactSizeService(
+                //event.target, this.#currentTextBlock
+            );
         } catch (e) {
             // ignore
         }
