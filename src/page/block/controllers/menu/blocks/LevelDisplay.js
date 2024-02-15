@@ -1,8 +1,8 @@
 import {BaseBlock} from "./BaseBlock";
-import {Levels} from "../../../../enum/Levels";
-import {enumForEach} from "../../../../core/enum";
-import {Context} from "../../../../core/Context";
-import {WordRenderer} from "../../WordRenderer";
+import {Levels} from "../../../../../enum/Levels";
+import {enumForEach} from "../../../../../core/enum";
+import {Context} from "../../../../../core/Context";
+import {WordRenderer} from "../../../../render/WordRenderer";
 
 export class LevelDisplay extends BaseBlock {
 

@@ -35,7 +35,7 @@ Save time learning new words by making it automatic!
    
 
 3. Use `npm run build`, so you create 2 runnable files. <br>
-   `page/page.js` and `popup/popup.js`
+   `page/page.ts` and `popup/popup.ts`
 
 
 4. Go to your browser and open `chrome://extensions/`, or you can click here:

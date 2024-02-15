@@ -1,4 +1,4 @@
-import {Builder} from "../../../../popup/builder/Builder";
+import {Builder} from "../../../../../popup/builder/Builder";
 
 export class BaseBlock extends Builder {
 

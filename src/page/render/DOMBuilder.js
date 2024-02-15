@@ -1,5 +1,5 @@
 import {Logger} from "../../core/Logger";
-import {Menu} from "./menu/Menu";
+import {Menu} from "../block/controllers/menu/Menu";
 import {PageWord} from "./PageWord";
 import {Context} from "../../core/Context";
 

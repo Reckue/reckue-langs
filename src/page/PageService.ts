@@ -1,22 +1,20 @@
-import {Logger} from "../core/Logger";
-import {Store} from "../core/Store";
-import {Styles} from "./render/styles/Styles";
-import {Context} from "../core/Context";
-import {QueueProcessor} from "./queue/QueueProcessor";
-import {Menu} from "./render/menu/Menu";
-import {PageManager} from "./block/manager/PageManager";
+import {Store} from "../core/Store.js";
+import {Styles} from "./render/styles/Styles.js";
+import {Context} from "../core/Context.js";
+import {QueueProcessor} from "./queue/QueueProcessor.js";
+import {Menu} from "./block/controllers/menu/Menu.js";
+import {PageManager} from "./block/managers/PageManager.js";
 
 export class PageService {
 
-    #logger;
-    #styles;
-    #storage;
-    #manager;
+    #styles: Styles;
+    #storage: Store;
+    #manager: PageManager;
 
     constructor() {
-        this.#logger = new Logger();
         this.#storage = new Store();
         this.#styles = new Styles();
+        Context.add("menu", new Menu());
         this.#manager = new PageManager();
     }
 
@@ -30,9 +28,8 @@ export class PageService {
      * Добавляется в тег head новые css-стили.
      * Если доступен парсинг на сервере, делаем на сервере, иначе на локальной машине
      */
-    #joinPoint = (enable) => {
+    #joinPoint = (enable: boolean) => {
         if (enable) {
-            Context.add("menu", new Menu());
             this.#styles.append();
             this.#manager.run();
         }

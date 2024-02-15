@@ -1,5 +1,5 @@
 import {BaseBlock} from "./BaseBlock";
-import {Context} from "../../../../core/Context";
+import {Context} from "../../../../../core/Context";
 
 export class WordDisplay extends BaseBlock {
 

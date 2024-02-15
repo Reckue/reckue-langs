@@ -3280,7 +3280,7 @@ export const mockWordbook = [
         {word:"several", level: Levels.INTERMEDIATE.name},
         {word:"vot", level: Levels.INTERMEDIATE.name},
         {word:"illustrate", level: Levels.INTERMEDIATE.name},
-        {word:"manager", level: Levels.INTERMEDIATE.name},
+        {word:"managers", level: Levels.INTERMEDIATE.name},
         {word:"poll", level: Levels.INTERMEDIATE.name},
         {word:"decisionthe", level: Levels.INTERMEDIATE.name},
         {word:"assessment", level: Levels.INTERMEDIATE.name},

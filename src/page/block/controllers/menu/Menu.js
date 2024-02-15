@@ -1,6 +1,6 @@
 import {LevelDisplay} from "./blocks/LevelDisplay";
-import {Context} from "../../../core/Context";
-import {HTMLMapper} from "../../../core/HTMLMapper";
+import {Context} from "../../../../core/Context";
+import {HTMLMapper} from "../../../../core/HTMLMapper";
 import {WordDisplay} from "./blocks/WordDisplay";
 
 export class Menu {
@@ -19,6 +19,10 @@ export class Menu {
         Context.add("POPUP_WIDTH", 120);
         Context.add("TRANSLATE_URL", "https://translate.google.com/#view=home&op=translate");
         this.#createPopup();
+    }
+
+    getRef = () => {
+        return this.#ref;
     }
 
     setContent = (word, netGraph) => {
