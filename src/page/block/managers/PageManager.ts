@@ -2,12 +2,13 @@ import {BlockHighlighting} from "../../realtime/highlighting/BlockHighlighting";
 import {Parser} from "../../realtime/parser/Parser";
 import {CacheProvider} from "./CacheProvider";
 import {PopupManager} from "./PopupManager";
+import {CacheModel} from "./CacheModel";
 
 
 export class PageManager {
 
-    #cacheProvider;
-    #popupManager;
+    #cacheProvider: CacheProvider;
+    #popupManager: PopupManager;
 
     constructor() {
         this.#cacheProvider = new CacheProvider();
@@ -20,15 +21,15 @@ export class PageManager {
         addEventListener("scroll", this.onmousemove);
     }
 
-    onclick = (event) => {
-        let cache = this.#cacheProvider.getCache(event);
+    onclick = (event: MouseEvent) => {
+        let cache: CacheModel = this.#cacheProvider.getCache(event);
         if (cache) {
-            const positions = cache.getTextBlocks().getPositions();
+            const positions = cache.textBlocks.getPositions();
             let counter = 0;
             while (positions[counter] && positions[counter].y < event.offsetY) {
                 counter++;
             }
-            const parser = new Parser(event, cache.getTextBlocks());
+            const parser = new Parser(event, cache.textBlocks);
             const word = parser.getWord();
 
             const netGraph = parser.getNetGraph();
@@ -37,13 +38,13 @@ export class PageManager {
         }
     }
 
-    onmousemove = (event) => {
+    onmousemove = (event: MouseEvent) => {
         this.#cacheProvider.validateNoneBlackListElement(event, () => {
-            let cache = this.#cacheProvider.getOrUpdateCache(event);
+            let cache: CacheModel = this.#cacheProvider.getOrUpdateCache(event);
 
             const highlighting = new BlockHighlighting(
-                cache.getFocusBlock(),
-                cache.getTextBlocks()
+                cache.focusBlock,
+                cache.textBlocks
             );
 
             highlighting.draw();

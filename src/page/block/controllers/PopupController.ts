@@ -1,15 +1,16 @@
-import {LevelDisplay} from "./blocks/LevelDisplay";
-import {Context} from "../../../../core/Context";
-import {HTMLMapper} from "../../../../core/HTMLMapper";
-import {WordDisplay} from "./blocks/WordDisplay";
+import {LevelDisplay} from "./menu/blocks/LevelDisplay";
+import {Context} from "../../../core/Context";
+import {HTMLMapper} from "../../../core/HTMLMapper";
+import {WordDisplay} from "./menu/blocks/WordDisplay";
+import {WebController} from "./WebController";
 
-export class Menu {
+export class PopupController implements WebController {
 
-    #ref;
-    #HTMLMapper;
+    #ref: HTMLElement;
+    #HTMLMapper: HTMLMapper;
 
-    #wordContainer;
-    #levelContainer;
+    #wordContainer: WordDisplay;
+    #levelContainer: LevelDisplay;
 
     #left = "0";
     #top = "0";
@@ -25,7 +26,7 @@ export class Menu {
         return this.#ref;
     }
 
-    setContent = (word, netGraph) => {
+    setContent = (word: string, netGraph: object) => {
         this.#levelContainer.setWord(word);
         //this.#levelContainer.updateLevel();
 
@@ -34,7 +35,7 @@ export class Menu {
         this.#setWordPosition();
     }
 
-    setPosition = (left, top) => {
+    setPosition = (left: number, top: number) => {
         const offset = Context.get("POPUP_WIDTH") / 2;
         this.#left = `${left - offset}px`;
         this.#top = `${top}px`;
@@ -69,7 +70,7 @@ export class Menu {
     * Создаем контейнеры для слов и для уровня
     */
     #createPopup = () => {
-        const html = require("apply-loader!pug-loader!./blocks/templates/popup.pug");
+        const html = require("apply-loader!pug-loader!./menu/blocks/templates/popup.pug");
         this.#ref = this.#HTMLMapper.toElement(html);
 
         this.displayOff();
@@ -99,5 +100,5 @@ export class Menu {
         this.#wordContainer.getRef().style.left = `${position}px`;
     }
 
-    #getOffset = (width) => width / 2;
+    #getOffset = (width: number) => width / 2;
 }

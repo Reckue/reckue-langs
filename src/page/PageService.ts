@@ -1,9 +1,9 @@
-import {Store} from "../core/Store.js";
-import {Styles} from "./render/styles/Styles.js";
-import {Context} from "../core/Context.js";
-import {QueueProcessor} from "./queue/QueueProcessor.js";
-import {Menu} from "./block/controllers/menu/Menu.js";
-import {PageManager} from "./block/managers/PageManager.js";
+import {Store} from "../core/Store";
+import {Styles} from "./render/styles/Styles";
+import {Context} from "../core/Context";
+import {QueueProcessor} from "./queue/QueueProcessor";
+import {PopupController} from "./block/controllers/PopupController";
+import {PageManager} from "./block/managers/PageManager";
 
 export class PageService {
 
@@ -14,7 +14,7 @@ export class PageService {
     constructor() {
         this.#storage = new Store();
         this.#styles = new Styles();
-        Context.add("menu", new Menu());
+        Context.add("menu", new PopupController());
         this.#manager = new PageManager();
     }
 

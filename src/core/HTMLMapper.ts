@@ -1,8 +1,8 @@
 export class HTMLMapper {
 
-    toElement = (html) => {
+    toElement = (html: string): HTMLElement => {
         const template = window.document.createElement("div");
         template.innerHTML = html.trim();
-        return template.firstChild;
+        return <HTMLElement> template.firstChild;
     }
 }

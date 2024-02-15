@@ -1,9 +1,9 @@
 import {Context} from "../../../core/Context";
-import {Menu} from "../controllers/menu/Menu";
+import {PopupController} from "../controllers/PopupController";
 
 export class PopupManager {
 
-    #popupController: Menu;
+    #popupController: PopupController;
 
     constructor(popupName: string) {
         this.#popupController = Context.get(popupName);

@@ -1,5 +1,5 @@
 import {Logger} from "../../core/Logger";
-import {Menu} from "../block/controllers/menu/Menu";
+import {PopupController} from "../block/controllers/PopupController";
 import {PageWord} from "./PageWord";
 import {Context} from "../../core/Context";
 
@@ -8,7 +8,7 @@ export class DOMBuilder {
     #logger = new Logger();
 
     constructor() {
-        Context.add("menu", new Menu());
+        Context.add("menu", new PopupController());
         Context.add("notSavedWords", new Set());
         Context.add("refs", new Map());
     }
