@@ -4,7 +4,7 @@ import {Styles} from "./render/styles/Styles";
 import {Context} from "../core/Context";
 import {QueueProcessor} from "./queue/QueueProcessor";
 import {Menu} from "./render/menu/Menu";
-import {PageManager} from "./realtime/manager/PageManager";
+import {PageManager} from "./block/manager/PageManager";
 
 export class PageService {
 

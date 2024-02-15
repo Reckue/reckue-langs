@@ -1,4 +1,4 @@
-export class FocusBlock {
+export class FocusBlockModel {
 
     #ref;
     #size;
@@ -13,18 +13,6 @@ export class FocusBlock {
         this.#setupPosition();
     }
 
-    #setupPosition = () => {
-        const x = this.#rect.x + window.scrollX;
-        const y = this.#rect.y + window.scrollY;
-        this.#position = {x, y}
-    }
-
-    #setupSize = () => {
-        const width = this.#rect.width;
-        const height = this.#rect.height;
-        this.#size = {width, height}
-    }
-
     getRef = () => {
         return this.#ref;
     }
@@ -35,5 +23,17 @@ export class FocusBlock {
 
     getPosition = () => {
         return this.#position;
+    }
+
+    #setupPosition = () => {
+        const x = this.#rect.x + window.scrollX;
+        const y = this.#rect.y + window.scrollY;
+        this.#position = {x, y}
+    }
+
+    #setupSize = () => {
+        const width = this.#rect.width;
+        const height = this.#rect.height;
+        this.#size = {width, height}
     }
 }

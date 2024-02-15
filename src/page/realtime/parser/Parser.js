@@ -1,4 +1,4 @@
-import {TextClone} from "../manager/TextClone";
+import {PseudoTextBlockClone} from "../blocks/PseudoTextBlockClone";
 
 export class Parser {
 
@@ -12,10 +12,13 @@ export class Parser {
     #textBlockSizes;
     #realHeight;
     #coefficient;
+
+    #innerTextBlocks;
     // #gapHeight = 0;
 
-    constructor(event) {
+    constructor(event, innerTextBlocks) {
         this.#event = event;
+        this.#innerTextBlocks = innerTextBlocks;
         try {
             this.#setupText(event);
             this.#setupCursor(event);
@@ -26,7 +29,7 @@ export class Parser {
                 textLength: this.#text.length
             }
             this.#textBlockSizes = this.getTextBlocks().map((textBlock) => {
-                const clone = new TextClone(event.target, textBlock);
+                const clone = new PseudoTextBlockClone(event.target, textBlock);
                 const size = clone.getSize(this.#block);
                 if (!size.height)  {
                     size.height = 20;
@@ -54,7 +57,7 @@ export class Parser {
             this.#netGraph.currentLine = currentLine;
             this.#netGraph.textBlocksCount = this.getTextBlocks().length;
             this.#currentTextBlock = this.getTextBlocks()[currentLine];
-            this.#clone = new TextClone(event.target, this.#currentTextBlock);
+            this.#clone = new PseudoTextBlockClone(event.target, this.#currentTextBlock);
         } catch (e) {
             // ignore
         }
@@ -64,10 +67,19 @@ export class Parser {
 
         const textBlockSize = this.getCurrentTextBlockSize();
 
-        const cursorPercentage = this.getCursorPercentage(textBlockSize);
+        console.log(textBlockSize);
+
+        const cursorPercentage = this.getCursorPercentageX(textBlockSize);
+
+        console.log(cursorPercentage);
 
         const oneSymbolPercentage = 1 / this.#currentTextBlock.length;
+
+        console.log(oneSymbolPercentage);
+
         const index = Math.floor(cursorPercentage / oneSymbolPercentage);
+
+        console.log(index);
 
         const word = [""];
 
@@ -80,6 +92,8 @@ export class Parser {
             word[0] = symbol + word[0];
             return index - 1;
         });
+
+        console.log(word)
 
         return word[0];
     }
@@ -110,16 +124,21 @@ export class Parser {
     }
 
     getTextBlocks = () => {
-        return this.getText().split("\n");
+        const texts = this.getText().split("\n");
+        const last = texts.pop();
+        if (last) {
+            texts.push(last);
+        }
+        return texts;
     }
 
     getCurrentTextBlockSize = () => {
-        const size = this.#clone.getSize();
+        const size = this.#clone.getSize(this.#block).inline;
         this.#netGraph.currentTextBlockSize = {...size};
         return size;
     }
 
-    getCursorPercentage = (textBlock) => {
+    getCursorPercentageX = (textBlock) => {
         return this.#cursor.x / textBlock.width;
     }
 

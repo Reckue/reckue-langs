@@ -43,7 +43,6 @@ export class BlockHighlighting {
             draw.style.border = "1px solid black";
             draw.style.zIndex = "1000";
             draw.style.opacity = textBlock.isEmpty() ? "0" : "0.25";
-            draw.style.pointerEvents = "none";
             BlockHighlighting.draw.appendChild(draw);
         });
     }
