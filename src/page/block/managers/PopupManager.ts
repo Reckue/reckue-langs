@@ -1,5 +1,5 @@
 import {Context} from "../../../core/Context";
-import {PopupController} from "../controllers/PopupController";
+import {PopupController} from "../controllers/popup/PopupController";
 
 export class PopupManager {
 

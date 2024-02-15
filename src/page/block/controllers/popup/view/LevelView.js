@@ -1,10 +1,10 @@
-import {BaseBlock} from "./BaseBlock";
-import {Levels} from "../../../../../enum/Levels";
+import {AbstractContainerView} from "./AbstractContainerView";
+import {Levels} from "../../../../../core/enum/Levels";
 import {enumForEach} from "../../../../../core/enum";
 import {Context} from "../../../../../core/Context";
 import {WordRenderer} from "../../../../render/WordRenderer";
 
-export class LevelDisplay extends BaseBlock {
+export class LevelView extends AbstractContainerView {
 
     #wordbookService;
     #wordRenderer;
@@ -94,7 +94,7 @@ export class LevelDisplay extends BaseBlock {
      * @param number - текущее число обозначающее уровень
      */
     #renderLevelDisplay = (number) => {
-        const pug = require("pug-loader!./templates/level-display.pug");
+        const pug = require("pug-loader!../templates/level-display.pug");
         const display = this.getHTMLMapper().toElement(pug(this.#buildOptions(number)));
         this.#replaceReferences(display);
         this.#setupControllers(number);

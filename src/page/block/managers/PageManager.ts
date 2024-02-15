@@ -1,17 +1,17 @@
 import {BlockHighlighting} from "../../realtime/highlighting/BlockHighlighting";
 import {Parser} from "../../realtime/parser/Parser";
-import {CacheProvider} from "./CacheProvider";
+import {CacheManager} from "./CacheManager";
 import {PopupManager} from "./PopupManager";
 import {CacheModel} from "./CacheModel";
 
 
 export class PageManager {
 
-    #cacheProvider: CacheProvider;
+    cacheManager: CacheManager;
     #popupManager: PopupManager;
 
     constructor() {
-        this.#cacheProvider = new CacheProvider();
+        this.cacheManager = new CacheManager();
         this.#popupManager = new PopupManager("menu");
     }
 
@@ -22,13 +22,8 @@ export class PageManager {
     }
 
     onclick = (event: MouseEvent) => {
-        let cache: CacheModel = this.#cacheProvider.getCache(event);
+        let cache: CacheModel = this.cacheManager.getCache(event);
         if (cache) {
-            const positions = cache.textBlocks.getPositions();
-            let counter = 0;
-            while (positions[counter] && positions[counter].y < event.offsetY) {
-                counter++;
-            }
             const parser = new Parser(event, cache.textBlocks);
             const word = parser.getWord();
 
@@ -39,8 +34,8 @@ export class PageManager {
     }
 
     onmousemove = (event: MouseEvent) => {
-        this.#cacheProvider.validateNoneBlackListElement(event, () => {
-            let cache: CacheModel = this.#cacheProvider.getOrUpdateCache(event);
+        this.cacheManager.validateNoneBlackListElement(event, () => {
+            let cache: CacheModel = this.cacheManager.getOrUpdateCache(event);
 
             const highlighting = new BlockHighlighting(
                 cache.focusBlock,

@@ -1,14 +1,14 @@
-import {BaseBlock} from "./BaseBlock";
+import {AbstractContainerView} from "./AbstractContainerView";
 import {Context} from "../../../../../core/Context";
 
-export class WordDisplay extends BaseBlock {
+export class WordView extends AbstractContainerView {
 
     #templateFunction;
     #parent;
 
     constructor(parent) {
         super(parent);
-        this.#templateFunction = require("pug-loader!./templates/word-display.pug");
+        this.#templateFunction = require("pug-loader!../templates/word-display.pug");
         this.#parent = parent;
         this.#parent.prepend(this.getRef());
     }

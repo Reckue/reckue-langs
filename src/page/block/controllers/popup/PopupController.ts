@@ -1,16 +1,16 @@
-import {LevelDisplay} from "./menu/blocks/LevelDisplay";
-import {Context} from "../../../core/Context";
-import {HTMLMapper} from "../../../core/HTMLMapper";
-import {WordDisplay} from "./menu/blocks/WordDisplay";
-import {WebController} from "./WebController";
+import {LevelView} from "./view/LevelView";
+import {Context} from "../../../../core/Context";
+import {HTMLMapper} from "../../../../core/HTMLMapper";
+import {WordView} from "./view/WordView";
+import {IWebController} from "../IWebController";
 
-export class PopupController implements WebController {
+export class PopupController implements IWebController {
 
     #ref: HTMLElement;
     #HTMLMapper: HTMLMapper;
 
-    #wordContainer: WordDisplay;
-    #levelContainer: LevelDisplay;
+    #wordContainer: WordView;
+    #levelContainer: LevelView;
 
     #left = "0";
     #top = "0";
@@ -70,14 +70,14 @@ export class PopupController implements WebController {
     * Создаем контейнеры для слов и для уровня
     */
     #createPopup = () => {
-        const html = require("apply-loader!pug-loader!./menu/blocks/templates/popup.pug");
+        const html = require("apply-loader!pug-loader!./templates/popup.pug");
         this.#ref = this.#HTMLMapper.toElement(html);
 
         this.displayOff();
         this.#onMouseOver();
 
-        this.#wordContainer = new WordDisplay(this.#ref);
-        this.#levelContainer = new LevelDisplay(this.#ref);
+        this.#wordContainer = new WordView(this.#ref);
+        this.#levelContainer = new LevelView(this.#ref);
         this.#appendPopup();
     }
 

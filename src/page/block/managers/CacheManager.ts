@@ -2,7 +2,7 @@ import {TextBlocks} from "../../realtime/blocks/TextBlocks";
 import {CacheModel} from "./CacheModel";
 import {FocusBlockModel} from "../../realtime/blocks/FocusBlockModel";
 
-export class CacheProvider {
+export class CacheManager {
 
     #blackList;
     #cachedBlocks;
@@ -12,7 +12,7 @@ export class CacheProvider {
         this.#cachedBlocks = new Map();
     }
 
-    getOrUpdateCache = (event) => {
+    getOrUpdateCache = (event: MouseEvent) => {
         let cache = this.getCache(event);
         if (!cache) {
             if (this.#getTextNodes(event).length > 0) {
@@ -24,17 +24,17 @@ export class CacheProvider {
         return cache;
     }
 
-    getCache = (event) => {
+    getCache = (event: MouseEvent) => {
         return this.#cachedBlocks.get(event.target);
     }
 
-    validateNoneBlackListElement = (event, execute) => {
+    validateNoneBlackListElement = (event: MouseEvent, execute: Function) => {
         if (!this.#blackList.has(event.target)) {
             execute();
         }
     }
 
-    #updateCache = (event) => {
+    #updateCache = (event: MouseEvent) => {
         const focusBlock = this.#whereWeAre(event);
         const textBlocks = new TextBlocks(focusBlock);
         const cache = new CacheModel(focusBlock, textBlocks);
@@ -42,11 +42,13 @@ export class CacheProvider {
         return cache;
     }
 
-    #whereWeAre = (event) => {
+    #whereWeAre = (event: MouseEvent) => {
         return new FocusBlockModel(event);
     }
 
-    #getTextNodes = (event) => Array
-        .from(event.target.childNodes)
-        .filter(node => node.nodeName === "#text");
+    #getTextNodes = (event: MouseEvent) => {
+        return Array
+            .from((<Node> event.target).childNodes)
+            .filter(node => node.nodeName === "#text");
+    };
 }

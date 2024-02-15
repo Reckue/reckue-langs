@@ -1,6 +1,6 @@
-import {Builder} from "./Builder";
+import {AbstractView} from "./AbstractView";
 
-export class ContentBuilder extends Builder {
+export class ContentView extends AbstractView {
 
     #content;
 

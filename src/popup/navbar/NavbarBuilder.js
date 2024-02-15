@@ -1,9 +1,9 @@
 import {enumForEach} from "../../core/enum";
-import {NavbarButtons} from "../../enum/NavbarButtons";
+import {NavbarButtons} from "../../core/enum/NavbarButtons";
 import {selectByClass} from "../deprecated/html";
-import {ContentBuilder} from "../builder/ContentBuilder";
+import {ContentView} from "../../core/builder/ContentView";
 
-export class NavbarBuilder extends ContentBuilder {
+export class NavbarBuilder extends ContentView {
 
     #navbar;
 

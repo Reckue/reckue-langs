@@ -67,19 +67,11 @@ export class Parser {
 
         const textBlockSize = this.getCurrentTextBlockSize();
 
-        console.log(textBlockSize);
-
         const cursorPercentage = this.getCursorPercentageX(textBlockSize);
-
-        console.log(cursorPercentage);
 
         const oneSymbolPercentage = 1 / this.#currentTextBlock.length;
 
-        console.log(oneSymbolPercentage);
-
         const index = Math.floor(cursorPercentage / oneSymbolPercentage);
-
-        console.log(index);
 
         const word = [""];
 
@@ -92,8 +84,6 @@ export class Parser {
             word[0] = symbol + word[0];
             return index - 1;
         });
-
-        console.log(word)
 
         return word[0];
     }
