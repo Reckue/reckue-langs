@@ -1,10 +1,9 @@
-import {PseudoTextBlockClone} from "../blocks/PseudoTextBlockClone";
-import { TextBlockModel } from "../blocks/TextBlockModel";
 import { TextBlocks } from "../blocks/TextBlocks";
-import { SizeModel } from "../size/SizeModel";
 import { CoordinateBlockModel } from "./models/CoordinateBlockModel";
 import { CursorModel } from "./models/CursorModel";
 import { NetGraphModel } from "./models/NetGraphModel";
+import {ElementExactSizeService} from "../../../lib/services/ElementExactSizeService";
+import {SizeModel} from "../../../lib/models/SizeModel";
 
 export class ParserService {
 
@@ -35,8 +34,8 @@ export class ParserService {
                 this.text.length
             )
             this.textBlockSizes = this.getTextBlocks().map((textBlock) => {
-                const clone = new PseudoTextBlockClone(event.target, textBlock);
-                const size: any = clone.getSize(this.block);
+                const elementExactSizeService = new ElementExactSizeService();
+                const size: any = elementExactSizeService.getSize(<HTMLElement> event.target, textBlock, this.block);
                 if (!size.height)  {
                     size.height = 20;
                 }
@@ -63,36 +62,38 @@ export class ParserService {
             this.netGraph.currentLine = currentLine;
             this.netGraph.textBlocksCount = this.getTextBlocks().length;
             this.currentTextBlock = this.getTextBlocks()[currentLine];
-            this.clone = new PseudoTextBlockClone(event.target, this.currentTextBlock);
+            this.clone = new ElementExactSizeService(
+                //event.target, this.#currentTextBlock
+            );
         } catch (e) {
             // ignore
         }
     }
 
-    getWord = () => {
-
-        const textBlockSize = this.getCurrentTextBlockSize();
-
-        const cursorPercentage = this.getCursorPercentageX(textBlockSize);
-
-        const oneSymbolPercentage = 1 / this.currentTextBlock.length;
-
-        const index = Math.floor(cursorPercentage / oneSymbolPercentage);
-
-        const word = [""];
-
-        this.next(word, this.currentTextBlock, index, (word: Array<string>, symbol: string, index: number) => {
-            word[0] = word[0] + symbol;
-            return index + 1;
-        });
-
-        this.next(word, this.currentTextBlock, index-1, (word: Array<string>, symbol: string, index: number) => {
-            word[0] = symbol + word[0];
-            return index - 1;
-        });
-
-        return word[0];
-    }
+    // getWord = () => {
+    //
+    //     const textBlockSize = this.getCurrentTextBlockSize();
+    //
+    //     const cursorPercentage = this.getCursorPercentageX(textBlockSize);
+    //
+    //     const oneSymbolPercentage = 1 / this.currentTextBlock.length;
+    //
+    //     const index = Math.floor(cursorPercentage / oneSymbolPercentage);
+    //
+    //     const word = [""];
+    //
+    //     this.next(word, this.currentTextBlock, index, (word: Array<string>, symbol: string, index: number) => {
+    //         word[0] = word[0] + symbol;
+    //         return index + 1;
+    //     });
+    //
+    //     this.next(word, this.currentTextBlock, index-1, (word: Array<string>, symbol: string, index: number) => {
+    //         word[0] = symbol + word[0];
+    //         return index - 1;
+    //     });
+    //
+    //     return word[0];
+    // }
 
     // getNetGraph = () => {
     //     {
@@ -128,11 +129,11 @@ export class ParserService {
         return texts;
     }
 
-    getCurrentTextBlockSize = () => {
-        const size = this.clone.getSize(this.block).inline;
-        this.netGraph.currentTextBlockSize = <SizeModel> {...size};
-        return size;
-    }
+    // getCurrentTextBlockSize = () => {
+    //     const size = this.clone.getSize(this.block).inline;
+    //     this.netGraph.currentTextBlockSize = <SizeModel> {...size};
+    //     return size;
+    // }
 
     getCursorPercentageX = (textBlock: SizeModel) => {
         return this.cursor.x / textBlock.width;

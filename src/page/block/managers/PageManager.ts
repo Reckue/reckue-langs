@@ -1,18 +1,18 @@
 import {BlockHighlighting} from "../../realtime/highlighting/BlockHighlighting";
-import {Parser} from "../../realtime/parser/ParserService";
 import {CacheManager} from "./CacheManager";
 import {PopupManager} from "./PopupManager";
 import {CacheModel} from "./CacheModel";
+import {ParserService} from "../../realtime/parser/ParserService";
 
 
 export class PageManager {
 
-    cacheManager: CacheManager;
-    #popupManager: PopupManager;
+    private readonly cacheManager: CacheManager;
+    private readonly popupManager: PopupManager;
 
     constructor() {
         this.cacheManager = new CacheManager();
-        this.#popupManager = new PopupManager("menu");
+        this.popupManager = new PopupManager("menu");
     }
 
     run = () => {
@@ -24,12 +24,12 @@ export class PageManager {
     onclick = (event: MouseEvent) => {
         let cache: CacheModel = this.cacheManager.getCache(event);
         if (cache) {
-            const parser = new Parser(event, cache.textBlocks);
-            const word = parser.getWord();
+            const parser = new ParserService(event, cache.textBlocks);
+            // const word = parser.getWord();
 
             const netGraph = parser.getNetGraph();
 
-            this.#popupManager.updatePopup(word, netGraph);
+            // this.#popupManager.updatePopup(word, netGraph);
         }
     }
 
