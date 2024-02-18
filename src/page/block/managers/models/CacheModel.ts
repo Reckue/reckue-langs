@@ -1,5 +1,5 @@
-import {TextBlocks} from "../../realtime/blocks/TextBlocks";
-import {FocusBlockModel} from "../../realtime/blocks/FocusBlockModel";
+import {TextBlocks} from "../../../realtime/blocks/TextBlocks";
+import {FocusBlockModel} from "../../../realtime/blocks/FocusBlockModel";
 
 export class CacheModel {
 
