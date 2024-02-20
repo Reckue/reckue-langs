@@ -2,7 +2,7 @@ import { CoordinateBlockModel } from "../models/CoordinateBlockModel";
 
 export class TargetBlockProvider {
 
-    setupBlock = (event: MouseEvent) => {
+    getBlock = (event: MouseEvent) => {
         const block = new CoordinateBlockModel();
         const target = <HTMLElement> event.target;
         block.width = target.offsetWidth;

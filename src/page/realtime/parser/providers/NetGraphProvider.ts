@@ -4,7 +4,7 @@ import { NetGraphModel } from "../models/NetGraphModel";
 
 export class NetGraphProvider {
 
-    setupNetGraphModel = (cursor: CursorModel,  block: CoordinateBlockModel, textLength: number) => {
+    getNetGraph = (cursor: CursorModel,  block: CoordinateBlockModel, textLength: number) => {
         return new NetGraphModel(cursor, block, textLength);
     }
 

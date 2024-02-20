@@ -9,56 +9,61 @@ import { NetGraphModel } from "../models/NetGraphModel";
 import { TargetBlockProvider } from "../providers/TargetBlockProvider";
 import { CursorProvider } from "../providers/CursorProvider";
 import { NetGraphProvider } from "../providers/NetGraphProvider";
+import { TextBlocksProvider } from "../providers/TextBlocksProvider";
+import { CursorManager } from "../managers/CursorManager";
+import { StringUtil } from "../utils/StringUtil";
+import { TextProvider } from "../providers/TextProvider";
 
 export class ParserService {
 
     private netGraphManager: NetGraphManager;
     private cursorProvider: CursorProvider;
+    private cursorManager: CursorManager;
     private blockProvider: TargetBlockProvider;
-    private elementExactSizeService: ElementExactSizeService
+    private elementExactSizeService: ElementExactSizeService;
+    private textBlockProvider: TextBlocksProvider;
+    private stringUtil: StringUtil;
+    private textProvider: TextProvider;
+    private netGraphProvider: NetGraphProvider;
 
     constructor(event: MouseEvent, innerTextBlocks: TextBlocks) {
         this.netGraphManager = new NetGraphManager();
         this.cursorProvider = new CursorProvider();
         this.blockProvider = new TargetBlockProvider();
         this.elementExactSizeService = new ElementExactSizeService();
-
     }
 
-    getBlockMetaModel = () => {
-        this.setupText(event);
-        this.setupCursor(event);
-        this.setupBlock(event);
-        this.netGraphProvider.setupNetGraphModel(this.cursor, this.block, this.text.length);
-        this.textBlockSizes = this.getTextBlocks().map((textBlock) => {
-            const size: any = clone.getSize(<HTMLElement> event.target, textBlock, this.block);
-            if (!size.height)  {
-                size.height = 20;
-            }
-            return size;
-        });
-        this.realHeight = this.textBlockSizes.reduce((result, size) => {
+    getBlockMetaModel = (event: MouseEvent) => {
+        const text = this.textProvider.getText(event);
+        const cursor = this.cursorProvider.getCursor(event);
+        const block = this.blockProvider.getBlock(event);
+        const textBlocks = this.textBlockProvider.getTextBlocks(text);
+        this.cursorManager = new CursorManager(cursor)
+        this.stringUtil = new StringUtil()
+        this.netGraphProvider.getNetGraph(cursor, block, text.length);
+        const textBlockSizes = this.getTextBlockSizes(event, textBlocks, block)
+        const realHeight = textBlockSizes.reduce((result, size) => {
             return result + size.height;
         }, 0);
 
-            this.netGraphManager.setCursor(this.cursorProvider.setupCursor(event));
-            this.netGraphManager.setBlock(this.blockProvider.setupBlock(event));
+        this.netGraphManager.setCursor(this.cursorProvider.getCursor(event));
+        this.netGraphManager.setBlock(this.blockProvider.getBlock(event));
 
-            this.coefficient = this.block.height / this.realHeight;
+        const coefficient = block.height / realHeight;
 
-            this.netGraphManager.setProperty("coefficient", this.coefficient)
-            this.netGraphManager.setProperty("real-height", this.realHeight)
-            const currentLine = this.getTextBlockIndex();
-            this.netGraphManager.setProperty("current-line", currentLine)
-            this.netGraphManager.setProperty("text-block-count", this.getTextBlocks().length)
-            this.currentTextBlock = this.getTextBlocks()[currentLine];
+        this.netGraphManager.setProperty("coefficient", coefficient)
+        this.netGraphManager.setProperty("real-height", realHeight)
+        const currentLine = this.getTextBlockIndex(event);
+        this.netGraphManager.setProperty("current-line", currentLine)
+        this.netGraphManager.setProperty("text-block-count", textBlocks.length)
+        const currentTextBlock = textBlocks[currentLine];
     }
 
     getWord = () => {
 
         const textBlockSize = this.getCurrentTextBlockSize();
 
-        const cursorPercentage = this.getCursorPercentageX(textBlockSize);
+        const cursorPercentage = this.cursorManager.getCursorPercentageX(textBlockSize);
 
         const oneSymbolPercentage = 1 / this.currentTextBlock.length;
 
@@ -83,32 +88,19 @@ export class ParserService {
         return this.netGraphManager.getNetGraphProperties();
     }
 
-    getTextBlocks = () : Array<string> => {
-        const texts = this.text.split("\n");
-        const last = texts.pop();
-        if (last) {
-            texts.push(last);
-        }
-        return texts;
-    }
-
     getCurrentTextBlockSize = (event: MouseEvent, textBlock: string, refSize: SizeModel) => {
         const size = this.elementExactSizeService.getSize(<HTMLElement> event.target, textBlock, refSize).inline;
         this.netGraphManager.setInlineBlockSize(<SizeModel> {...size});
         return size;
     }
 
-    getCursorPercentageX = (textBlock: SizeModel) => {
-        return this.cursor.x / textBlock.width;
-    }
-
-    getTextBlockIndex = () => {
-        if (!this.cursor) {
+    getTextBlockIndex = (event: MouseEvent) => {
+        if (!this.cursorProvider.getCursor(event)) {
             return;
         }
         let counter = 0;
         let index = 0;
-        while (this.cursor.y > counter) {
+        while (this.cursorProvider.getCursor(event).y > counter) {
             const size = this.textBlockSizes[index];
             counter += size.height * this.coefficient;
             index++;
@@ -116,37 +108,22 @@ export class ParserService {
         return index - 1;
     }
 
-    private setupText = (event: MouseEvent) => {
-        if (!event.target) {
-            throw new DOMException();
-        }
-        this.text = (<HTMLElement> event.target).innerText;
-    }
-
-    private setupCursor = (event: MouseEvent) => {
-        this.cursor = this.cursorProvider.setupCursor(event);
-    }
-
-    private setupBlock = (event: MouseEvent) => {
-        this.blockProvider.setupBlock(event);
+    getTextBlockSizes = (event: MouseEvent, textBlocks: Array<string>, block: CoordinateBlockModel) => {
+        return textBlocks.map((textBlock) => {
+            const size: any = this.elementExactSizeService.getSize(<HTMLElement> event.target, textBlock, block);
+            if (!size.height)  {
+                size.height = 20;
+            }
+            return size;
+        });
     }
 
     private next = (word: Array<string>, text: string, index: number, execute: Function) => {
         let symbol = text[index];
-        if (this.notUnsupportedSymbol(symbol)) {
+        if (this.stringUtil.notUnsupportedSymbol(symbol)) {
             const nextIndex = execute(word, symbol, index);
             this.next(word, text, nextIndex, execute);
         }
     }
 
-    private notUnsupportedSymbol = (symbol: string) => {
-        return symbol
-            && symbol !== " "
-            && symbol !== "."
-            && symbol !== ","
-            && symbol !== "“"
-            && symbol !== "”"
-            && symbol !== "!"
-            && symbol !== "?";
-    }
 }
