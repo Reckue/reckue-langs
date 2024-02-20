@@ -1,4 +1,4 @@
-import {AbstractView} from "../../../../../core/builder/AbstractView";
+import {AbstractView} from "../../../../core/builder/AbstractView";
 
 export abstract class AbstractContainerView extends AbstractView {
 

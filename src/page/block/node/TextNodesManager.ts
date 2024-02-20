@@ -1,5 +1,5 @@
-import {PageNodesController} from "../controllers/PageNodesController";
-import {SeparatedNodesProvider} from "../providers/SeparatedNodesProvider";
+import {PageNodesController} from "./PageNodesController";
+import {SeparatedNodesProvider} from "./SeparatedNodesProvider";
 
 export class TextNodesManager {
 

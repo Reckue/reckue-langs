@@ -3,5 +3,4 @@ export class CoordinateBlockModel {
     height: number
     x: number
     y: number
-
 }

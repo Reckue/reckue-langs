@@ -1,4 +1,4 @@
-import {SeparatedNodesModel} from "../managers/models/SeparatedNodesModel";
+import {SeparatedNodesModel} from "./SeparatedNodesModel";
 
 export class SeparatedNodesProvider {
 
