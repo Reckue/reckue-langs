@@ -1,5 +1,5 @@
 import {AbstractContainerView} from "./AbstractContainerView";
-import {Context} from "../../../../../core/Context";
+import {Context} from "../../../../core/Context";
 
 export class WordView extends AbstractContainerView {
 

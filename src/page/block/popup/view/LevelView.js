@@ -1,8 +1,8 @@
 import {AbstractContainerView} from "./AbstractContainerView";
-import {Levels} from "../../../../../core/enum/Levels";
-import {enumForEach} from "../../../../../core/enum";
-import {Context} from "../../../../../core/Context";
-import {WordRenderer} from "../../../../render/WordRenderer";
+import {Levels} from "../../../../core/enum/Levels";
+import {enumForEach} from "../../../../core/enum";
+import {Context} from "../../../../core/Context";
+import {WordRenderer} from "../../../render/WordRenderer";
 
 export class LevelView extends AbstractContainerView {
 

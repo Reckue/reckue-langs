@@ -1,8 +1,8 @@
-import {LevelView} from "./view/LevelView";
+import {LevelView} from "../view/LevelView";
 import {Context} from "../../../../core/Context";
 import {HTMLMapper} from "../../../../core/HTMLMapper";
-import {WordView} from "./view/WordView";
-import {IWebController} from "../IWebController";
+import {WordView} from "../view/WordView";
+import {IWebController} from "../../../../core/controller/IWebController";
 
 export class PopupController implements IWebController {
 
@@ -70,7 +70,7 @@ export class PopupController implements IWebController {
     * Создаем контейнеры для слов и для уровня
     */
     #createPopup = () => {
-        const html = require("apply-loader!pug-loader!./templates/popup.pug");
+        const html = require("apply-loader!pug-loader!../templates/popup.pug");
         this.#ref = this.#HTMLMapper.toElement(html);
 
         this.displayOff();

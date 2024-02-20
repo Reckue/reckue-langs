@@ -1,4 +1,4 @@
-import {SeparatedNodesProvider} from "../providers/SeparatedNodesProvider";
+import {SeparatedNodesProvider} from "./SeparatedNodesProvider";
 
 export class PageNodesController {
 
