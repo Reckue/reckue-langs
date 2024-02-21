@@ -12,7 +12,7 @@ export class HighlightingService {
     }
 
     drawHighlight = (innerTextBlocks: TextBlocks) => {
-        //TODO:: Destruct prev
+        this.highlightingController.destructRef();
         innerTextBlocks.getBlocks().forEach((block: CoordinateBlockModel, index: number) => {
             const position = innerTextBlocks.getPosition(index);
             [block.x, block.y] = [position.x, position.y]
