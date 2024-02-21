@@ -14,6 +14,7 @@ export class HighlightingService {
     drawHighlight = (innerTextBlocks: TextBlocks) => {
         //TODO:: Destruct prev
         innerTextBlocks.getBlocks().forEach((textBlock: TextBlockModel, index: number) => {
+            //TODO:: Rewrite TextBlock to CoordinateBlockModel
             const size = textBlock.getSize();
             const position = innerTextBlocks.getPosition(index);
             const block = new CoordinateBlockModel();
