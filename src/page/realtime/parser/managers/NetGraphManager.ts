@@ -1,4 +1,4 @@
-import { NetGraphModel } from "./models/NetGraphModel";
+import { NetGraphModel } from "../models/NetGraphModel";
 
 export class NetGraphManager {
 

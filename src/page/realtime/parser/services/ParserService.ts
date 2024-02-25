@@ -1,9 +1,9 @@
-import { TextBlocks } from "../blocks/TextBlocks";
-import { CoordinateBlockModel } from "./models/CoordinateBlockModel";
-import { CursorModel } from "./models/CursorModel";
-import { NetGraphModel } from "./models/NetGraphModel";
-import {ElementExactSizeService} from "../../../lib/services/ElementExactSizeService";
-import {SizeModel} from "../../../lib/models/SizeModel";
+import { TextBlocks } from "../../blocks/TextBlocks";
+import { CoordinateBlockModel } from "../models/CoordinateBlockModel";
+import { CursorModel } from "../models/CursorModel";
+import { NetGraphModel } from "../models/NetGraphModel";
+import {ElementExactSizeService} from "../../../../lib/services/ElementExactSizeService";
+import {SizeModel} from "../../../../lib/models/SizeModel";
 
 export class ParserService {
 

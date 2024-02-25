@@ -2,7 +2,7 @@ import {BlockHighlighting} from "../realtime/highlighting/BlockHighlighting";
 import {CacheManager} from "./cache/CacheManager";
 import {PopupManager} from "./popup/PopupManager";
 import {CacheModel} from "./cache/models/CacheModel";
-import {ParserService} from "../realtime/parser/ParserService";
+import {ParserService} from "../realtime/parser/services/ParserService";
 import {HighlightingService} from "./highlighting/HighlightingService";
 
 
