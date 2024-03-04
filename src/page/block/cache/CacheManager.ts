@@ -18,6 +18,7 @@ export class CacheManager {
             if (this.#getTextNodes(event).length > 0) {
                 cache = this.#updateCache(event);
             } else {
+                console.log(event.target);
                 this.#blackList.add(event.target);
             }
         }
@@ -46,9 +47,13 @@ export class CacheManager {
         return new FocusBlockModel(event);
     }
 
+    // What is this!?
     #getTextNodes = (event: MouseEvent) => {
-        return Array
+        const array = Array
             .from((<Node> event.target).childNodes)
             .filter(node => node.nodeName === "#text");
+        //Почему пропускает вложенные элементы?    
+        //array.map((el) => console.log(el));
+        return array;
     };
 }

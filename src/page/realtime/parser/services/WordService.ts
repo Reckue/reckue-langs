@@ -1,8 +1,6 @@
 import { notUnsupportedSymbol } from "./utils/NotUnsupportedSymbol";
 
-export class WordService {
-
-    word: Array<string> = [""];
+class WordService {
 
     getWord(text: string, index: number): string {
         const word = [""];
@@ -27,7 +25,6 @@ export class WordService {
             this.next(word, text, nextIndex, execute);
         }
     }
-
 }
 
-console.log(new WordService().getWord("my viktor's supertext", 1));
+export const wordService = new WordService();

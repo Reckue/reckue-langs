@@ -1,7 +1,7 @@
 import {SizeModel} from "../models/SizeModel";
 import {AttributeStylesService} from "../services/AttributeStylesService";
 
-export class ElementExactSizeController {
+export class CloneBlockController {
 
     private cloneRef: HTMLElement;
     private attributeStylesService: AttributeStylesService;

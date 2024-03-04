@@ -1,4 +1,4 @@
-import {ElementExactSizeService} from "../../../lib/services/ElementExactSizeService";
+import {CloneBlockService} from "../../../lib/services/CloneBlockService";
 import {SizeModel} from "../../../lib/models/SizeModel";
 
 export class TextBlockModel {
@@ -25,7 +25,7 @@ export class TextBlockModel {
         return this.#size.block.height / this.#size.inline.height;
     }
 
-    getLineHeight = () => {
+    getLineHeight =  () =>{
         return this.#size.inline.height;
     }
 
@@ -39,7 +39,7 @@ export class TextBlockModel {
 
     #setupSize = (focusBlock) => {
         const ref = focusBlock.getRef();
-        const clone = new ElementExactSizeService();
+        const clone = new CloneBlockService();
         this.#size = clone.getSize(ref, this.#getText(), focusBlock.getSize());
     }
 

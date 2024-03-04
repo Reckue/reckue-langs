@@ -1,14 +1,14 @@
 import {StylesProvider} from "../provider/StylesProvider";
-import {ElementExactSizeController} from "../controllers/ElementExactSizeController";
+import {CloneBlockController as CloneBlockController} from "../controllers/CloneBlockController";
 
 export class AttributeStylesService {
 
     private readonly stylesProvider: StylesProvider;
-    private readonly elementExactSizeController: ElementExactSizeController;
+    private readonly elementExactSizeController: CloneBlockController;
 
-    constructor(elementExactSizeController: ElementExactSizeController, stylesProvider: StylesProvider) {
+    constructor(cloneBlockController: CloneBlockController, stylesProvider: StylesProvider) {
         this.stylesProvider = stylesProvider;
-        this.elementExactSizeController = elementExactSizeController;
+        this.elementExactSizeController = cloneBlockController;
     }
 
     fillCloneAttributeStyles = (computedStyles: CSSStyleDeclaration, widthHeightAttributes: string) => {
