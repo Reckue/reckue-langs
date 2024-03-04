@@ -1,6 +1,6 @@
+import { SizeModel } from "../../../../lib/models/SizeModel"
 import { CoordinateBlockModel } from "./CoordinateBlockModel"
 import { CursorModel } from "./CursorModel"
-import {SizeModel} from "../../../../lib/models/SizeModel";
 
 export class NetGraphModel {
 
