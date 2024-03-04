@@ -10,10 +10,10 @@ export class CloneBlockController {
         this.cloneRef = document.createElement(tagName);
     }
 
-    executeInAppendTiming = (execute: Function): SizeModel => {
+    executeInAppendTiming = (executeList: Array<Function>): Array<SizeModel> => {
         parent.document.body.appendChild(this.cloneRef);
 
-        const result: SizeModel = execute();
+        const result: Array<SizeModel> = executeList.map(execute => execute());
 
         parent.document.body.removeChild(this.cloneRef);
 
