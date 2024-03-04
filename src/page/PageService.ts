@@ -2,8 +2,8 @@ import {Store} from "../core/Store";
 import {Styles} from "./render/styles/Styles";
 import {Context} from "../core/Context";
 import {QueueProcessor} from "./queue/QueueProcessor";
-import {PopupController} from "./block/controllers/popup/PopupController";
-import {PageManager} from "./block/managers/PageManager";
+import {PopupController} from "./block/popup/controllers/PopupController";
+import {PageManager} from "./block/PageManager";
 
 export class PageService {
 

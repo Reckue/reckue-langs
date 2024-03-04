@@ -29,7 +29,7 @@ export class PageParser {
      * Эти элементы это всегда конечные child ноды.
      */
     parse = () => {
-        this.#logger.log("Started queued parser.");
+        this.#logger.log("Started queued node.");
         this.#pageQueue.takeTurns(this.#parsingTextBlocks);
     }
 

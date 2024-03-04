@@ -1,5 +1,5 @@
 import {Logger} from "../../core/Logger";
-import {PopupController} from "../block/controllers/popup/PopupController";
+import {PopupController} from "../block/popup/controllers/PopupController";
 import {PageWord} from "./PageWord";
 import {Context} from "../../core/Context";
 
