@@ -9,7 +9,7 @@ export class StylesProvider {
         return `${mainAttributeStyles}${widthHeightAttributes}`;
     }
 
-    getWidthHeightInlineAttributes = () => "height:auto;width:auto";
+    getWidthHeightInlineAttributes = () => "width:auto;height:auto;white-space:nowrap";
 
     getWidthHeightBlockAttributes = (size: SizeModel) => `width:${size.width}px;height:auto`;
 }

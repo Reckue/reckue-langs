@@ -27,12 +27,12 @@ export class PageManager {
     onclick = (event: MouseEvent) => {
         let cache: CacheModel = this.cacheManager.getCache(event);
         if (cache) {
-            const parser = new ParserService(event, cache.textBlocks);
-            // const word = node.getWord();
-
-            const netGraph = parser.getNetGraph();
-
-            // this.#popupManager.updatePopup(word, netGraph);
+            // const parser = new ParserService(event, cache.textBlocks);
+            // // const word = node.getWord();
+            //
+            // const netGraph = parser.getNetGraph();
+            //
+            // // this.#popupManager.updatePopup(word, netGraph);
         }
     }
 
@@ -40,14 +40,14 @@ export class PageManager {
         this.cacheManager.validateNoneBlackListElement(event, () => {
             let cache: CacheModel = this.cacheManager.getOrUpdateCache(event);
 
-            const highlighting = new BlockHighlighting(
-                cache.focusBlock,
-                cache.textBlocks
-            );
-
-            highlighting.draw();
-
-            this.onclick(event);
+            // const highlighting = new BlockHighlighting(
+            //     cache.focusBlock,
+            //     cache.textBlocks
+            // );
+            //
+            // highlighting.draw();
+            //
+            // this.onclick(event);
         });
     }
 }

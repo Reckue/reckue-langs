@@ -27,24 +27,27 @@ export class ElementExactSizeService {
 
     getSize = (ref: HTMLElement, text: string, refSize: SizeModel): ExactSizesModel => {
         const computedStyles = this.computedStylesController.getComputedStyles(ref);
-        //this.elementExactSizeController.fillCloneStyles(computedStyles);
+        // this.elementExactSizeController.fillCloneStyles(computedStyles);
         this.elementExactSizeController.fillCloneContent(ref.innerHTML, text);
 
-        const sizes = this.elementExactSizeController.executeInAppendTiming([
+        const block = this.elementExactSizeController.executeInAppendTiming(
             () => {
                 return this.elementExactSizeController.getParameterizedSize(
                     computedStyles,
                     this.stylesProvider.getWidthHeightBlockAttributes(refSize)
                 );
-            },
+            }
+        );
+
+        const inline = this.elementExactSizeController.executeInAppendTiming(
             () => {
                 return this.elementExactSizeController.getParameterizedSize(
                     computedStyles,
                     this.stylesProvider.getWidthHeightInlineAttributes()
                 );
             }
-        ]);
+        );
 
-        return new ExactSizesModel(sizes[0], sizes[1]);
+        return new ExactSizesModel(block, inline);
     }
 }
