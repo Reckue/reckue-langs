@@ -9,6 +9,7 @@ import { CloneBlockService } from "../../lib/services/CloneBlockService";
 import { getSize } from "../realtime/parser/services/BlockService";
 import { TextBlockModel } from "../realtime/blocks/TextBlockModel";
 import { TextBlocks } from "../realtime/blocks/TextBlocks";
+import { CursorModel } from "../realtime/parser/models/CursorModel";
 
 
 export class PageManager {
@@ -40,17 +41,26 @@ export class PageManager {
     onmousemove = (event: MouseEvent) => {
         this.cacheManager.validateNoneBlackListElement(event, () => {
             let cache: CacheModel = this.cacheManager.getOrUpdateCache(event);
+            const cursor = new CursorModel(event.offsetX, event.offsetY);
 
+            console.log("X: " + cursor.x);
+            console.log("Y: " + cursor.y);
+            
+            const textLength = (<HTMLElement> event.target).innerText.length
 
+            const blockWidth = cache.clone.block.width;
+            const inlineHeight = cache.clone.inline.height
+            const inlineWidth = cache.clone.inline.width
 
-            console.log("Inline width");
-            console.log(cache.clone.inline.width);
-            console.log("Inline height");
-            console.log(cache.clone.inline.height);
-            console.log("Block width");
-            console.log(cache.clone.block.width);
-            console.log("Block height");
-            console.log(cache.clone.block.height);
+            const currentLine = Math.round(cursor.y / inlineHeight);
+            const currentPositionByXInline = (blockWidth * (currentLine - 1)) + cursor.x;
+            
+            const offsetPercent = currentPositionByXInline / inlineWidth;
+            const symbolIndexInline = Math.round(textLength * offsetPercent);
+            
+            console.log("currentPositionByXInline: " + currentPositionByXInline);
+            console.log("offsetPercent: " + offsetPercent);
+            console.log("symbolIndexInline: " + symbolIndexInline);
 
             // const highlighting = new BlockHighlighting(
             //     cache.focusBlock,
