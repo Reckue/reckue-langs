@@ -10,6 +10,8 @@ import { getSize } from "../realtime/parser/services/BlockService";
 import { TextBlockModel } from "../realtime/blocks/TextBlockModel";
 import { TextBlocks } from "../realtime/blocks/TextBlocks";
 import { CursorModel } from "../realtime/parser/models/CursorModel";
+import { ParserService } from "../realtime/parser/services/ParserService";
+import { IndexService } from "./IndexService";
 
 
 export class PageManager {
@@ -18,12 +20,14 @@ export class PageManager {
     private readonly popupManager: PopupManager;
     private readonly highlightingService: HighlightingService;
     private cloneBlockService : CloneBlockService;
+    private indexService: IndexService;
 
     constructor() {
         this.cacheManager = new CacheManager();
         this.popupManager = new PopupManager("menu");
         this.highlightingService = new HighlightingService();
         this.cloneBlockService = new CloneBlockService();
+        this.indexService = new IndexService()
     }
 
     run = () => {
@@ -40,27 +44,15 @@ export class PageManager {
 
     onmousemove = (event: MouseEvent) => {
         this.cacheManager.validateNoneBlackListElement(event, () => {
-            let cache: CacheModel = this.cacheManager.getOrUpdateCache(event);
-            const cursor = new CursorModel(event.offsetX, event.offsetY);
+            // let cache: CacheModel = this.cacheManager.getOrUpdateCache(event);
 
-            console.log("X: " + cursor.x);
-            console.log("Y: " + cursor.y);
-            
-            const textLength = (<HTMLElement> event.target).innerText.length
+            const blockInnerText = (<HTMLElement> event.target).innerText
 
-            const blockWidth = cache.clone.block.width;
-            const inlineHeight = cache.clone.inline.height
-            const inlineWidth = cache.clone.inline.width
-
-            const currentLine = Math.round(cursor.y / inlineHeight);
-            const currentPositionByXInline = (blockWidth * (currentLine - 1)) + cursor.x;
+            const index = new IndexService().getIndex(event, blockInnerText)
             
-            const offsetPercent = currentPositionByXInline / inlineWidth;
-            const symbolIndexInline = Math.round(textLength * offsetPercent);
-            
-            console.log("currentPositionByXInline: " + currentPositionByXInline);
-            console.log("offsetPercent: " + offsetPercent);
-            console.log("symbolIndexInline: " + symbolIndexInline);
+            const parser = new ParserService();
+            const word = parser.getWord(index, blockInnerText);
+            console.log(word)
 
             // const highlighting = new BlockHighlighting(
             //     cache.focusBlock,
