@@ -34,13 +34,13 @@ export class CloneBlockService {
             () => {
                 return this.cloneBlockController.getParameterizedSize(
                     computedStyles,
-                    this.stylesProvider.getWidthHeightBlockAttributes(refSize)
+                    this.stylesProvider.getWidthHeightInlineAttributes()
                 );
             },
             () => {
                 return this.cloneBlockController.getParameterizedSize(
                     computedStyles,
-                    this.stylesProvider.getWidthHeightInlineAttributes()
+                    this.stylesProvider.getWidthHeightBlockAttributes(refSize)
                 );
             }
         ]);

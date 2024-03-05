@@ -32,23 +32,8 @@ export class PageManager {
     }
 
     onclick = (event: MouseEvent) => {
-        // console.log(`offsetWidth: ${(<HTMLElement> event.target).offsetWidth}`);
-        // console.log(`offsetHeight: ${(<HTMLElement> event.target).offsetHeight}`);
         let cache: CacheModel = this.cacheManager.getCache(event);
         if (cache) {
-            // cache.textBlocks.getBlocks()[0]
-        //     console.log();
-
-            // const parser = new ParserService(event, cache.textBlocks);
-            // const text = (<HTMLElement> event.target).innerText;
-            // this.cloneBlockService.getSize(<HTMLElement> event.target, text, getSize(<HTMLElement> event.target));
-            // const line = "Say my name";
-            // const index = 2;
-            // const word = wordService.getWord(line, index);
-
-            // const netGraph = parser.getNetGraph();
-
-            // this.#popupManager.updatePopup(word, netGraph);
         }
     }
 
@@ -56,12 +41,23 @@ export class PageManager {
         this.cacheManager.validateNoneBlackListElement(event, () => {
             let cache: CacheModel = this.cacheManager.getOrUpdateCache(event);
 
-            const highlighting = new BlockHighlighting(
-                cache.focusBlock,
-                cache.textBlocks
-            );
 
-            highlighting.draw();
+
+            console.log("Inline width");
+            console.log(cache.clone.inline.width);
+            console.log("Inline height");
+            console.log(cache.clone.inline.height);
+            console.log("Block width");
+            console.log(cache.clone.block.width);
+            console.log("Block height");
+            console.log(cache.clone.block.height);
+
+            // const highlighting = new BlockHighlighting(
+            //     cache.focusBlock,
+            //     cache.textBlocks
+            // );
+
+            // highlighting.draw();
 
             this.onclick(event);
         });

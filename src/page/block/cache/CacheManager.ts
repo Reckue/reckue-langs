@@ -1,15 +1,21 @@
 import {TextBlocks} from "../../realtime/blocks/TextBlocks";
 import {CacheModel} from "./models/CacheModel";
 import {FocusBlockModel} from "../../realtime/blocks/FocusBlockModel";
+import { CloneBlockService } from "../../../lib/services/CloneBlockService";
+import { SizeModel } from "../../../lib/models/SizeModel";
 
 export class CacheManager {
 
     #blackList;
     #cachedBlocks;
 
+    cloneBlockService: CloneBlockService;
+
     constructor() {
         this.#blackList = new Set();
         this.#cachedBlocks = new Map();
+
+        this.cloneBlockService = new CloneBlockService();
     }
 
     getOrUpdateCache = (event: MouseEvent) => {
@@ -18,7 +24,6 @@ export class CacheManager {
             if (this.#getTextNodes(event).length > 0) {
                 cache = this.#updateCache(event);
             } else {
-                console.log(event.target);
                 this.#blackList.add(event.target);
             }
         }
@@ -36,9 +41,12 @@ export class CacheManager {
     }
 
     #updateCache = (event: MouseEvent) => {
-        const focusBlock = this.#whereWeAre(event);
-        const textBlocks = new TextBlocks(focusBlock);
-        const cache = new CacheModel(focusBlock, textBlocks);
+        const ref = <HTMLElement> event.target;
+        const text = ref.innerText;
+        const {width, height} = ref.getBoundingClientRect();
+
+        const clone = this.cloneBlockService.getSize(ref, text, new SizeModel(width, height));
+        const cache = new CacheModel(clone);
         this.#cachedBlocks.set(event.target, cache);
         return cache;
     }
