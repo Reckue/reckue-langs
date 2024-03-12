@@ -1,7 +1,7 @@
-import {ContentBuilder} from "../builder/ContentBuilder";
+import {ContentView} from "../../core/builder/ContentView";
 
 
-export class SettingsBuilder extends ContentBuilder {
+export class SettingsBuilder extends ContentView {
 
     #levers;
 

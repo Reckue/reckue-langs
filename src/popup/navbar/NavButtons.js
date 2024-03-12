@@ -42,7 +42,7 @@ export class NavButtons {
 
     #callParser = () => {
         chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
-            chrome.tabs.executeScript(tabs[0].id, {file: './page/page.js'});
+            chrome.tabs.executeScript(tabs[0].id, {file: './page/page.ts'});
         });
     };
 }
