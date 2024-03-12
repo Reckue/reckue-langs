@@ -31,37 +31,57 @@ export class PageManager {
     }
 
     run = () => {
-        addEventListener("click", this.onclick);
-        addEventListener("mousemove", this.onmousemove);
-        addEventListener("scroll", this.onmousemove);
-    }
-
-    onclick = (event: MouseEvent) => {
-        let cache: CacheModel = this.cacheManager.getCache(event);
-        if (cache) {
+        // addEventListener("click", this.onclick);
+        // addEventListener("mousemove", this.onmousemove);
+        // addEventListener("scroll", this.onmousemove);
+        //last child dom element
+        const span = document.querySelector('.hgKElc')
+        const sentence = span.querySelector('b')
+        const text = sentence.innerText
+        const wordsArray = text.split(' ')
+        const textToSpan = (text: string) => {
+            sentence.innerHTML = sentence.innerHTML.replace(text, `<span id="1">${text}</span>`)
+            sentence.style.border = "1px solid black";
         }
+        // 0,5,0 манифест либо раньше
+        wordsArray.map((text) => textToSpan(text))
+        console.log(wordsArray)
+
     }
+    // const nodes = span.childNodes
+    // for (let i = 0; i < nodes.length; i++) {
+    //   const item = nodes[i];
+    //     if (item.innerHTML == undefined) {
+    //         const split = item.textContent.split(' ')
+    //         console.log(split)
+    //     }
+    // }
+    // onclick = (event: MouseEvent) => {
+    //     let cache: CacheModel = this.cacheManager.getCache(event);
+    //     if (cache) {
+    //     }
+    // }
 
-    onmousemove = (event: MouseEvent) => {
-        this.cacheManager.validateNoneBlackListElement(event, () => {
-            // let cache: CacheModel = this.cacheManager.getOrUpdateCache(event);
+    // onmousemove = (event: MouseEvent) => {
+    //     this.cacheManager.validateNoneBlackListElement(event, () => {
+    //         // let cache: CacheModel = this.cacheManager.getOrUpdateCache(event);
 
-            const blockInnerText = (<HTMLElement> event.target).innerText
+    //         const blockInnerText = (<HTMLElement> event.target).innerText
 
-            const index = new IndexService().getIndex(event, blockInnerText)
+    //         const index = new IndexService().getIndex(event, blockInnerText)
             
-            const parser = new ParserService();
-            const word = parser.getWord(index, blockInnerText);
-            console.log(word)
+    //         const parser = new ParserService();
+    //         const word = parser.getWord(index, blockInnerText);
+    //         console.log(word)
 
-            // const highlighting = new BlockHighlighting(
-            //     cache.focusBlock,
-            //     cache.textBlocks
-            // );
+    //         // const highlighting = new BlockHighlighting(
+    //         //     cache.focusBlock,
+    //         //     cache.textBlocks
+    //         // );
 
-            // highlighting.draw();
+    //         // highlighting.draw();
 
-            this.onclick(event);
-        });
-    }
+    //         this.onclick(event);
+    //     });
+    // }
 }

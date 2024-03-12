@@ -24,4 +24,12 @@ export class HighlightingService {
             this.highlightingController.appendRef(block);
         });
     }
+
+    drawWordHighlight = (text: string) => {
+        const highlight = document.createElement('span');
+        highlight.style.border = "1px solid black";
+        highlight.className = 'highlight';
+        highlight.innerText = text
+        return highlight
+    }
 }
