@@ -10,8 +10,8 @@ import { getSize } from "../realtime/parser/services/BlockService";
 import { TextBlockModel } from "../realtime/blocks/TextBlockModel";
 import { TextBlocks } from "../realtime/blocks/TextBlocks";
 import { CursorModel } from "../realtime/parser/models/CursorModel";
-import { ParserService } from "../realtime/parser/services/ParserService";
 import { IndexService } from "./IndexService";
+import { NodeManager } from "./NodeManager";
 
 
 export class PageManager {
@@ -21,33 +21,25 @@ export class PageManager {
     private readonly highlightingService: HighlightingService;
     private cloneBlockService : CloneBlockService;
     private indexService: IndexService;
+    private nodeManager: NodeManager
 
     constructor() {
         this.cacheManager = new CacheManager();
         this.popupManager = new PopupManager("menu");
         this.highlightingService = new HighlightingService();
         this.cloneBlockService = new CloneBlockService();
-        this.indexService = new IndexService()
+        this.indexService = new IndexService();
+        this.nodeManager = new NodeManager();
     }
 
     run = () => {
-        // addEventListener("click", this.onclick);
-        // addEventListener("mousemove", this.onmousemove);
-        // addEventListener("scroll", this.onmousemove);
-        //last child dom element
-        const span = document.querySelector('.hgKElc')
-        const sentence = span.querySelector('b')
-        const text = sentence.innerText
-        const wordsArray = text.split(' ')
-        const textToSpan = (text: string) => {
-            sentence.innerHTML = sentence.innerHTML.replace(text, `<span id="1">${text}</span>`)
-            sentence.style.border = "1px solid black";
-        }
-        // 0,5,0 манифест либо раньше
-        wordsArray.map((text) => textToSpan(text))
-        console.log(wordsArray)
+        const body = document.querySelector('body'); 
 
-    }
+        const textNodeArray: Array<String> = this.nodeManager.getTextNodes(body);
+}
+ // => [div#root, div.page-wrapper.document-page, ...]
+
+}
     // const nodes = span.childNodes
     // for (let i = 0; i < nodes.length; i++) {
     //   const item = nodes[i];
@@ -84,4 +76,3 @@ export class PageManager {
     //         this.onclick(event);
     //     });
     // }
-}
