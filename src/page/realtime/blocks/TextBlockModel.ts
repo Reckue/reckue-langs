@@ -1,14 +1,14 @@
-import {ElementExactSizeService} from "../../../lib/services/ElementExactSizeService";
+import {CloneBlockService} from "../../../lib/services/CloneBlockService";
 import {SizeModel} from "../../../lib/models/SizeModel";
 import { CoordinateBlockModel } from "../parser/models/CoordinateBlockModel";
-import { ExactSizesModel } from "../../../lib/models/ExactSizesModel";
+import { CloneBlockModel } from "../../../lib/models/CloneBlockModel";
 import { FocusBlockModel } from "./FocusBlockModel";
 
 export class TextBlockModel extends CoordinateBlockModel {
 
     private empty: Boolean;
     private text: string;
-    private size: ExactSizesModel;
+    private size: CloneBlockModel;
 
     constructor(focusBlock: FocusBlockModel, text: string) {
         super()
@@ -43,7 +43,7 @@ export class TextBlockModel extends CoordinateBlockModel {
 
     private setupSize = (focusBlock: FocusBlockModel) => {
         const ref = focusBlock.getRef();
-        const clone = new ElementExactSizeService();
+        const clone = new CloneBlockService();
         this.size = clone.getSize(ref, this.getText(), focusBlock.getSize());
     }
 
