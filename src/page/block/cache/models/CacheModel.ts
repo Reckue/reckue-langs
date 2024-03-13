@@ -1,13 +1,12 @@
 import {TextBlocks} from "../../../realtime/blocks/TextBlocks";
 import {FocusBlockModel} from "../../../realtime/blocks/FocusBlockModel";
+import { CloneBlockModel } from "../../../../lib/models/CloneBlockModel";
 
 export class CacheModel {
 
-    readonly focusBlock: FocusBlockModel;
-    readonly textBlocks: TextBlocks;
+    readonly clone: CloneBlockModel;
 
-    constructor(focusBlock: FocusBlockModel, textBlocks: TextBlocks) {
-        this.focusBlock = focusBlock;
-        this.textBlocks = textBlocks;
+    constructor(clone: CloneBlockModel) {
+        this.clone = clone;
     }
 }

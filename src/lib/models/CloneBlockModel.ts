@@ -1,6 +1,6 @@
 import {SizeModel} from "./SizeModel";
 
-export class ExactSizesModel {
+export class CloneBlockModel {
 
     inline: SizeModel;
     block: SizeModel;

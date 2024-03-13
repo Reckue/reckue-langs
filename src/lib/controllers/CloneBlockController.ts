@@ -1,9 +1,9 @@
 import {SizeModel} from "../models/SizeModel";
 import {AttributeStylesService} from "../services/AttributeStylesService";
 
-export class ElementExactSizeController {
+export class CloneBlockController {
 
-    private cloneRef: HTMLElement;
+    private readonly cloneRef: HTMLElement;
     private attributeStylesService: AttributeStylesService;
 
     constructor(tagName: string) {
@@ -13,7 +13,7 @@ export class ElementExactSizeController {
     executeInAppendTiming = (executeList: Array<Function>): Array<SizeModel> => {
         parent.document.body.appendChild(this.cloneRef);
 
-        const result: Array<SizeModel> = executeList.map((execute) => execute());
+        const result: Array<SizeModel> = executeList.map(execute => execute());
 
         parent.document.body.removeChild(this.cloneRef);
 
@@ -33,6 +33,8 @@ export class ElementExactSizeController {
     }
 
     appendAttributeStyles = (attributeStyles: string) => {
+        this.cloneRef.style.width = "auto";
+        this.cloneRef.style.wordBreak = "normal";
         this.cloneRef.setAttribute('style', attributeStyles);
     }
 
@@ -43,7 +45,8 @@ export class ElementExactSizeController {
     }
 
     // fillCloneStyles = (computedStyles: CSSStyleDeclaration) => {
-    //     this.cloneRef.style = computedStyles;
+    //     // @ts-ignore
+    //     this.cloneRef["style"] = computedStyles;
     // }
 
     buildSize = () => {

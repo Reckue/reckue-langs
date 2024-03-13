@@ -1,4 +1,4 @@
-import { SizeModel } from "../../size/SizeModel"
+import { SizeModel } from "../../../../lib/models/SizeModel"
 import { CoordinateBlockModel } from "./CoordinateBlockModel"
 import { CursorModel } from "./CursorModel"
 
