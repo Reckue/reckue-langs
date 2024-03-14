@@ -1,8 +1,8 @@
 import {enumForEach} from "../../core/enum";
-import {Levels} from "../../enum/Levels";
-import {Builder} from "../builder/Builder";
+import {Levels} from "../../core/enum/Levels";
+import {AbstractView} from "../../core/builder/AbstractView";
 
-export class WordsAppender extends Builder {
+export class WordsAppender extends AbstractView {
 
     #templateFunction;
     #options;

@@ -1,10 +1,10 @@
 {
   "name": "reckue-lang",
-  "version": "0.5.1",
+  "version": "0.5.7",
   "description": "It's your vocabulary-book built-in any pages you visit.",
   "main": "index.js",
   "scripts": {
-    "build": "C:/Users/evgen/Desktop/lena/Reckue/reckue-langs/node_modules/.bin/webpack"
+    "build": "webpack"
   },
   "repository": {
     "type": "git",
@@ -17,10 +17,11 @@
   },
   "homepage": "https://github.com/Reckue/terms-plugin#readme",
   "devDependencies": {
-    "pug": "^3.0.2",
-    
-    "pug-loader": "^2.4.0",
     "apply-loader": "^2.0.0",
+    "pug": "^2.0.4",
+    "pug-loader": "^2.4.0",
+    "ts-loader": "^9.5.1",
+    "typescript": "^5.3.3",
     "webpack": "^5.70.0",
     "webpack-cli": "^4.9.2"
   }
