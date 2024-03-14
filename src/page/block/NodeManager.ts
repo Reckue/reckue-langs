@@ -2,7 +2,7 @@ export class NodeManager {
 
     private notInteractiveElement = (node: Node) => {
         return !this.isScript(node) && !this.isSVG(node) && !this.isImage(node)
-            && !this.isInput(node) && !this.isLink(node) && !this.isBr(node)
+            && !this.isInput(node) && /*!this.isLink(node) &&*/ !this.isBr(node)
             && !this.isStyle(node) && !this.isForm(node) && !this.isComment(node)
             && !this.isUnverifiableInteractiveElement(node);
     }
@@ -10,15 +10,17 @@ export class NodeManager {
     private isForm = (node: Node) => node instanceof HTMLFormElement;
     private isImage = (node: Node) => node instanceof HTMLImageElement;
     private isInput = (node: Node) => node instanceof HTMLInputElement;
-    private isLink = (node: Node) => node instanceof HTMLLinkElement;
+    // private isLink = (node: Node) => node instanceof HTMLLinkElement;
     private isStyle = (node: Node) => node instanceof HTMLStyleElement;
     private isBr = (node: Node) => node instanceof HTMLBRElement;
     private isSVG = (node: Node) => node instanceof SVGSVGElement;
     private isComment = (node: Node) => node instanceof Comment;
-    private isUnverifiableInteractiveElement = (node: Node) => node.nodeName === "CODE" || node.nodeName === "A";
+    private isUnverifiableInteractiveElement = (node: Node) => node.nodeName === "CODE" /*|| node.nodeName === "A"*/;
+
+    private resultArray: Array<any> = [];
 
 
-    getChildNodes = (element: any) => {
+    getChildNodes = (element: HTMLElement) => {
         if (!element) 
             return
         const childNodes = [];
@@ -34,16 +36,14 @@ export class NodeManager {
         const TEXT_NODE = 3;
         const childNodes = this.getChildNodes(element);
 
-        const resultArray: Array<String> = [];
-
         for (const elememt of childNodes) {
             if (elememt.nodeType === TEXT_NODE) {
                 console.log(elememt.textContent)
-                resultArray.push(elememt.textContent);
+                this.resultArray.push(elememt);
             } else if (elememt.nodeType === ELEMENT_NODE) {
                 this.getTextNodes(elememt)
             }
         }
-        return resultArray;
+        return this.resultArray;
     }
 }
