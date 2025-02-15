@@ -1,5 +1,5 @@
-# Chrome extension.
-## Vacabulary Assistant - Your personal vocabulary builder.
+# Reckue Langs - Chrome Extinction
+## Vacabulary Assistant – Learn New Words as You Browse
 
 <div style="border: 1px #1e81c6 solid; border-radius: 10px; background: #acd1ff">
 
