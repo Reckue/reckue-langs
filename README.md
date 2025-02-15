@@ -2,7 +2,7 @@
 ## Vacabulary Assistant – Learn New Words as You Browse
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)  
-[![Version](https://img.shields.io/badge/version-0.4.5-green)](#updates-history)  
+[![Version](https://img.shields.io/github/package-json/v/Reckue/reckue-langs)](https://github.com/Reckue/reckue-langs) 
 [![Contributions Welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg)](CONTRIBUTING.md)  
 [![Issues](https://img.shields.io/github/issues/Reckue/reckue-langs)](https://github.com/Reckue/reckue-langs/issues)
 
