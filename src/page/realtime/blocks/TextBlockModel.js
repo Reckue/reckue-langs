@@ -1,49 +1,49 @@
-import {CloneBlockService} from "../../../lib/services/CloneBlockService";
-import {SizeModel} from "../../../lib/models/SizeModel";
+// import {CloneBlockService} from "../../../lib/services/CloneBlockService";
+// import {SizeModel} from "../../../lib/models/SizeModel";
 
-export class TextBlockModel {
+// export class TextBlockModel {
 
-    #isEmpty;
-    #text;
-    #size;
+//     #isEmpty;
+//     #text;
+//     #size;
 
-    constructor(focusBlock, text) {
-        this.#text = text;
-        this.#isEmpty = !(text.trim().length > 0);
-        this.#setupSize(focusBlock);
-    }
+//     constructor(focusBlock, text) {
+//         this.#text = text;
+//         this.#isEmpty = !(text.trim().length > 0);
+//         this.#setupSize(focusBlock);
+//     }
 
-    getSize = () => {
-        return this.#size.block;
-    }
+//     getSize = () => {
+//         return this.#size.block;
+//     }
 
-    getInlineSize = () => {
-        return this.#size.inline;
-    }
+//     getInlineSize = () => {
+//         return this.#size.inline;
+//     }
 
-    getLinesCount = () => {
-        return this.#size.block.height / this.#size.inline.height;
-    }
+//     getLinesCount = () => {
+//         return this.#size.block.height / this.#size.inline.height;
+//     }
 
-    getLineHeight =  () =>{
-        return this.#size.inline.height;
-    }
+//     getLineHeight =  () =>{
+//         return this.#size.inline.height;
+//     }
 
-    setLineHeight = (height) => {
-        this.#size.inline.height = height;
-    }
+//     setLineHeight = (height) => {
+//         this.#size.inline.height = height;
+//     }
 
-    isEmpty = () => {
-        return this.#isEmpty;
-    }
+//     isEmpty = () => {
+//         return this.#isEmpty;
+//     }
 
-    #setupSize = (focusBlock) => {
-        const ref = focusBlock.getRef();
-        const clone = new CloneBlockService();
-        this.#size = clone.getSize(ref, this.#getText(), focusBlock.getSize());
-    }
+//     #setupSize = (focusBlock) => {
+//         const ref = focusBlock.getRef();
+//         const clone = new CloneBlockService();
+//         this.#size = clone.getSize(ref, this.#getText(), focusBlock.getSize());
+//     }
 
-    #getText = () => {
-        return !this.isEmpty() ? this.#text : "0";
-    }
-}
+//     #getText = () => {
+//         return !this.isEmpty() ? this.#text : "0";
+//     }
+// }

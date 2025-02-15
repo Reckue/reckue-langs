@@ -12,15 +12,10 @@ export class HighlightingService {
     }
 
     drawHighlight = (innerTextBlocks: TextBlocks) => {
-        //TODO:: Destruct prev
-        innerTextBlocks.getBlocks().forEach((textBlock: TextBlockModel, index: number) => {
-            const size = textBlock.getSize();
+        this.highlightingController.destructRef();
+        innerTextBlocks.getBlocks().forEach((block: CoordinateBlockModel, index: number) => {
             const position = innerTextBlocks.getPosition(index);
-            const block = new CoordinateBlockModel();
-            block.height = size.height;
-            block.width = size.width;
-            block.x = position.x;
-            block.y = position.y;
+            [block.x, block.y] = [position.x, position.y]
             this.highlightingController.appendRef(block);
         });
     }
