@@ -1,5 +1,5 @@
 import {Context} from "../../core/Context";
-import {Levels} from "../../enum/Levels";
+import {Levels} from "../../core/enum/Levels";
 
 export class WordRenderer {
 

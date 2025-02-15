@@ -23,13 +23,10 @@ export class PopupService {
 
     run = () => {
         this.#buildPopupDOM();
-
         const settings = new SettingsService();
         settings.fillSettings();
-
         const scroll = new WordbookScroll();
         scroll.fillScroll(0);
-
         this.#setupNavButtons();
     }
 
