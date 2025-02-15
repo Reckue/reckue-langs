@@ -1,27 +1,33 @@
 # Reckue Langs - Chrome Extinction
 ## Vacabulary Assistant – Learn New Words as You Browse
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)  
+[![Version](https://img.shields.io/badge/version-0.4.5-green)](#updates-history)  
+[![Contributions Welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg)](CONTRIBUTING.md)  
+[![Issues](https://img.shields.io/github/issues/Reckue/reckue-langs)](https://github.com/Reckue/reckue-langs/issues)
+
+## What is Vacabulary Assistant?
+Vacabulary Assistant is an **interactive vocabulary builder** that helps you collect and organize new words effortlessly while browsing the web. With just a click, you can **save words**, **highlight them**, and **track your learning progress** directly in your browser. Marked words take on customizable colors and transform into interactive vocabulary cards.
+
+### How It Works
+Forget about manually creating vocabulary cards—**Vacabulary Assistant does it for you!** Just browse the web as usual, reading articles, books, or any content. Whenever you come across a word you want to remember, **click on it** to add it to your personal wordbook.
+
+As you continue learning, you can **track your progress**, **improve retention**, and **level up your vocabulary effortlessly**. Vacabulary Assistant streamlines language learning, making it seamless and automatic, so you can focus on mastering new words efficiently.
+
+🚀 **Key Features:**  
+✔️ Save words instantly from any webpage  
+✔️ Highlight words in custom colors  
+✔️ Automatically turn words into vocabulary cards  
+✔️ Track progress and enhance retention  
+
+🔧 **Installation & Usage**  
+Get started in minutes! Follow the [Build Guide](#build-guide) to install and set up the extension.
+
 <div style="border: 1px #1e81c6 solid; border-radius: 10px; background: #acd1ff">
 
 ![img_2.png](img_2.png)
 
 </div>
-
-<p>
-Vacabulary Assistant helps you build and organize your vocabulary while browsing any webpage. 
-
-You can easily add, edit, and categorize words. Marked words will be highlighted in customizable colors and instantly transformed into interactive vocabulary cards!
-</p>
-
-#### How it works?
-
-No need to manually create vocabulary cards anymore! <br>
-Just read articles, books, or any web content. <br>
-Click on words to save them in your personal wordbook. <br>
-
-Track your progress, improve retention, and level up your vocabulary effortlessly.
-
-Vacabulary Assistant automates the process, saving you time while enhancing your language-learning experience!
 
 ## Build guide
 
