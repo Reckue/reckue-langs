@@ -29,18 +29,43 @@ Get started in minutes! Follow the [Build Guide](#build-guide) to install and se
 
 </div>
 
-## Build guide
+## 🛠 Build & Installation Guide
 
-1. Download dependencies and initialize the npm project using `npm install`.
+Follow these simple steps to set up **Vacabulary Assistant** in your browser. No prior experience required! 🚀
 
-2. Build the extension using `npm run build`. This will generate two runnable files: <br>
-   `page/page.ts` and `popup/popup.ts`.
+### **1️⃣ Install Dependencies**
+Open a terminal and run the following command to install all required dependencies:
+```sh  
+npm install  
+```
 
-3. Open your browser and navigate to `chrome://extensions/`.
+### **2️⃣ Build the Extension**
+Compile the project by running:
+```sh  
+npm run build  
+```
+This will generate the necessary files:
+- `page/page.ts`
+- `popup/popup.ts`
 
-4. Enable developer mode and load the unpacked extension from the directory containing `manifest.json`.
+### **3️⃣ Enable Developer Mode in Chrome**
+1. Open Google Chrome and navigate to:  
+   🔗 `chrome://extensions/`
+2. Toggle the **Developer mode** switch (usually in the top-right corner).
+
+### **4️⃣ Load the Unpacked Extension**
+1. Click **"Load unpacked"**.
+2. Select the folder where your `manifest.json` file is located.
 
 ![img_1.png](img_1.png)
+
+### **5️⃣ Test the Extension**
+- Open any webpage and try selecting a word.
+- You should see an option to save it to your vocabulary list.
+- Open the extension popup to view and manage your saved words.
+
+### **6️⃣ You're All Set! 🎉**
+Your **Vacabulary Assistant** extension is now installed and ready to help you expand your vocabulary! If you encounter any issues, check the [GitHub Issues](https://github.com/Reckue/reckue-langs/issues) page or contribute improvements.
 
 ## Updates History:
 
