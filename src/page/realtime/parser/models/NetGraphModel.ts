@@ -1,4 +1,4 @@
-import { SizeModel } from "../../size/SizeModel"
+import { SizeModel } from "../../../../lib/models/SizeModel"
 import { CoordinateBlockModel } from "./CoordinateBlockModel"
 import { CursorModel } from "./CursorModel"
 
@@ -14,8 +14,8 @@ export class NetGraphModel {
     currentTextBlockSize: SizeModel
 
     constructor(cursor: CursorModel,  block: CoordinateBlockModel, textLength: number) {
-        this.cursor = cursor,
-        this.block = block,
-        this.textLength = textLength
+        this.cursor = cursor;
+        this.block = block;
+        this.textLength = textLength;
     }
 }
