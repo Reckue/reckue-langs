@@ -36,17 +36,25 @@ Follow these simple steps to set up **Vacabulary Assistant** in your browser. No
 ### **1️⃣ Install Dependencies**
 Open a terminal and run the following command to install all required dependencies:
 ```sh  
-npm install  
+npm install --legacy-peer-deps
 ```
 
 ### **2️⃣ Build the Extension**
-Compile the project by running:
+
+**Для разработки и отладки:**
 ```sh  
-npm run build  
+npm run dev  
 ```
-This will generate the necessary files:
-- `page/page.ts`
-- `popup/popup.ts`
+Это создаст файлы с source maps для отладки:
+- `dist/page/page.js` + `dist/page/page.js.map`
+- `dist/popup/popup.js` + `dist/popup/popup.js.map`
+- `dist/popup/popup.html`
+
+**Для production:**
+```sh  
+npm run build:prod  
+```
+Это создаст минифицированные файлы для продакшена.
 
 ### **3️⃣ Enable Developer Mode in Chrome**
 1. Open Google Chrome and navigate to:  
@@ -64,7 +72,25 @@ This will generate the necessary files:
 - You should see an option to save it to your vocabulary list.
 - Open the extension popup to view and manage your saved words.
 
-### **6️⃣ You're All Set! 🎉**
+### **6️⃣ Debugging 🔧**
+
+**Для отладки ошибок:**
+1. Используйте `npm run dev` для сборки с source maps
+2. Откройте DevTools в Chrome (F12)
+3. Перейдите на вкладку Sources
+4. Найдите файлы в папке `webpack://` → `src/`
+5. Установите breakpoints для отладки
+
+**Пример отладки ошибки:**
+```javascript
+// Вместо минифицированного кода:
+// TypeError: e.getBoundingClientRect is not a function at page.js:1:36036
+
+// Теперь вы увидите исходный код:
+// TypeError: e.getBoundingClientRect is not a function at ApiPageService.js:45:12
+```
+
+### **7️⃣ You're All Set! 🎉**
 Your **Vacabulary Assistant** extension is now installed and ready to help you expand your vocabulary! If you encounter any issues, check the [GitHub Issues](https://github.com/Reckue/reckue-langs/issues) page or contribute improvements.
 
 ## Updates History:
