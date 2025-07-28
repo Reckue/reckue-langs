@@ -1,6 +1,6 @@
-import {App} from "./core/App.js";
-import {PopupService} from "./popup/PopupService.js";
+import {ApiApp} from "./core/ApiApp.js";
+import {ApiPopupService} from "./popup/ApiPopupService.js";
 
-const service = new PopupService();
-const app = new App(service);
+const service = new ApiPopupService();
+const app = new ApiApp(service);
 app.start();

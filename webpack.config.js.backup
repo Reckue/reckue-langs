@@ -3,8 +3,8 @@ const path = require("path");
 module.exports = {
     mode: "production",
     entry: {
-        page: "./src/api-page.ts",
-        popup: "./src/api-popup.ts"
+        page: "./src/page.ts",
+        popup: "./src/popup.ts"
     },
     module: {
         rules: [
@@ -23,3 +23,4 @@ module.exports = {
         filename: "dist/[name]/[name].js"
     }
 };
+

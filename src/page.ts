@@ -1,6 +1,6 @@
-import {App} from "./core/App";
-import {PageService} from "./page/PageService";
+import {ApiApp} from "./core/ApiApp";
+import {ApiPageService} from "./page/ApiPageService";
 
-const service = new PageService();
-const app = new App(service);
+const service = new ApiPageService();
+const app = new ApiApp(service);
 app.start();

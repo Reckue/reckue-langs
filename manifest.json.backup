@@ -1,14 +1,13 @@
 {
-  "name": "Reckue Languages (API)",
-  "version": "0.5.7-api",
-  "description": "Interactive language learning assistant with API integration",
+  "name": "Reckue Languages (Local)",
+  "version": "0.5.7-local",
+  "description": "Interactive language learning assistant",
   "permissions": ["storage", "activeTab", "tabs"],
-  "host_permissions": ["https://api.reckue.com/*"],
   "background": {
     "service_worker": "background/application.js"
   },
   "action": {
-    "default_popup": "dist/popup/popup.html",
+    "default_popup": "dist/popup/index.html",
     "default_icon": {
       "16": "images/coach16.png",
       "32": "images/coach32.png",

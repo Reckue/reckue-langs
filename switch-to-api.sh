@@ -16,6 +16,10 @@ cp src/api-page.ts src/page.ts
 cp webpack-api.config.js webpack.config.js
 cp manifest-api.json manifest.json
 
+# Обновляем версию в package.json
+echo "📝 Обновление версии в package.json..."
+sed -i 's/"version": "0.5.7-local"/"version": "0.5.7-api"/' package.json
+
 # Собираем проект
 echo "🔨 Сборка API версии..."
 npm run build
