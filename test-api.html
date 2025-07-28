@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Test</title>
+</head>
+<body>
+    <h1>Reckue API Test</h1>
+    <div id="status">Проверка подключения к API...</div>
+    <div id="user-info"></div>
+    <div id="wordbooks"></div>
+
+    <script>
+        // Простой тест API
+        async function testAPI() {
+            const statusDiv = document.getElementById('status');
+            const userInfoDiv = document.getElementById('user-info');
+            const wordbooksDiv = document.getElementById('wordbooks');
+
+            try {
+                // Тест авторизации
+                statusDiv.innerHTML = '🔐 Авторизация...';
+                
+                const authResponse = await fetch('https://api.reckue.com/api/1/auth/tempin', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({})
+                });
+
+                if (!authResponse.ok) {
+                    throw new Error(`Auth failed: ${authResponse.status}`);
+                }
+
+                const authData = await authResponse.json();
+                const token = authData.token;
+
+                statusDiv.innerHTML = '✅ Авторизация успешна';
+
+                // Тест получения информации о пользователе
+                const userResponse = await fetch('https://api.reckue.com/api/1/auth/whoami', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (userResponse.ok) {
+                    const userData = await userResponse.json();
+                    userInfoDiv.innerHTML = `
+                        <h3>👤 Информация о пользователе:</h3>
+                        <p><strong>ID:</strong> ${userData.id || 'N/A'}</p>
+                        <p><strong>Username:</strong> ${userData.username || 'N/A'}</p>
+                        <p><strong>Type:</strong> ${userData.type || 'N/A'}</p>
+                    `;
+                }
+
+                // Тест получения словарей
+                const wordbooksResponse = await fetch('https://api.reckue.com/api/1/wordbooks', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (wordbooksResponse.ok) {
+                    const wordbooksData = await wordbooksResponse.json();
+                    wordbooksDiv.innerHTML = `
+                        <h3>📚 Словари (${wordbooksData.length}):</h3>
+                        <ul>
+                            ${wordbooksData.map(wb => `
+                                <li><strong>${wb.language}</strong> - ${wb.id}</li>
+                            `).join('')}
+                        </ul>
+                    `;
+                }
+
+            } catch (error) {
+                statusDiv.innerHTML = `❌ Ошибка: ${error.message}`;
+                console.error('API Test Error:', error);
+            }
+        }
+
+        // Запускаем тест при загрузке страницы
+        testAPI();
+    </script>
+</body>
+</html>

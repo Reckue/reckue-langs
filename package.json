@@ -4,7 +4,8 @@
   "description": "Vacabulary Assistant helps you effortlessly build and organize your vocabulary while browsing the web.",
   "main": "index.js",
   "scripts": {
-    "build": "webpack --config webpack.config.js"
+    "build": "webpack --config webpack.config.js",
+    "build:api": "webpack --config webpack-api.config.js"
   },
   "repository": {
     "type": "git",
