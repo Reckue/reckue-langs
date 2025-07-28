@@ -1,6 +1,6 @@
 {
   "name": "Reckue Languages (API)",
-  "version": "0.5.7-api",
+  "version": "0.6.0",
   "description": "Interactive language learning assistant with API integration",
   "permissions": ["storage", "activeTab", "tabs"],
   "host_permissions": ["https://api.reckue.com/*"],

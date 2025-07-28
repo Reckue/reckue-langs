@@ -1,1 +1,2315 @@
-(()=>{var e={79:(e,t,r)=>{var s=r(342);e.exports=(s.default||s).apply(s,[])},854:(e,t,r)=>{var s=r(766);e.exports=function(e){var t,r="",o=e||{};return function(e){r=r+"<button"+(s.attr("class",s.classes([e.className],[!0]),!1,!0)+s.attr("disabled",e.disabled,!0,!0))+">"+s.escape(null==(t=e.title)?"":t)+"</button>"}.call(this,"buttonInfo"in o?o.buttonInfo:"undefined"!=typeof buttonInfo?buttonInfo:void 0),r}},342:(e,t,r)=>{r(766),e.exports=function(e){return""+'<div class="wordbook"><div class="header"><div class="filter"><input id="filter-terms" placeholder="Search or filter words..."></div></div><div class="words" id="words"></div><div id="pages"></div></div>'}},161:(e,t,r)=>{var s=r(766);e.exports=function(e){var t,r="",o=e||{};return function(e,o,i){r=r+'<div class="word"><input class="clear"'+s.attr("value",e,!0,!0)+'><select class="level">',function(){var e=i;if("number"==typeof e.length)for(var n=0,a=e.length;n<a;n++){var l=e[n];r=r+"<option"+(s.attr("value",l,!0,!0)+s.attr("selected",o===l,!0,!0))+">"+s.escape(null==(t=l)?"":t)+"</option>"}else for(var n in a=0,e)a++,l=e[n],r=r+"<option"+(s.attr("value",l,!0,!0)+s.attr("selected",o===l,!0,!0))+">"+s.escape(null==(t=l)?"":t)+"</option>"}.call(this),r+="</select></div>"}.call(this,"clear"in o?o.clear:"undefined"!=typeof clear?clear:void 0,"level"in o?o.level:"undefined"!=typeof level?level:void 0,"options"in o?o.options:"undefined"!=typeof options?options:void 0),r}},721:(e,t,r)=>{r(766),e.exports=function(e){return""+'<div class="settings"><div class="block"><div class="title">Languages</div></div></div>'}},857:(e,t,r)=>{var s=r(766);e.exports=function(e){var t,r="",o=e||{};return function(e){r=r+'<div class="enable"'+s.attr("id",e.id,!0,!0)+"><span>"+s.escape(null==(t=e.title)?"":t)+':</span><div class="lever"><div class="slider">|||</div></div></div>'}.call(this,"language"in o?o.language:"undefined"!=typeof language?language:void 0),r}},766:(e,t,r)=>{"use strict";var s=Object.prototype.hasOwnProperty;function o(e,t){return Array.isArray(e)?function(e,t){for(var r,s="",i="",n=Array.isArray(t),a=0;a<e.length;a++)(r=o(e[a]))&&(n&&t[a]&&(r=l(r)),s=s+i+r,i=" ");return s}(e,t):e&&"object"==typeof e?function(e){var t="",r="";for(var o in e)o&&e[o]&&s.call(e,o)&&(t=t+r+o,r=" ");return t}(e):e||""}function i(e){if(!e)return"";if("object"==typeof e){var t="";for(var r in e)s.call(e,r)&&(t=t+r+":"+e[r]+";");return t}return e+""}function n(e,t,r,s){if(!1===t||null==t||!t&&("class"===e||"style"===e))return"";if(!0===t)return" "+(s?e:e+'="'+e+'"');var o=typeof t;return"object"!==o&&"function"!==o||"function"!=typeof t.toJSON||(t=t.toJSON()),"string"==typeof t||(t=JSON.stringify(t),r||-1===t.indexOf('"'))?(r&&(t=l(t))," "+e+'="'+t+'"'):" "+e+"='"+t.replace(/'/g,"&#39;")+"'"}t.merge=function e(t,r){if(1===arguments.length){for(var s=t[0],o=1;o<t.length;o++)s=e(s,t[o]);return s}for(var n in r)if("class"===n){var a=t[n]||[];t[n]=(Array.isArray(a)?a:[a]).concat(r[n]||[])}else if("style"===n){a=(a=i(t[n]))&&";"!==a[a.length-1]?a+";":a;var l=i(r[n]);l=l&&";"!==l[l.length-1]?l+";":l,t[n]=a+l}else t[n]=r[n];return t},t.classes=o,t.style=i,t.attr=n,t.attrs=function(e,t){var r="";for(var a in e)if(s.call(e,a)){var l=e[a];if("class"===a){r=n(a,l=o(l),!1,t)+r;continue}"style"===a&&(l=i(l)),r+=n(a,l,!1,t)}return r};var a=/["&<>]/;function l(e){var t=""+e,r=a.exec(t);if(!r)return e;var s,o,i,n="";for(s=r.index,o=0;s<t.length;s++){switch(t.charCodeAt(s)){case 34:i="&quot;";break;case 38:i="&amp;";break;case 60:i="&lt;";break;case 62:i="&gt;";break;default:continue}o!==s&&(n+=t.substring(o,s)),o=s+1,n+=i}return o!==s?n+t.substring(o,s):n}t.escape=l,t.rethrow=function e(t,s,o,i){if(!(t instanceof Error))throw t;if(!("undefined"==typeof window&&s||i))throw t.message+=" on line "+o,t;var n,a,l,d;try{i=i||r(365).readFileSync(s,{encoding:"utf8"}),n=3,a=i.split("\n"),l=Math.max(o-n,0),d=Math.min(a.length,o+n)}catch(r){return t.message+=" - could not read from "+s+" ("+r.message+")",void e(t,null,o)}n=a.slice(l,d).map(function(e,t){var r=t+l+1;return(r==o?"  > ":"    ")+r+"| "+e}).join("\n"),t.path=s;try{t.message=(s||"Pug")+":"+o+"\n"+n+"\n\n"+t.message}catch(e){}throw t}},365:()=>{},799:e=>{"use strict";e.exports=JSON.parse('{"name":"Reckue Languages (API)","version":"0.5.7-api","description":"Interactive language learning assistant with API integration","permissions":["storage","activeTab","tabs"],"host_permissions":["https://api.reckue.com/*"],"background":{"service_worker":"background/application.js"},"action":{"default_popup":"dist/popup/popup.html","default_icon":{"16":"images/coach16.png","32":"images/coach32.png","48":"images/coach48.png","128":"images/coach128.png"}},"content_scripts":[{"matches":["http://*/*","https://*/*"],"exclude_matches":["https://translate.google.com/*"],"run_at":"document_idle","js":["dist/page/page.js"]}],"icons":{"16":"images/coach16.png","32":"images/coach32.png","48":"images/coach48.png","128":"images/coach128.png"},"manifest_version":3}')}},t={};function r(s){var o=t[s];if(void 0!==o)return o.exports;var i=t[s]={exports:{}};return e[s](i,i.exports,r),i.exports}(()=>{"use strict";class e{log=e=>{window.console.log("Reckue language app: "+e)};#e=e=>{window.console.log(e.textContent),window.console.log(e.toString()),window.console.log(e.parentNode.toString()),window.console.log(e.parentNode.nodeName),window.console.log(e.parentNode.role)}}class t{#t="https://api.reckue.com/api/1";#r=null;#s=new e;constructor(){this.#o()}#o=()=>{this.#r=localStorage.getItem("reckue_temp_token")};#i=e=>{this.#r=e,localStorage.setItem("reckue_temp_token",e)};#n=async(e,t={})=>{const r=`${this.#t}${e}`,s={"Content-Type":"application/json",...t.headers};this.#r&&(s.Authorization=`Bearer ${this.#r}`);try{const e=await fetch(r,{...t,headers:s});if(!e.ok)throw new Error(`HTTP error! status: ${e.status}`);return await e.json()}catch(e){throw this.#s.log(`API request failed: ${e.message}`),e}};tempAuth=async()=>{try{const e=await this.#n("/auth/tempin",{method:"POST",body:JSON.stringify({})});return!!e.token&&(this.#i(e.token),this.#s.log("Temporary authentication successful"),!0)}catch(e){return this.#s.log("Temporary authentication failed"),!1}};getCurrentUser=async()=>{try{return await this.#n("/auth/whoami")}catch(e){return this.#s.log("Failed to get current user"),null}};getWordbooks=async()=>{try{return await this.#n("/wordbooks")}catch(e){return this.#s.log("Failed to get wordbooks"),[]}};getMainWordbook=async()=>{try{return await this.#n("/wordbooks/main")}catch(e){return this.#s.log("Failed to get main wordbook"),null}};getWords=async(e,t=0,r=50,s="")=>{try{const o={page:t,size:r};return s&&(o.filter=s),await this.#n(`/wordbook/words/${e}`,{method:"POST",body:JSON.stringify(o)})}catch(e){return this.#s.log("Failed to get words"),{content:[],totalElements:0}}};addWord=async(e,t,r=1)=>{try{return await this.#n("/wordbook/words",{method:"POST",body:JSON.stringify({wordbookId:e,word:t,level:r})})}catch(e){return this.#s.log("Failed to add word"),null}};addWordsList=async(e,t)=>{try{const r=t.map(t=>({wordbookId:e,word:t.word||t,level:t.level||1}));return await this.#n("/wordbook/words/list",{method:"POST",body:JSON.stringify(r)})}catch(e){return this.#s.log("Failed to add words list"),null}};updateWordLevel=async(e,t,r)=>{try{return await this.#n("/wordbook/words/levels",{method:"POST",body:JSON.stringify({wordbookId:e,wordId:t,level:r})})}catch(e){return this.#s.log("Failed to update word level"),null}};deleteWord=async(e,t)=>{try{return await this.#n("/wordbook/words",{method:"DELETE",body:JSON.stringify({wordbookId:e,wordId:t})})}catch(e){return this.#s.log("Failed to delete word"),null}};createWordbook=async e=>{try{return await this.#n("/wordbooks",{method:"POST",body:JSON.stringify({language:e})})}catch(e){return this.#s.log("Failed to create wordbook"),null}};getWordbooksByLanguage=async e=>{try{return await this.#n(`/wordbooks/language/${e}`)}catch(e){return this.#s.log("Failed to get wordbooks by language"),[]}};ensureAuth=async()=>{if(!this.#r)return await this.tempAuth();try{return await this.getCurrentUser(),!0}catch(e){return await this.tempAuth()}}}class s{#a;#l;#d;constructor(e,t){this.#a=e,this.#d=t}getCount=()=>this.#l;calcPagesCount=()=>(this.#l=Math.ceil(this.#a/this.#d),this.#l);isIndexOnPage=(e,t)=>t>=this.#c(e)&&t<this.#h(e);#c=e=>e*this.#d;#h=e=>(e+1)*this.#d}class o{#u;#g;constructor(){this.#g=new Map,this.#u=new s(0,0)}remove=e=>{this.#g.delete(e),this.#u=new s(this.#g.size,50),this.#u.calcPagesCount()};set=e=>(e.forEach(e=>{this.#g.set(e.word,e.level)}),this.#u=new s(this.#g.size,50),this.#u.calcPagesCount(),this);get=()=>this.#g;getPages=()=>this.#u;getPage=e=>{let t=0;const r=new Map;return this.#g.forEach((s,o)=>{this.#u.isIndexOnPage(e,t)&&r.set(o,s),t++}),r};toObject=()=>{const e={};return this.#p().forEach((t,r)=>{e[this.getName(r)]=t}),e};getName=e=>"wordbook"+e;#b=()=>{const e=[];return this.#g.forEach((t,r)=>{e.push({word:r,level:t})}),e};#p=()=>{const e=[[]];return this.#b().forEach(t=>this.#v(e,t)),e};#v=(e,t)=>{const r=e.length-1;e[r].length<100?e[r].push(t):(e.push([]),this.#v(e,t))}}class i{#w;#s;#f;#m;#k;executeAfter=e=>{this.#k=e};constructor(){this.#w=new t,this.#s=new e,this.#f=new o}initialize=async()=>{try{if(!await this.#w.ensureAuth())return this.#s.log("Failed to authenticate with API"),!1;const e=await this.#w.getMainWordbook();if(e)this.#m=e.id,this.#s.log(`Using main wordbook: ${this.#m}`);else{const e=await this.#w.createWordbook("ENGLISH");e&&(this.#m=e.id,this.#s.log(`Created new wordbook: ${this.#m}`))}return!0}catch(e){return this.#s.log("Failed to initialize API wordbook service"),!1}};loadWords=async()=>{if(!this.#m)return this.#s.log("No wordbook ID available"),void(this.#k&&this.#k());try{let e=0;const t=[];for(;;){const r=await this.#w.getWords(this.#m,e,50);if(!r.content||0===r.content.length)break;const s=r.content.map(e=>({word:e.word,level:e.level||1}));if(t.push(...s),r.content.length<50)break;e++}this.set(t),this.#s.log(`Loaded ${t.length} words from API`),this.#k&&this.#k()}catch(e){this.#s.log("Failed to load words from API"),this.#k&&this.#k()}};set=e=>{this.#f.set(e)};addWord=async(e,t=1)=>{if(!this.#m)return this.#s.log("No wordbook ID available for adding word"),!1;try{return!!await this.#w.addWord(this.#m,e,t)&&(this.#f.set([{word:e,level:t}]),this.#s.log(`Added word to API: ${e}`),!0)}catch(t){return this.#s.log(`Failed to add word to API: ${e}`),!1}};addWordsList=async e=>{if(!this.#m)return this.#s.log("No wordbook ID available for adding words list"),!1;try{return!!await this.#w.addWordsList(this.#m,e)&&(this.#f.set(e),this.#s.log(`Added ${e.length} words to API`),!0)}catch(e){return this.#s.log("Failed to add words list to API"),!1}};remove=async e=>{if(!this.#m)return this.#s.log("No wordbook ID available for removing word"),!1;try{const t=(await this.#w.getWords(this.#m,0,1e3,e)).content.find(t=>t.word===e);return!(!t||!await this.#w.deleteWord(this.#m,t.id))&&(this.#f.remove(e),this.#s.log(`Removed word from API: ${e}`),!0)}catch(t){return this.#s.log(`Failed to remove word from API: ${e}`),!1}};updateWordLevel=async(e,t)=>{if(!this.#m)return this.#s.log("No wordbook ID available for updating word level"),!1;try{const r=(await this.#w.getWords(this.#m,0,1e3,e)).content.find(t=>t.word===e);return!(!r||!await this.#w.updateWordLevel(this.#m,r.id,t))&&(this.#f.remove(e),this.#f.set([{word:e,level:t}]),this.#s.log(`Updated word level in API: ${e} -> ${t}`),!0)}catch(t){return this.#s.log(`Failed to update word level in API: ${e}`),!1}};getWordbook=()=>this.#f;getFilteredWordbook=e=>{const t=[];this.#f.get().forEach((r,s)=>s&&s.includes(e)&&t.push({word:s,level:r}));const r=new o;return r.set(t),r};getWordbookCache=()=>this.#f.get();loadWordbooks=async()=>{await this.loadWords()};getCurrentWordbookId=()=>this.#m;setCurrentWordbook=async e=>{this.#m=e,await this.loadWords()};getUserWordbooks=async()=>{try{return await this.#w.getWordbooks()}catch(e){return this.#s.log("Failed to get user wordbooks"),[]}}}const n=new Map;class a{static add=(e,t)=>{n.set(e,t)};static get=e=>n.get(e);static getWordbookService=()=>{const e=a.get("wordbook");if(e)return e}}class l{constructor(){this.toElement=e=>{const t=window.document.createElement("div");return t.innerHTML=e.trim(),t.firstChild}}}class d{constructor(){this.getHTMLMapper=()=>this.HTMLMapper,this.HTMLMapper=new l}}class c extends d{#y;constructor(){super(),this.#y=window.document.getElementById("content")}getContent=()=>this.#y}class h extends c{#S;buildSettingsContentStructure=()=>{const e=r(721)(),t=this.getHTMLMapper().toElement(e);this.getContent().appendChild(t);const s=this.getContent().getElementsByClassName("block")[0];this.appendSlider(s,{id:"russian",title:"Russian"}),this.appendSlider(s,{id:"korean",title:"Korean"}),this.appendSlider(s,{id:"english",title:"English"}),this.appendSlider(s,{id:"china",title:"China"})};appendSlider=(e,t)=>{const s=r(857)({language:t}),o=this.getHTMLMapper().toElement(s);e.appendChild(o)};loadLevers=()=>{this.#S=window.document.getElementsByClassName("lever")};setupAppEnableLever=e=>{this.#E(this.#S[0],e,"enable")};renderAppEnableLever=e=>{this.renderLever(this.#S[0],e)};setupRussianEnableLever=e=>{this.#E(this.#S[1],e,"russian")};renderRussianEnableLever=e=>{this.renderLever(this.#S[1],e)};setupKoreanEnableLever=e=>{this.#E(this.#S[2],e,"korean")};renderKoreanEnableLever=e=>{this.renderLever(this.#S[2],e)};setupEnglishEnableLever=e=>{this.#E(this.#S[3],e,"english")};renderEnglishEnableLever=e=>{this.renderLever(this.#S[3],e)};setupChinaEnableLever=e=>{this.#E(this.#S[4],e,"china")};renderChinaEnableLever=e=>{this.renderLever(this.#S[4],e)};#E=(e,t,r)=>{e.addEventListener("click",()=>t(e,r))};renderLever=(e,t)=>{e.style.justifyContent=t?"flex-end":"flex-start",e.style.background=t?"#c2d7bf":"#ffffff"}}class u{#L;#W;constructor(){this.#L=new h,this.#W={enable:!0,russian:!0,english:!0,china:!0,korean:!0}}fillSettings=()=>{chrome.storage.local.get(["enable","russian","english","china","korean"],e=>this.#I(e))};#I=e=>{this.#W=e,this.#L.loadLevers(),this.#C(),this.#A()};#C=()=>{this.#L.setupAppEnableLever(this.#P),this.#L.renderAppEnableLever(this.#W.enable)};#A=()=>{this.#L.setupRussianEnableLever(this.#P),this.#L.renderRussianEnableLever(this.#W.russian),this.#L.setupKoreanEnableLever(this.#P),this.#L.renderKoreanEnableLever(this.#W.korean),this.#L.setupEnglishEnableLever(this.#P),this.#L.renderEnglishEnableLever(this.#W.english),this.#L.setupChinaEnableLever(this.#P),this.#L.renderChinaEnableLever(this.#W.china)};#P=(e,t)=>{this.#W[t]=!this.#W[t],chrome.storage.local.set(this.#W,()=>{this.#L.renderLever(e,this.#W[t])})}}const g=(e,t)=>{Object.entries(e).forEach(e=>{const r=e[1];t(r)})},p=Object.freeze({WORDBOOK:{title:"Wordbook",className:"nav-button",disabled:!0},SETTINGS:{title:"Settings",className:"nav-button"},REFRESH:{title:"↺ page",className:"refresh-btn"}}),b=(e,t,r)=>{e.addEventListener(t,e=>{r(e)})},v=(e,t)=>void 0!==t?window.document.getElementsByClassName(e)[t]:v(e,0);class w extends c{#B;constructor(){super(),this.#B=v("navbar")}buildButtons=()=>{const e=r(854);g(p,t=>{const r=e({buttonInfo:t}),s=this.getHTMLMapper().toElement(r);this.#B.appendChild(s)})};setContentVisibility=(e,t)=>{const r=this.getContent().getElementsByClassName(e)[0];r.style.visibility=this.#T(t),r.style.transform=this.#x(t)};#T=e=>e?"visible":"hidden";#x=e=>e?"translate(0px)":"translate(-400px)"}const f=Object.freeze({NATIVE:{name:"native",hex:"#2e8801",number:4},ADVANCED:{name:"advanced",hex:"#72d400",number:3},INTERMEDIATE:{name:"intermediate",hex:"#ef9f00",number:2},ELEMENTARY:{name:"elementary",hex:"#ab0000",number:1},BEGINNER:{name:"beginner",hex:"#ff2a00",number:0}});class m extends d{#N;#O;constructor(){super(),this.#N=r(161),this.#O=[],g(f,e=>{this.#O.push(e.name)})}addWord=(e,t)=>{const r=this.#M(),s=this.#F(e,t);return r.appendChild(s),s};#F=(e,t)=>{const r=this.#O,s=this.#N({clear:e,level:t,options:r});return this.getHTMLMapper().toElement(s)};clearScroll=()=>{this.#M().innerHTML=""};#M=()=>window.document.getElementById("words")}class k{#$;#R;#j;#q;#H;constructor(e,t){this.#j=a.getWordbookService(),this.#R=window.document.getElementById("pages"),this.#q=e,this.#H=t}buildPageButtons=e=>{this.#$=e,this.#_();const t=this.#j.getFilteredWordbook(a.get("filter").get()).getPages().getCount();if(t<10)1!==t&&this.#D(0,t);else{const e=this.#V(t),r=this.#J(t);this.#U(e,r)}};#_=()=>{this.#R.innerHTML=""};#U=(e,t)=>{this.#D(e[0],e[1]),this.#z(),this.#D(t[0],t[1])};#z=()=>{const e=window.document.createTextNode("...");this.#R.appendChild(e)};#V=e=>this.#$>=2&&this.#$<=e-5?this.#$>=e-8?[e-10,e-5]:[this.#$-2,this.#$+3]:[0,5];#J=e=>[e-5,e];#D=(e,t)=>{for(let r=e;r<t;r++){const e=window.document.createElement("a");e.target="_blank",e.textContent=`${r}`,e.style.cursor="pointer",e.addEventListener("click",()=>this.#q(r)),this.#R.appendChild(e)}}}class y{#H;#K;#q;constructor(e,t){this.#H="",this.#K=e,this.#q=t,this.#G()}#G=()=>{window.document.getElementById("filter-terms").addEventListener("change",e=>{this.#H=e.target.value,this.#K(0),this.#q(0)})};get=()=>this.#H}class S{#j;#Y;#Q;#H;constructor(){this.#j=a.getWordbookService(),this.#Y=new m,this.#Q=new k(this.fillScroll),this.#H=new y(this.#Q.buildPageButtons,this.fillScroll),a.add("filter",this.#H)}fillScroll=e=>{this.#Q.buildPageButtons(e);const t=this.#X(e);this.#Z(t)};#X=e=>this.#j.getFilteredWordbook(this.#H.get()).getPage(e);#Z=e=>{this.#Y.clearScroll(),e.forEach((e,t)=>{const r=this.#Y.addWord(t,e);this.#ee(r,t),this.#te(r,t)})};#te=(e,t)=>{e.getElementsByTagName("input")[0].addEventListener("change",e=>this.#re(e,t))};#ee=(e,t)=>{e.getElementsByClassName("level")[0].addEventListener("change",e=>this.#se(e,t))};#re=(e,t)=>{const r=this.#j.getWordbookCache().get(t),s=e.target.value;this.#j.remove(t),this.#oe(s,r),this.fillScroll(0)};#se=(e,t)=>{const r=e.target.value;this.#oe(t,r)};#oe=(e,t)=>{this.#j.set([{word:e,level:t}])}}class E{#L;#B;#ie;#y;#ne;constructor(){this.#L=new w,this.#B=v("navbar")}onClickNavButtons=()=>{this.#ae(),b(this.#ie,"click",this.#le),g(this.#ne,e=>b(e,"click",this.#de))};#ae=()=>{this.#ie=v("refresh-btn"),this.#ne=this.#B.getElementsByClassName("nav-button"),this.#y=v("content")};#de=e=>{g(this.#ne,e=>e.disabled=!1),e.target.disabled=!0,this.checkButtonsAndSetContentVisibility()};checkButtonsAndSetContentVisibility=()=>{g(this.#ne,e=>{const t=e.innerText.toLowerCase();this.#L.setContentVisibility(t,e.disabled)})};#le=()=>{chrome.tabs.query({active:!0,currentWindow:!0},e=>{chrome.tabs.executeScript(e[0].id,{file:"./page/page.ts"})})}}class L extends c{build=()=>{const e=r(79),t=this.getHTMLMapper().toElement(e);this.getContent().appendChild(t)}}class W{#ce;#he;constructor(){const e=r(799);this.#he=e.version,this.#ce=v("infobar"),this.#ue()}#ue=()=>{this.#ce.textContent=`Version ${this.#he}`}}class I{#w;constructor(){this.#w=new t}appParams=()=>new Promise(async e=>{try{await this.#w.ensureAuth(),chrome.storage.local.get(["enable","russian","english","china","korean"],t=>{a.add("settings",t),e(t.enable)})}catch(t){chrome.storage.local.get(["enable","russian","english","china","korean"],t=>{a.add("settings",t),e(t.enable)})}});saveWordbooks=e=>{chrome.storage.local.set(e)};getByName=e=>new Promise(t=>chrome.storage.local.get([e],r=>t(r[e])));getApiService=()=>this.#w;ensureAuth=async()=>await this.#w.ensureAuth();getCurrentUser=async()=>await this.#w.getCurrentUser()}const C=new class{#ge;#pe;#be;#ve;#we;constructor(){this.#pe=new h,this.#ge=new w,this.#be=new L,this.#ve=new W,this.#we=new I}run=async()=>{try{const e=await this.#we.ensureAuth();if(a.add("apiAvailable",e),e){const e=await this.#we.getCurrentUser();a.add("currentUser",e)}}catch(e){a.add("apiAvailable",!1)}this.#fe(),(new u).fillSettings(),(new S).fillScroll(0),this.#me()};#fe=()=>{this.#ge.buildButtons(),this.#pe.buildSettingsContentStructure(),this.#be.build()};#me=()=>{const e=new E;e.onClickNavButtons(),e.checkButtonsAndSetContentVisibility()}};new class{#ke;#j;#ye;constructor(e){this.#ke=new a,this.#ye=e,this.#j=new i}start=async()=>{await this.#j.initialize()?(this.#j.executeAfter(this.#Se),await this.#j.loadWords()):this.#Se()};#Se=()=>{a.add("wordbook",this.#j),this.#ye.run()}}(C).start()})()})();
+/******/ (() => { // webpackBootstrap
+/******/ 	var __webpack_modules__ = ({
+
+/***/ "./node_modules/apply-loader/index.js!./node_modules/pug-loader/index.js!./src/popup/scroll/templates/scroll.pug":
+/*!***********************************************************************************************************************!*\
+  !*** ./node_modules/apply-loader/index.js!./node_modules/pug-loader/index.js!./src/popup/scroll/templates/scroll.pug ***!
+  \***********************************************************************************************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+var req = __webpack_require__(/*! !!./node_modules/pug-loader/index.js!./src/popup/scroll/templates/scroll.pug */ "./node_modules/pug-loader/index.js!./src/popup/scroll/templates/scroll.pug");
+module.exports = (req['default'] || req).apply(req, [])
+
+/***/ }),
+
+/***/ "./node_modules/pug-loader/index.js!./src/popup/navbar/nav-button.pug":
+/*!****************************************************************************!*\
+  !*** ./node_modules/pug-loader/index.js!./src/popup/navbar/nav-button.pug ***!
+  \****************************************************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+var pug = __webpack_require__(/*! !../../../node_modules/pug-runtime/index.js */ "./node_modules/pug-runtime/index.js");
+
+function template(locals) {var pug_html = "", pug_mixins = {}, pug_interp;;
+    var locals_for_with = (locals || {});
+    
+    (function (buttonInfo) {
+      pug_html = pug_html + "\u003Cbutton" + (pug.attr("class", pug.classes([buttonInfo.className], [true]), false, true)+pug.attr("disabled", buttonInfo.disabled, true, true)) + "\u003E" + (pug.escape(null == (pug_interp = buttonInfo.title) ? "" : pug_interp)) + "\u003C\u002Fbutton\u003E";
+    }.call(this, "buttonInfo" in locals_for_with ?
+        locals_for_with.buttonInfo :
+        typeof buttonInfo !== 'undefined' ? buttonInfo : undefined));
+    ;;return pug_html;};
+module.exports = template;
+
+/***/ }),
+
+/***/ "./node_modules/pug-loader/index.js!./src/popup/scroll/templates/scroll.pug":
+/*!**********************************************************************************!*\
+  !*** ./node_modules/pug-loader/index.js!./src/popup/scroll/templates/scroll.pug ***!
+  \**********************************************************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+var pug = __webpack_require__(/*! !../../../../node_modules/pug-runtime/index.js */ "./node_modules/pug-runtime/index.js");
+
+function template(locals) {var pug_html = "", pug_mixins = {}, pug_interp;pug_html = pug_html + "\u003Cdiv class=\"wordbook\"\u003E\u003Cdiv class=\"header\"\u003E\u003Cdiv class=\"filter\"\u003E\u003Cinput id=\"filter-terms\" placeholder=\"Search or filter words...\"\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003Cdiv class=\"words\" id=\"words\"\u003E\u003C\u002Fdiv\u003E\u003Cdiv id=\"pages\"\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E";;return pug_html;};
+module.exports = template;
+
+/***/ }),
+
+/***/ "./node_modules/pug-loader/index.js!./src/popup/scroll/templates/word.pug":
+/*!********************************************************************************!*\
+  !*** ./node_modules/pug-loader/index.js!./src/popup/scroll/templates/word.pug ***!
+  \********************************************************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+var pug = __webpack_require__(/*! !../../../../node_modules/pug-runtime/index.js */ "./node_modules/pug-runtime/index.js");
+
+function template(locals) {var pug_html = "", pug_mixins = {}, pug_interp;;
+    var locals_for_with = (locals || {});
+    
+    (function (clear, level, options) {
+      pug_html = pug_html + "\u003Cdiv class=\"word\"\u003E\u003Cinput" + (" class=\"clear\""+pug.attr("value", clear, true, true)) + "\u003E\u003Cselect class=\"level\"\u003E";
+// iterate options
+;(function(){
+  var $$obj = options;
+  if ('number' == typeof $$obj.length) {
+      for (var pug_index0 = 0, $$l = $$obj.length; pug_index0 < $$l; pug_index0++) {
+        var option = $$obj[pug_index0];
+pug_html = pug_html + "\u003Coption" + (pug.attr("value", option, true, true)+pug.attr("selected", (level === option), true, true)) + "\u003E" + (pug.escape(null == (pug_interp = option) ? "" : pug_interp)) + "\u003C\u002Foption\u003E";
+      }
+  } else {
+    var $$l = 0;
+    for (var pug_index0 in $$obj) {
+      $$l++;
+      var option = $$obj[pug_index0];
+pug_html = pug_html + "\u003Coption" + (pug.attr("value", option, true, true)+pug.attr("selected", (level === option), true, true)) + "\u003E" + (pug.escape(null == (pug_interp = option) ? "" : pug_interp)) + "\u003C\u002Foption\u003E";
+    }
+  }
+}).call(this);
+
+pug_html = pug_html + "\u003C\u002Fselect\u003E\u003C\u002Fdiv\u003E";
+    }.call(this, "clear" in locals_for_with ?
+        locals_for_with.clear :
+        typeof clear !== 'undefined' ? clear : undefined, "level" in locals_for_with ?
+        locals_for_with.level :
+        typeof level !== 'undefined' ? level : undefined, "options" in locals_for_with ?
+        locals_for_with.options :
+        typeof options !== 'undefined' ? options : undefined));
+    ;;return pug_html;};
+module.exports = template;
+
+/***/ }),
+
+/***/ "./node_modules/pug-loader/index.js!./src/popup/settings/template/settings.pug":
+/*!*************************************************************************************!*\
+  !*** ./node_modules/pug-loader/index.js!./src/popup/settings/template/settings.pug ***!
+  \*************************************************************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+var pug = __webpack_require__(/*! !../../../../node_modules/pug-runtime/index.js */ "./node_modules/pug-runtime/index.js");
+
+function template(locals) {var pug_html = "", pug_mixins = {}, pug_interp;pug_html = pug_html + "\u003Cdiv class=\"settings\"\u003E\u003Cdiv class=\"block\"\u003E\u003Cdiv class=\"title\"\u003ELanguages\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E";;return pug_html;};
+module.exports = template;
+
+/***/ }),
+
+/***/ "./node_modules/pug-loader/index.js!./src/popup/settings/template/slider.pug":
+/*!***********************************************************************************!*\
+  !*** ./node_modules/pug-loader/index.js!./src/popup/settings/template/slider.pug ***!
+  \***********************************************************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+var pug = __webpack_require__(/*! !../../../../node_modules/pug-runtime/index.js */ "./node_modules/pug-runtime/index.js");
+
+function template(locals) {var pug_html = "", pug_mixins = {}, pug_interp;;
+    var locals_for_with = (locals || {});
+    
+    (function (language) {
+      pug_html = pug_html + "\u003Cdiv" + (" class=\"enable\""+pug.attr("id", language.id, true, true)) + "\u003E\u003Cspan\u003E" + (pug.escape(null == (pug_interp = language.title) ? "" : pug_interp)) + ":\u003C\u002Fspan\u003E\u003Cdiv class=\"lever\"\u003E\u003Cdiv class=\"slider\"\u003E|||\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E";
+    }.call(this, "language" in locals_for_with ?
+        locals_for_with.language :
+        typeof language !== 'undefined' ? language : undefined));
+    ;;return pug_html;};
+module.exports = template;
+
+/***/ }),
+
+/***/ "./node_modules/pug-runtime/index.js":
+/*!*******************************************!*\
+  !*** ./node_modules/pug-runtime/index.js ***!
+  \*******************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+
+var pug_has_own_property = Object.prototype.hasOwnProperty;
+
+/**
+ * Merge two attribute objects giving precedence
+ * to values in object `b`. Classes are special-cased
+ * allowing for arrays and merging/joining appropriately
+ * resulting in a string.
+ *
+ * @param {Object} a
+ * @param {Object} b
+ * @return {Object} a
+ * @api private
+ */
+
+exports.merge = pug_merge;
+function pug_merge(a, b) {
+  if (arguments.length === 1) {
+    var attrs = a[0];
+    for (var i = 1; i < a.length; i++) {
+      attrs = pug_merge(attrs, a[i]);
+    }
+    return attrs;
+  }
+
+  for (var key in b) {
+    if (key === 'class') {
+      var valA = a[key] || [];
+      a[key] = (Array.isArray(valA) ? valA : [valA]).concat(b[key] || []);
+    } else if (key === 'style') {
+      var valA = pug_style(a[key]);
+      valA = valA && valA[valA.length - 1] !== ';' ? valA + ';' : valA;
+      var valB = pug_style(b[key]);
+      valB = valB && valB[valB.length - 1] !== ';' ? valB + ';' : valB;
+      a[key] = valA + valB;
+    } else {
+      a[key] = b[key];
+    }
+  }
+
+  return a;
+}
+
+/**
+ * Process array, object, or string as a string of classes delimited by a space.
+ *
+ * If `val` is an array, all members of it and its subarrays are counted as
+ * classes. If `escaping` is an array, then whether or not the item in `val` is
+ * escaped depends on the corresponding item in `escaping`. If `escaping` is
+ * not an array, no escaping is done.
+ *
+ * If `val` is an object, all the keys whose value is truthy are counted as
+ * classes. No escaping is done.
+ *
+ * If `val` is a string, it is counted as a class. No escaping is done.
+ *
+ * @param {(Array.<string>|Object.<string, boolean>|string)} val
+ * @param {?Array.<string>} escaping
+ * @return {String}
+ */
+exports.classes = pug_classes;
+function pug_classes_array(val, escaping) {
+  var classString = '',
+    className,
+    padding = '',
+    escapeEnabled = Array.isArray(escaping);
+  for (var i = 0; i < val.length; i++) {
+    className = pug_classes(val[i]);
+    if (!className) continue;
+    escapeEnabled && escaping[i] && (className = pug_escape(className));
+    classString = classString + padding + className;
+    padding = ' ';
+  }
+  return classString;
+}
+function pug_classes_object(val) {
+  var classString = '',
+    padding = '';
+  for (var key in val) {
+    if (key && val[key] && pug_has_own_property.call(val, key)) {
+      classString = classString + padding + key;
+      padding = ' ';
+    }
+  }
+  return classString;
+}
+function pug_classes(val, escaping) {
+  if (Array.isArray(val)) {
+    return pug_classes_array(val, escaping);
+  } else if (val && typeof val === 'object') {
+    return pug_classes_object(val);
+  } else {
+    return val || '';
+  }
+}
+
+/**
+ * Convert object or string to a string of CSS styles delimited by a semicolon.
+ *
+ * @param {(Object.<string, string>|string)} val
+ * @return {String}
+ */
+
+exports.style = pug_style;
+function pug_style(val) {
+  if (!val) return '';
+  if (typeof val === 'object') {
+    var out = '';
+    for (var style in val) {
+      /* istanbul ignore else */
+      if (pug_has_own_property.call(val, style)) {
+        out = out + style + ':' + val[style] + ';';
+      }
+    }
+    return out;
+  } else {
+    return val + '';
+  }
+}
+
+/**
+ * Render the given attribute.
+ *
+ * @param {String} key
+ * @param {String} val
+ * @param {Boolean} escaped
+ * @param {Boolean} terse
+ * @return {String}
+ */
+exports.attr = pug_attr;
+function pug_attr(key, val, escaped, terse) {
+  if (
+    val === false ||
+    val == null ||
+    (!val && (key === 'class' || key === 'style'))
+  ) {
+    return '';
+  }
+  if (val === true) {
+    return ' ' + (terse ? key : key + '="' + key + '"');
+  }
+  var type = typeof val;
+  if (
+    (type === 'object' || type === 'function') &&
+    typeof val.toJSON === 'function'
+  ) {
+    val = val.toJSON();
+  }
+  if (typeof val !== 'string') {
+    val = JSON.stringify(val);
+    if (!escaped && val.indexOf('"') !== -1) {
+      return ' ' + key + "='" + val.replace(/'/g, '&#39;') + "'";
+    }
+  }
+  if (escaped) val = pug_escape(val);
+  return ' ' + key + '="' + val + '"';
+}
+
+/**
+ * Render the given attributes object.
+ *
+ * @param {Object} obj
+ * @param {Object} terse whether to use HTML5 terse boolean attributes
+ * @return {String}
+ */
+exports.attrs = pug_attrs;
+function pug_attrs(obj, terse) {
+  var attrs = '';
+
+  for (var key in obj) {
+    if (pug_has_own_property.call(obj, key)) {
+      var val = obj[key];
+
+      if ('class' === key) {
+        val = pug_classes(val);
+        attrs = pug_attr(key, val, false, terse) + attrs;
+        continue;
+      }
+      if ('style' === key) {
+        val = pug_style(val);
+      }
+      attrs += pug_attr(key, val, false, terse);
+    }
+  }
+
+  return attrs;
+}
+
+/**
+ * Escape the given string of `html`.
+ *
+ * @param {String} html
+ * @return {String}
+ * @api private
+ */
+
+var pug_match_html = /["&<>]/;
+exports.escape = pug_escape;
+function pug_escape(_html) {
+  var html = '' + _html;
+  var regexResult = pug_match_html.exec(html);
+  if (!regexResult) return _html;
+
+  var result = '';
+  var i, lastIndex, escape;
+  for (i = regexResult.index, lastIndex = 0; i < html.length; i++) {
+    switch (html.charCodeAt(i)) {
+      case 34:
+        escape = '&quot;';
+        break;
+      case 38:
+        escape = '&amp;';
+        break;
+      case 60:
+        escape = '&lt;';
+        break;
+      case 62:
+        escape = '&gt;';
+        break;
+      default:
+        continue;
+    }
+    if (lastIndex !== i) result += html.substring(lastIndex, i);
+    lastIndex = i + 1;
+    result += escape;
+  }
+  if (lastIndex !== i) return result + html.substring(lastIndex, i);
+  else return result;
+}
+
+/**
+ * Re-throw the given `err` in context to the
+ * the pug in `filename` at the given `lineno`.
+ *
+ * @param {Error} err
+ * @param {String} filename
+ * @param {String} lineno
+ * @param {String} str original source
+ * @api private
+ */
+
+exports.rethrow = pug_rethrow;
+function pug_rethrow(err, filename, lineno, str) {
+  if (!(err instanceof Error)) throw err;
+  if ((typeof window != 'undefined' || !filename) && !str) {
+    err.message += ' on line ' + lineno;
+    throw err;
+  }
+  var context, lines, start, end;
+  try {
+    str = str || (__webpack_require__(/*! fs */ "?8f63").readFileSync)(filename, {encoding: 'utf8'});
+    context = 3;
+    lines = str.split('\n');
+    start = Math.max(lineno - context, 0);
+    end = Math.min(lines.length, lineno + context);
+  } catch (ex) {
+    err.message +=
+      ' - could not read from ' + filename + ' (' + ex.message + ')';
+    pug_rethrow(err, null, lineno);
+    return;
+  }
+
+  // Error context
+  context = lines
+    .slice(start, end)
+    .map(function(line, i) {
+      var curr = i + start + 1;
+      return (curr == lineno ? '  > ' : '    ') + curr + '| ' + line;
+    })
+    .join('\n');
+
+  // Alter exception message
+  err.path = filename;
+  try {
+    err.message =
+      (filename || 'Pug') +
+      ':' +
+      lineno +
+      '\n' +
+      context +
+      '\n\n' +
+      err.message;
+  } catch (e) {}
+  throw err;
+}
+
+
+/***/ }),
+
+/***/ "./src/core/HTMLMapper.ts":
+/*!********************************!*\
+  !*** ./src/core/HTMLMapper.ts ***!
+  \********************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   HTMLMapper: () => (/* binding */ HTMLMapper)
+/* harmony export */ });
+class HTMLMapper {
+    constructor() {
+        this.toElement = (html) => {
+            const template = window.document.createElement("div");
+            template.innerHTML = html.trim();
+            return template.firstChild;
+        };
+    }
+}
+
+
+/***/ }),
+
+/***/ "./src/core/builder/AbstractView.ts":
+/*!******************************************!*\
+  !*** ./src/core/builder/AbstractView.ts ***!
+  \******************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   AbstractView: () => (/* binding */ AbstractView)
+/* harmony export */ });
+/* harmony import */ var _HTMLMapper__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../HTMLMapper */ "./src/core/HTMLMapper.ts");
+
+class AbstractView {
+    constructor() {
+        this.getHTMLMapper = () => {
+            return this.HTMLMapper;
+        };
+        this.HTMLMapper = new _HTMLMapper__WEBPACK_IMPORTED_MODULE_0__.HTMLMapper();
+    }
+}
+
+
+/***/ }),
+
+/***/ "./src/core/ApiApp.js":
+/*!****************************!*\
+  !*** ./src/core/ApiApp.js ***!
+  \****************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   ApiApp: () => (/* binding */ ApiApp)
+/* harmony export */ });
+/* harmony import */ var _words_ApiWordbookService_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./words/ApiWordbookService.js */ "./src/core/words/ApiWordbookService.js");
+/* harmony import */ var _Context__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Context */ "./src/core/Context.js");
+
+
+
+class ApiApp {
+
+    #context;
+    #wordbookService;
+    #logicService;
+
+    constructor(logicService) {
+        this.#context = new _Context__WEBPACK_IMPORTED_MODULE_1__.Context();
+        this.#logicService = logicService;
+        this.#wordbookService = new _words_ApiWordbookService_js__WEBPACK_IMPORTED_MODULE_0__.ApiWordbookService();
+    }
+
+    start = async () => { 
+        // Инициализируем API сервис
+        const isInitialized = await this.#wordbookService.initialize();
+        
+        if (isInitialized) {
+            this.#wordbookService.executeAfter(this.#runService);
+            await this.#wordbookService.loadWords();
+        } else {
+            // Если API недоступен, запускаем логику без инициализации
+            this.#runService();
+        }
+    }
+
+    #runService = () => {
+        _Context__WEBPACK_IMPORTED_MODULE_1__.Context.add("wordbook", this.#wordbookService);
+        this.#logicService.run();
+    }
+}
+
+/***/ }),
+
+/***/ "./src/core/ApiStore.js":
+/*!******************************!*\
+  !*** ./src/core/ApiStore.js ***!
+  \******************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   ApiStore: () => (/* binding */ ApiStore)
+/* harmony export */ });
+/* harmony import */ var _Context__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Context */ "./src/core/Context.js");
+/* harmony import */ var _api_ApiService__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./api/ApiService */ "./src/core/api/ApiService.js");
+
+
+
+class ApiStore {
+
+    #apiService;
+
+    constructor() {
+        this.#apiService = new _api_ApiService__WEBPACK_IMPORTED_MODULE_1__.ApiService();
+    }
+
+    appParams = () => {
+        return new Promise(async (resolve) => {
+            try {
+                // Проверяем авторизацию
+                const isAuth = await this.#apiService.ensureAuth();
+                
+                // Загружаем настройки из localStorage (для совместимости)
+                chrome.storage.local.get(['enable', "russian", "english", "china", "korean"], (app) => {
+                    _Context__WEBPACK_IMPORTED_MODULE_0__.Context.add("settings", app);
+                    resolve(app.enable);
+                });
+            } catch (error) {
+                // В случае ошибки API, используем локальные настройки
+                chrome.storage.local.get(['enable', "russian", "english", "china", "korean"], (app) => {
+                    _Context__WEBPACK_IMPORTED_MODULE_0__.Context.add("settings", app);
+                    resolve(app.enable);
+                });
+            }
+        });
+    }
+
+    saveWordbooks = (wordbooks) => {
+        // Для совместимости сохраняем в localStorage
+        chrome.storage.local.set(wordbooks);
+    }
+
+    getByName = (name) => {
+        return new Promise(resolve => chrome.storage.local.get([name], (app) => resolve(app[name])));
+    }
+
+    /**
+     * Получает API сервис
+     */
+    getApiService = () => {
+        return this.#apiService;
+    }
+
+    /**
+     * Проверяет авторизацию
+     */
+    ensureAuth = async () => {
+        return await this.#apiService.ensureAuth();
+    }
+
+    /**
+     * Получает текущего пользователя
+     */
+    getCurrentUser = async () => {
+        return await this.#apiService.getCurrentUser();
+    }
+}
+
+/***/ }),
+
+/***/ "./src/core/Context.js":
+/*!*****************************!*\
+  !*** ./src/core/Context.js ***!
+  \*****************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Context: () => (/* binding */ Context)
+/* harmony export */ });
+const context = new Map();
+
+class Context {
+
+    /**
+    * bean - компонент\класс из Java
+     */
+    static add = (name, bean) => {
+        context.set(name, bean);
+    }
+
+    static get = (beanName) => {
+        return context.get(beanName);
+    }
+
+    static getWordbookService = () => {
+        const wordbook = Context.get("wordbook");
+        if (wordbook) {
+            return wordbook;
+        }
+    }
+}
+
+/***/ }),
+
+/***/ "./src/core/Logger.js":
+/*!****************************!*\
+  !*** ./src/core/Logger.js ***!
+  \****************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Logger: () => (/* binding */ Logger)
+/* harmony export */ });
+class Logger {
+    log = (massage) => {
+        window.console.log("Reckue language app: " + massage);
+    }
+
+    /**
+     * Считывает всю информацию о ноде и её родителе, пишет её в консоль.
+     * Рекомендуется для использования в методе pushLastNode, после запонения листа.
+     *
+     * @param node - Вся нужная информация для дебага содержится в этой ноде.
+     */
+    #debugNode = (node) => {
+        window.console.log(node.textContent);
+        window.console.log(node.toString());
+        window.console.log(node.parentNode.toString());
+        window.console.log(node.parentNode.nodeName);
+        window.console.log(node.parentNode.role);
+    }
+}
+
+/***/ }),
+
+/***/ "./src/core/api/ApiService.js":
+/*!************************************!*\
+  !*** ./src/core/api/ApiService.js ***!
+  \************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   ApiService: () => (/* binding */ ApiService)
+/* harmony export */ });
+/* harmony import */ var _Logger__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../Logger */ "./src/core/Logger.js");
+
+
+class ApiService {
+    #baseUrl = 'https://api.reckue.com/api/1';
+    #tempToken = null;
+    #logger = new _Logger__WEBPACK_IMPORTED_MODULE_0__.Logger();
+
+    constructor() {
+        this.#loadTempToken();
+    }
+
+    /**
+     * Загружает временный токен из localStorage
+     */
+    #loadTempToken = () => {
+        this.#tempToken = localStorage.getItem('reckue_temp_token');
+    }
+
+    /**
+     * Сохраняет временный токен в localStorage
+     */
+    #saveTempToken = (token) => {
+        this.#tempToken = token;
+        localStorage.setItem('reckue_temp_token', token);
+    }
+
+    /**
+     * Выполняет HTTP запрос с авторизацией
+     */
+    #request = async (endpoint, options = {}) => {
+        const url = `${this.#baseUrl}${endpoint}`;
+        const headers = {
+            'Content-Type': 'application/json',
+            ...options.headers
+        };
+
+        if (this.#tempToken) {
+            headers['Authorization'] = `Bearer ${this.#tempToken}`;
+        }
+
+        try {
+            const response = await fetch(url, {
+                ...options,
+                headers
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            return await response.json();
+        } catch (error) {
+            this.#logger.log(`API request failed: ${error.message}`);
+            throw error;
+        }
+    }
+
+    /**
+     * Авторизация через temp-in
+     */
+    tempAuth = async () => {
+        try {
+            const response = await this.#request('/auth/tempin', {
+                method: 'POST',
+                body: JSON.stringify({})
+            });
+            
+            if (response.token) {
+                this.#saveTempToken(response.token);
+                this.#logger.log('Temporary authentication successful');
+                return true;
+            }
+            return false;
+        } catch (error) {
+            this.#logger.log('Temporary authentication failed');
+            return false;
+        }
+    }
+
+    /**
+     * Получение информации о текущем пользователе
+     */
+    getCurrentUser = async () => {
+        try {
+            return await this.#request('/auth/whoami');
+        } catch (error) {
+            this.#logger.log('Failed to get current user');
+            return null;
+        }
+    }
+
+    /**
+     * Получение всех словарей пользователя
+     */
+    getWordbooks = async () => {
+        try {
+            return await this.#request('/wordbooks');
+        } catch (error) {
+            this.#logger.log('Failed to get wordbooks');
+            return [];
+        }
+    }
+
+    /**
+     * Получение основного словаря
+     */
+    getMainWordbook = async () => {
+        try {
+            return await this.#request('/wordbooks/main');
+        } catch (error) {
+            this.#logger.log('Failed to get main wordbook');
+            return null;
+        }
+    }
+
+    /**
+     * Получение слов из словаря с пагинацией
+     */
+    getWords = async (wordbookId, page = 0, size = 50, filter = '') => {
+        try {
+            const body = {
+                page: page,
+                size: size
+            };
+
+            if (filter) {
+                body.filter = filter;
+            }
+
+            return await this.#request(`/wordbook/words/${wordbookId}`, {
+                method: 'POST',
+                body: JSON.stringify(body)
+            });
+        } catch (error) {
+            this.#logger.log('Failed to get words');
+            return { content: [], totalElements: 0 };
+        }
+    }
+
+    /**
+     * Добавление слова в словарь
+     */
+    addWord = async (wordbookId, word, level = 1) => {
+        try {
+            return await this.#request('/wordbook/words', {
+                method: 'POST',
+                body: JSON.stringify({
+                    wordbookId: wordbookId,
+                    word: word,
+                    level: level
+                })
+            });
+        } catch (error) {
+            this.#logger.log('Failed to add word');
+            return null;
+        }
+    }
+
+    /**
+     * Добавление списка слов
+     */
+    addWordsList = async (wordbookId, words) => {
+        try {
+            const wordsList = words.map(word => ({
+                wordbookId: wordbookId,
+                word: word.word || word,
+                level: word.level || 1
+            }));
+
+            return await this.#request('/wordbook/words/list', {
+                method: 'POST',
+                body: JSON.stringify(wordsList)
+            });
+        } catch (error) {
+            this.#logger.log('Failed to add words list');
+            return null;
+        }
+    }
+
+    /**
+     * Обновление уровня слова
+     */
+    updateWordLevel = async (wordbookId, wordId, level) => {
+        try {
+            return await this.#request('/wordbook/words/levels', {
+                method: 'POST',
+                body: JSON.stringify({
+                    wordbookId: wordbookId,
+                    wordId: wordId,
+                    level: level
+                })
+            });
+        } catch (error) {
+            this.#logger.log('Failed to update word level');
+            return null;
+        }
+    }
+
+    /**
+     * Удаление слова
+     */
+    deleteWord = async (wordbookId, wordId) => {
+        try {
+            return await this.#request('/wordbook/words', {
+                method: 'DELETE',
+                body: JSON.stringify({
+                    wordbookId: wordbookId,
+                    wordId: wordId
+                })
+            });
+        } catch (error) {
+            this.#logger.log('Failed to delete word');
+            return null;
+        }
+    }
+
+    /**
+     * Создание нового словаря
+     */
+    createWordbook = async (language) => {
+        try {
+            return await this.#request('/wordbooks', {
+                method: 'POST',
+                body: JSON.stringify({
+                    language: language
+                })
+            });
+        } catch (error) {
+            this.#logger.log('Failed to create wordbook');
+            return null;
+        }
+    }
+
+    /**
+     * Получение словарей по языку
+     */
+    getWordbooksByLanguage = async (language) => {
+        try {
+            return await this.#request(`/wordbooks/language/${language}`);
+        } catch (error) {
+            this.#logger.log('Failed to get wordbooks by language');
+            return [];
+        }
+    }
+
+    /**
+     * Проверка авторизации и автоматическая авторизация при необходимости
+     */
+    ensureAuth = async () => {
+        if (!this.#tempToken) {
+            return await this.tempAuth();
+        }
+        
+        // Проверяем, что токен еще действителен
+        try {
+            await this.getCurrentUser();
+            return true;
+        } catch (error) {
+            // Токен истек, получаем новый
+            return await this.tempAuth();
+        }
+    }
+}
+
+/***/ }),
+
+/***/ "./src/core/builder/ContentView.js":
+/*!*****************************************!*\
+  !*** ./src/core/builder/ContentView.js ***!
+  \*****************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   ContentView: () => (/* binding */ ContentView)
+/* harmony export */ });
+/* harmony import */ var _AbstractView__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AbstractView */ "./src/core/builder/AbstractView.ts");
+
+
+class ContentView extends _AbstractView__WEBPACK_IMPORTED_MODULE_0__.AbstractView {
+
+    #content;
+
+    constructor() {
+        super();
+        this.#content = window.document.getElementById("content");
+    }
+
+    getContent = () => {
+        return this.#content;
+    }
+}
+
+/***/ }),
+
+/***/ "./src/core/enum.js":
+/*!**************************!*\
+  !*** ./src/core/enum.js ***!
+  \**************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   enumForEach: () => (/* binding */ enumForEach)
+/* harmony export */ });
+/**
+ * Обёртка над классической записью чтобы не писать каждый раз Object.entries(...).forEach((...) => {...})
+ * Вытаскивает entry из массива value, где 0 элемент это ключь енама, а 1 значение это объект - содержимое
+ * После передаёт entry в callback функцию, которая и будет являться обработчиком цыкла forEach.
+ *
+ * @param Enum - enum который нужно распарсить
+ * @param callback - функция обрабатывающая входящие в enum объекты.
+ */
+const enumForEach = (Enum, callback) => {
+    Object.entries(Enum).forEach((value) => {
+        const entry = value[1];
+        callback(entry);
+    });
+}
+
+/***/ }),
+
+/***/ "./src/core/enum/Levels.js":
+/*!*********************************!*\
+  !*** ./src/core/enum/Levels.js ***!
+  \*********************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Levels: () => (/* binding */ Levels)
+/* harmony export */ });
+const Levels = Object.freeze({
+    NATIVE:   { name: "native", hex: "#2e8801", number: 4},
+    ADVANCED:  { name: "advanced", hex: "#72d400" , number: 3 },
+    INTERMEDIATE: { name: "intermediate", hex: "#ef9f00", number: 2 },
+    ELEMENTARY: { name: "elementary", hex: "#ab0000", number: 1 },
+    BEGINNER: { name: "beginner", hex: "#ff2a00", number: 0 }
+});
+
+/***/ }),
+
+/***/ "./src/core/enum/NavbarButtons.js":
+/*!****************************************!*\
+  !*** ./src/core/enum/NavbarButtons.js ***!
+  \****************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   NavbarButtons: () => (/* binding */ NavbarButtons)
+/* harmony export */ });
+const NavbarButtons = Object.freeze({
+    WORDBOOK: {title: "Wordbook", className: "nav-button", disabled: true},
+    SETTINGS: {title: "Settings", className: "nav-button"},
+    REFRESH:  { title: "↺ page", className: "refresh-btn" }
+
+});
+
+
+
+/***/ }),
+
+/***/ "./src/core/words/ApiWordbookService.js":
+/*!**********************************************!*\
+  !*** ./src/core/words/ApiWordbookService.js ***!
+  \**********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   ApiWordbookService: () => (/* binding */ ApiWordbookService)
+/* harmony export */ });
+/* harmony import */ var _Logger__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../Logger */ "./src/core/Logger.js");
+/* harmony import */ var _api_ApiService__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../api/ApiService */ "./src/core/api/ApiService.js");
+/* harmony import */ var _Wordbook__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Wordbook */ "./src/core/words/Wordbook.js");
+
+
+
+
+class ApiWordbookService {
+
+    #apiService;
+    #logger;
+    #wordbook;
+    #currentWordbookId;
+    #executeAfter;
+
+    executeAfter = (after) => {
+        this.#executeAfter = after;
+    }
+
+    constructor() {
+        this.#apiService = new _api_ApiService__WEBPACK_IMPORTED_MODULE_1__.ApiService();
+        this.#logger = new _Logger__WEBPACK_IMPORTED_MODULE_0__.Logger();
+        this.#wordbook = new _Wordbook__WEBPACK_IMPORTED_MODULE_2__.Wordbook();
+    }
+
+    /**
+     * Инициализация сервиса с авторизацией
+     */
+    initialize = async () => {
+        try {
+            const isAuth = await this.#apiService.ensureAuth();
+            if (!isAuth) {
+                this.#logger.log('Failed to authenticate with API');
+                return false;
+            }
+
+            // Получаем основной словарь
+            const mainWordbook = await this.#apiService.getMainWordbook();
+            if (mainWordbook) {
+                this.#currentWordbookId = mainWordbook.id;
+                this.#logger.log(`Using main wordbook: ${this.#currentWordbookId}`);
+            } else {
+                // Если основного словаря нет, создаем его
+                const newWordbook = await this.#apiService.createWordbook('ENGLISH');
+                if (newWordbook) {
+                    this.#currentWordbookId = newWordbook.id;
+                    this.#logger.log(`Created new wordbook: ${this.#currentWordbookId}`);
+                }
+            }
+
+            return true;
+        } catch (error) {
+            this.#logger.log('Failed to initialize API wordbook service');
+            return false;
+        }
+    }
+
+    /**
+     * Загружает слова из API
+     */
+    loadWords = async () => {
+        if (!this.#currentWordbookId) {
+            this.#logger.log('No wordbook ID available');
+            if (this.#executeAfter) {
+                this.#executeAfter();
+            }
+            return;
+        }
+
+        try {
+            let page = 0;
+            const allWords = [];
+            
+            while (true) {
+                const response = await this.#apiService.getWords(this.#currentWordbookId, page, 50);
+                
+                if (!response.content || response.content.length === 0) {
+                    break;
+                }
+
+                // Преобразуем формат слов для совместимости с Wordbook
+                const words = response.content.map(word => ({
+                    word: word.word,
+                    level: word.level || 1
+                }));
+
+                allWords.push(...words);
+                
+                if (response.content.length < 50) {
+                    break;
+                }
+                
+                page++;
+            }
+
+            this.set(allWords);
+            this.#logger.log(`Loaded ${allWords.length} words from API`);
+            
+            if (this.#executeAfter) {
+                this.#executeAfter();
+            }
+        } catch (error) {
+            this.#logger.log('Failed to load words from API');
+            if (this.#executeAfter) {
+                this.#executeAfter();
+            }
+        }
+    }
+
+    /**
+     * Устанавливает слова в wordbook
+     */
+    set = (words) => {
+        this.#wordbook.set(words);
+    }
+
+    /**
+     * Добавляет слово в API и локальный wordbook
+     */
+    addWord = async (word, level = 1) => {
+        if (!this.#currentWordbookId) {
+            this.#logger.log('No wordbook ID available for adding word');
+            return false;
+        }
+
+        try {
+            const result = await this.#apiService.addWord(this.#currentWordbookId, word, level);
+            if (result) {
+                // Добавляем в локальный wordbook
+                this.#wordbook.set([{word, level}]);
+                this.#logger.log(`Added word to API: ${word}`);
+                return true;
+            }
+            return false;
+        } catch (error) {
+            this.#logger.log(`Failed to add word to API: ${word}`);
+            return false;
+        }
+    }
+
+    /**
+     * Добавляет список слов в API
+     */
+    addWordsList = async (words) => {
+        if (!this.#currentWordbookId) {
+            this.#logger.log('No wordbook ID available for adding words list');
+            return false;
+        }
+
+        try {
+            const result = await this.#apiService.addWordsList(this.#currentWordbookId, words);
+            if (result) {
+                // Добавляем в локальный wordbook
+                this.#wordbook.set(words);
+                this.#logger.log(`Added ${words.length} words to API`);
+                return true;
+            }
+            return false;
+        } catch (error) {
+            this.#logger.log('Failed to add words list to API');
+            return false;
+        }
+    }
+
+    /**
+     * Удаляет слово из API и локального wordbook
+     */
+    remove = async (word) => {
+        if (!this.#currentWordbookId) {
+            this.#logger.log('No wordbook ID available for removing word');
+            return false;
+        }
+
+        try {
+            // Находим wordId для удаления
+            const words = await this.#apiService.getWords(this.#currentWordbookId, 0, 1000, word);
+            const wordToDelete = words.content.find(w => w.word === word);
+            
+            if (wordToDelete) {
+                const result = await this.#apiService.deleteWord(this.#currentWordbookId, wordToDelete.id);
+                if (result) {
+                    this.#wordbook.remove(word);
+                    this.#logger.log(`Removed word from API: ${word}`);
+                    return true;
+                }
+            }
+            return false;
+        } catch (error) {
+            this.#logger.log(`Failed to remove word from API: ${word}`);
+            return false;
+        }
+    }
+
+    /**
+     * Обновляет уровень слова в API
+     */
+    updateWordLevel = async (word, level) => {
+        if (!this.#currentWordbookId) {
+            this.#logger.log('No wordbook ID available for updating word level');
+            return false;
+        }
+
+        try {
+            // Находим wordId для обновления
+            const words = await this.#apiService.getWords(this.#currentWordbookId, 0, 1000, word);
+            const wordToUpdate = words.content.find(w => w.word === word);
+            
+            if (wordToUpdate) {
+                const result = await this.#apiService.updateWordLevel(this.#currentWordbookId, wordToUpdate.id, level);
+                if (result) {
+                    // Обновляем в локальном wordbook
+                    this.#wordbook.remove(word);
+                    this.#wordbook.set([{word, level}]);
+                    this.#logger.log(`Updated word level in API: ${word} -> ${level}`);
+                    return true;
+                }
+            }
+            return false;
+        } catch (error) {
+            this.#logger.log(`Failed to update word level in API: ${word}`);
+            return false;
+        }
+    }
+
+    /**
+     * Получает wordbook
+     */
+    getWordbook = () => {
+        return this.#wordbook;
+    }
+
+    /**
+     * Получает отфильтрованный wordbook
+     */
+    getFilteredWordbook = (filter) => {
+        const filtered = [];
+        this.#wordbook.get().forEach((level, word) => word && word.includes(filter) && filtered.push({word, level}));
+        const wordbook = new _Wordbook__WEBPACK_IMPORTED_MODULE_2__.Wordbook();
+        wordbook.set(filtered);
+        return wordbook;
+    }
+
+    /**
+     * Получает кэш wordbook
+     */
+    getWordbookCache = () => {
+        return this.#wordbook.get();
+    }
+
+    /**
+     * Загружает словари (совместимость со старым API)
+     */
+    loadWordbooks = async () => {
+        await this.loadWords();
+    }
+
+    /**
+     * Получает текущий ID словаря
+     */
+    getCurrentWordbookId = () => {
+        return this.#currentWordbookId;
+    }
+
+    /**
+     * Устанавливает текущий словарь
+     */
+    setCurrentWordbook = async (wordbookId) => {
+        this.#currentWordbookId = wordbookId;
+        await this.loadWords();
+    }
+
+    /**
+     * Получает все словари пользователя
+     */
+    getUserWordbooks = async () => {
+        try {
+            return await this.#apiService.getWordbooks();
+        } catch (error) {
+            this.#logger.log('Failed to get user wordbooks');
+            return [];
+        }
+    }
+}
+
+/***/ }),
+
+/***/ "./src/core/words/Pages.js":
+/*!*********************************!*\
+  !*** ./src/core/words/Pages.js ***!
+  \*********************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Pages: () => (/* binding */ Pages)
+/* harmony export */ });
+class Pages {
+
+    #wordsCount;
+
+    #pagesCount;
+    #scale;
+
+    constructor(wordsCount, scale) {
+        this.#wordsCount = wordsCount;
+        this.#scale = scale;
+    }
+
+    getCount = () => {
+        return this.#pagesCount;
+    }
+
+    calcPagesCount = () => {
+        this.#pagesCount = Math.ceil(this.#wordsCount / this.#scale);
+        return this.#pagesCount;
+    }
+
+    isIndexOnPage = (page, index) => index >= this.#getPageStart(page) && index < this.#getPageEnd(page);
+
+    #getPageStart = (page) => page * this.#scale;
+
+    #getPageEnd = (page) => (page + 1) * this.#scale;
+}
+
+/***/ }),
+
+/***/ "./src/core/words/Wordbook.js":
+/*!************************************!*\
+  !*** ./src/core/words/Wordbook.js ***!
+  \************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Wordbook: () => (/* binding */ Wordbook)
+/* harmony export */ });
+/* harmony import */ var _Pages__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Pages */ "./src/core/words/Pages.js");
+
+
+class Wordbook {
+
+    #pages;
+    #cache;
+
+    constructor() {
+        this.#cache = new Map();
+        this.#pages = new _Pages__WEBPACK_IMPORTED_MODULE_0__.Pages(0, 0);
+    }
+
+    remove = (word) => {
+        this.#cache.delete(word);
+        this.#pages = new _Pages__WEBPACK_IMPORTED_MODULE_0__.Pages(this.#cache.size, 50);
+        this.#pages.calcPagesCount();
+    }
+
+    set = (list) => {
+        list.forEach((bundle) => {
+            this.#cache.set(bundle.word, bundle.level);
+        });
+        this.#pages = new _Pages__WEBPACK_IMPORTED_MODULE_0__.Pages(this.#cache.size, 50);
+        this.#pages.calcPagesCount();
+        return this;
+    }
+
+    get = () => {
+        return this.#cache;
+    }
+
+    getPages = () => {
+        return this.#pages;
+    }
+
+    getPage = (page) => {
+        let index = 0;
+        const result = new Map();
+        this.#cache.forEach((level, word) => {
+            this.#pages.isIndexOnPage(page, index) && result.set(word, level);
+            index++;
+        });
+        return result;
+    }
+
+    toObject = () => {
+        const wordbooks = {};
+        this.#toPieces().forEach((wordbook, index) => {
+            wordbooks[this.getName(index)] = wordbook;
+        });
+        return wordbooks;
+    }
+
+    getName = (number) => {
+        return "wordbook" + number;
+    }
+
+    #toList = () => {
+        const list = [];
+        this.#cache.forEach((level, word) => {
+            list.push({word: word, level: level}) ;
+        });
+        return list;
+    }
+
+    #toPieces = () => {
+        const pieces = [[]];
+        this.#toList().forEach((bundle) => this.#putInPiece(pieces, bundle));
+        return pieces;
+    }
+
+    #putInPiece = (pieces, bundle) => {
+        const counter = pieces.length - 1;
+        if (pieces[counter].length < 100) {
+            pieces[counter].push(bundle);
+        } else  {
+            pieces.push([]);
+            this.#putInPiece(pieces, bundle);
+        }
+    }
+}
+
+/***/ }),
+
+/***/ "./src/popup/ApiPopupService.js":
+/*!**************************************!*\
+  !*** ./src/popup/ApiPopupService.js ***!
+  \**************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   ApiPopupService: () => (/* binding */ ApiPopupService)
+/* harmony export */ });
+/* harmony import */ var _settings_SettingsService__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./settings/SettingsService */ "./src/popup/settings/SettingsService.js");
+/* harmony import */ var _navbar_NavbarBuilder__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./navbar/NavbarBuilder */ "./src/popup/navbar/NavbarBuilder.js");
+/* harmony import */ var _scroll_WordbookScroll__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./scroll/WordbookScroll */ "./src/popup/scroll/WordbookScroll.js");
+/* harmony import */ var _core_Context__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../core/Context */ "./src/core/Context.js");
+/* harmony import */ var _settings_SettingsBuilder__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./settings/SettingsBuilder */ "./src/popup/settings/SettingsBuilder.js");
+/* harmony import */ var _navbar_NavButtons__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./navbar/NavButtons */ "./src/popup/navbar/NavButtons.js");
+/* harmony import */ var _scroll_ScrollBuilder__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./scroll/ScrollBuilder */ "./src/popup/scroll/ScrollBuilder.js");
+/* harmony import */ var _info_InfoBarBuilder__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./info/InfoBarBuilder */ "./src/popup/info/InfoBarBuilder.js");
+/* harmony import */ var _core_ApiStore__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../core/ApiStore */ "./src/core/ApiStore.js");
+
+
+
+
+
+
+
+
+
+
+class ApiPopupService {
+
+    #navbarBuilder;
+    #settingsBuilder;
+    #scrollBuilder;
+    #infoBarBuilder;
+    #apiStore;
+
+    constructor() {
+        this.#settingsBuilder = new _settings_SettingsBuilder__WEBPACK_IMPORTED_MODULE_4__.SettingsBuilder();
+        this.#navbarBuilder = new _navbar_NavbarBuilder__WEBPACK_IMPORTED_MODULE_1__.NavbarBuilder();
+        this.#scrollBuilder = new _scroll_ScrollBuilder__WEBPACK_IMPORTED_MODULE_6__.ScrollBuilder();
+        this.#infoBarBuilder = new _info_InfoBarBuilder__WEBPACK_IMPORTED_MODULE_7__.InfoBarBuilder();
+        this.#apiStore = new _core_ApiStore__WEBPACK_IMPORTED_MODULE_8__.ApiStore();
+    }
+
+    run = async () => {
+        try {
+            // Проверяем авторизацию в API
+            const isAuth = await this.#apiStore.ensureAuth();
+            _core_Context__WEBPACK_IMPORTED_MODULE_3__.Context.add("apiAvailable", isAuth);
+            
+            if (isAuth) {
+                // Получаем информацию о пользователе
+                const user = await this.#apiStore.getCurrentUser();
+                _core_Context__WEBPACK_IMPORTED_MODULE_3__.Context.add("currentUser", user);
+            }
+        } catch (error) {
+            _core_Context__WEBPACK_IMPORTED_MODULE_3__.Context.add("apiAvailable", false);
+        }
+
+        this.#buildPopupDOM();
+        const settings = new _settings_SettingsService__WEBPACK_IMPORTED_MODULE_0__.SettingsService();
+        settings.fillSettings();
+        const scroll = new _scroll_WordbookScroll__WEBPACK_IMPORTED_MODULE_2__.WordbookScroll();
+        scroll.fillScroll(0);
+        this.#setupNavButtons();
+    }
+
+    #buildPopupDOM = () => {
+        this.#navbarBuilder.buildButtons();
+        this.#settingsBuilder.buildSettingsContentStructure();
+        this.#scrollBuilder.build();
+    }
+
+    #setupNavButtons = () => {
+        const navButtons = new _navbar_NavButtons__WEBPACK_IMPORTED_MODULE_5__.NavButtons();
+        navButtons.onClickNavButtons();
+        navButtons.checkButtonsAndSetContentVisibility();
+    }
+}
+
+/***/ }),
+
+/***/ "./src/popup/deprecated/html.js":
+/*!**************************************!*\
+  !*** ./src/popup/deprecated/html.js ***!
+  \**************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   addClass: () => (/* binding */ addClass),
+/* harmony export */   addListener: () => (/* binding */ addListener),
+/* harmony export */   create: () => (/* binding */ create),
+/* harmony export */   selectByClass: () => (/* binding */ selectByClass)
+/* harmony export */ });
+/**
+ * Функция для создания html тэга
+ *
+ * @param name - название тэга
+ * @returns {*} - готовый html тэг, пока не привязаный ни к чему.
+ */
+const create = (name) => document.createElement(name);
+
+/**
+ * Добавляет атрибут class для тэга,
+ * по нему будут прописаны определённые css стили.
+ *
+ * @param element - тэг для которого нужно добавть класс
+ * @param className - имя класса
+ */
+const addClass = (element, className) => {
+    element.classList.add(className);
+}
+
+/**
+ * Добавляет EventListener для элемента
+ *
+ * @param element - тэг эвенты которого будем слушать
+ * @param eventType - тип требуемого эвента, на который будем реагировать
+ * @param callback - функция которая будет выполнена.
+ */
+const addListener = (element, eventType, callback) => {
+    element.addEventListener(eventType, event => {
+        callback(event);
+    });
+}
+
+const selectByClass = (className, index) => {
+    if (index !== undefined) {
+        return window.document.getElementsByClassName(className)[index];
+    }
+    return selectByClass(className,0);
+};
+
+/***/ }),
+
+/***/ "./src/popup/info/InfoBarBuilder.js":
+/*!******************************************!*\
+  !*** ./src/popup/info/InfoBarBuilder.js ***!
+  \******************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   InfoBarBuilder: () => (/* binding */ InfoBarBuilder)
+/* harmony export */ });
+/* harmony import */ var _deprecated_html__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../deprecated/html */ "./src/popup/deprecated/html.js");
+
+
+class InfoBarBuilder {
+
+    #element;
+    #version;
+
+    constructor() {
+        const jsonData = __webpack_require__(/*! ../../../manifest.json */ "./manifest.json");
+        this.#version = jsonData.version;
+        this.#element = (0,_deprecated_html__WEBPACK_IMPORTED_MODULE_0__.selectByClass)('infobar');
+        this.#appendVersion();
+    }
+
+    #appendVersion = () => {
+        this.#element.textContent = `Version ${this.#version}`;
+    }
+}
+
+/***/ }),
+
+/***/ "./src/popup/navbar/NavButtons.js":
+/*!****************************************!*\
+  !*** ./src/popup/navbar/NavButtons.js ***!
+  \****************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   NavButtons: () => (/* binding */ NavButtons)
+/* harmony export */ });
+/* harmony import */ var _deprecated_html__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../deprecated/html */ "./src/popup/deprecated/html.js");
+/* harmony import */ var _NavbarBuilder__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./NavbarBuilder */ "./src/popup/navbar/NavbarBuilder.js");
+/* harmony import */ var _core_enum__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../core/enum */ "./src/core/enum.js");
+
+
+
+
+class NavButtons {
+
+    #builder;
+    #navbar;
+    #refresh;
+    #content;
+    #buttons;
+
+    constructor() {
+        this.#builder = new _NavbarBuilder__WEBPACK_IMPORTED_MODULE_1__.NavbarBuilder();
+        this.#navbar = (0,_deprecated_html__WEBPACK_IMPORTED_MODULE_0__.selectByClass)('navbar');
+    }
+
+    onClickNavButtons = () => {
+        this.#loadButtons();
+        (0,_deprecated_html__WEBPACK_IMPORTED_MODULE_0__.addListener)(this.#refresh, "click", this.#callParser);
+        (0,_core_enum__WEBPACK_IMPORTED_MODULE_2__.enumForEach)(this.#buttons,button => (0,_deprecated_html__WEBPACK_IMPORTED_MODULE_0__.addListener)(button, "click", this.#onClick))
+    }
+
+    #loadButtons = () => {
+        this.#refresh = (0,_deprecated_html__WEBPACK_IMPORTED_MODULE_0__.selectByClass)('refresh-btn');
+        this.#buttons = this.#navbar.getElementsByClassName('nav-button');
+        this.#content = (0,_deprecated_html__WEBPACK_IMPORTED_MODULE_0__.selectByClass)('content');
+    }
+
+    #onClick = (event) => {
+        ;(0,_core_enum__WEBPACK_IMPORTED_MODULE_2__.enumForEach)(this.#buttons,button => button.disabled = false);
+        event.target.disabled = true;
+        this.checkButtonsAndSetContentVisibility();
+    };
+
+    checkButtonsAndSetContentVisibility = () => {
+        (0,_core_enum__WEBPACK_IMPORTED_MODULE_2__.enumForEach)(this.#buttons,button => {
+            const className = button.innerText.toLowerCase();
+            this.#builder.setContentVisibility(className, button.disabled);
+        });
+    };
+
+    #callParser = () => {
+        chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
+            chrome.tabs.executeScript(tabs[0].id, {file: './page/page.ts'});
+        });
+    };
+}
+
+/***/ }),
+
+/***/ "./src/popup/navbar/NavbarBuilder.js":
+/*!*******************************************!*\
+  !*** ./src/popup/navbar/NavbarBuilder.js ***!
+  \*******************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   NavbarBuilder: () => (/* binding */ NavbarBuilder)
+/* harmony export */ });
+/* harmony import */ var _core_enum__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../core/enum */ "./src/core/enum.js");
+/* harmony import */ var _core_enum_NavbarButtons__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../core/enum/NavbarButtons */ "./src/core/enum/NavbarButtons.js");
+/* harmony import */ var _deprecated_html__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../deprecated/html */ "./src/popup/deprecated/html.js");
+/* harmony import */ var _core_builder_ContentView__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../core/builder/ContentView */ "./src/core/builder/ContentView.js");
+
+
+
+
+
+class NavbarBuilder extends _core_builder_ContentView__WEBPACK_IMPORTED_MODULE_3__.ContentView {
+
+    #navbar;
+
+    constructor() {
+        super();
+        this.#navbar = (0,_deprecated_html__WEBPACK_IMPORTED_MODULE_2__.selectByClass)('navbar');
+    }
+
+    buildButtons = () => {
+        const getHtml = __webpack_require__(/*! pug-loader!./nav-button.pug */ "./node_modules/pug-loader/index.js!./src/popup/navbar/nav-button.pug");
+        (0,_core_enum__WEBPACK_IMPORTED_MODULE_0__.enumForEach)(_core_enum_NavbarButtons__WEBPACK_IMPORTED_MODULE_1__.NavbarButtons, (buttonInfo) => {
+            const html = getHtml({buttonInfo});
+            const button = this.getHTMLMapper().toElement(html);
+            this.#navbar.appendChild(button);
+        });
+    }
+
+    setContentVisibility = (className, disabled) => {
+        const entry = this.getContent().getElementsByClassName(className)[0];
+        entry.style.visibility = this.#getVisibility(disabled);
+        entry.style.transform = this.#getTranslate(disabled);
+    };
+
+    #getVisibility = (disabled) => {
+        return disabled ? 'visible' : 'hidden';
+    }
+
+    #getTranslate = (disabled) => {
+        return disabled ? 'translate(0px)' : 'translate(-400px)';
+    }
+}
+
+/***/ }),
+
+/***/ "./src/popup/scroll/ChangePageButtons.js":
+/*!***********************************************!*\
+  !*** ./src/popup/scroll/ChangePageButtons.js ***!
+  \***********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   ChangePageButtons: () => (/* binding */ ChangePageButtons)
+/* harmony export */ });
+/* harmony import */ var _core_Context__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../core/Context */ "./src/core/Context.js");
+
+
+class ChangePageButtons {
+
+    #current
+    #pagesList;
+    #wordbookService;
+    #fillScroll;
+    #filter;
+
+    constructor(fillScroll, filter) {
+        this.#wordbookService = _core_Context__WEBPACK_IMPORTED_MODULE_0__.Context.getWordbookService();
+        this.#pagesList = window.document.getElementById("pages");
+        this.#fillScroll = fillScroll;
+        this.#filter = filter;
+    }
+
+    buildPageButtons = (page) => {
+        this.#current = page;
+        this.#clearPageButtonsElement();
+        const countPages = this.#wordbookService.getFilteredWordbook(_core_Context__WEBPACK_IMPORTED_MODULE_0__.Context.get("filter").get()).getPages().getCount();
+        if (countPages < 10) {
+            countPages !== 1 && this.#renderPageButtons(0, countPages);
+        } else {
+            const first = this.#getFirstLimits(countPages);
+            const second = this.#getSecondLimits(countPages);
+            this.#buildTwoRowsPageButtons(first, second);
+        }
+    }
+
+    #clearPageButtonsElement = () => {
+        this.#pagesList.innerHTML = "";
+    }
+
+    #buildTwoRowsPageButtons = (first, second) => {
+        this.#renderPageButtons(first[0], first[1]);
+        this.#divideRows();
+        this.#renderPageButtons(second[0], second[1]);
+    }
+
+    #divideRows = () => {
+        const separator = window.document.createTextNode("...");
+        this.#pagesList.appendChild(separator);
+    }
+
+    #getFirstLimits = (countPages) => {
+        if (this.#current >= 2 && this.#current <= countPages - 5) {
+            if (this.#current >= countPages - 8) {
+                return [countPages - 10, countPages - 5];
+            }
+            return [this.#current - 2, this.#current + 3];
+        }
+        return [0, 5];
+    }
+
+    #getSecondLimits = (countPages) => [countPages - 5, countPages];
+
+    #renderPageButtons = (start, end) => {
+        for (let number = start; number < end; number++) {
+            const page = window.document.createElement("a");
+            page.target = "_blank";
+            page.textContent = `${number}`;
+            page.style.cursor = "pointer";
+            page.addEventListener("click", () => this.#fillScroll(number));
+            this.#pagesList.appendChild(page);
+        }
+    }
+}
+
+/***/ }),
+
+/***/ "./src/popup/scroll/Filter.js":
+/*!************************************!*\
+  !*** ./src/popup/scroll/Filter.js ***!
+  \************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Filter: () => (/* binding */ Filter)
+/* harmony export */ });
+class Filter {
+
+    #filter;
+    #buildPageButtons;
+    #fillScroll;
+
+    constructor(buildPageButtons, fillScroll) {
+        this.#filter = "";
+        this.#buildPageButtons = buildPageButtons;
+        this.#fillScroll = fillScroll;
+        this.#setupInput();
+    }
+
+    #setupInput = () => {
+        const filterInput = window.document.getElementById("filter-terms");
+        filterInput.addEventListener("change", (e) => {
+            this.#filter = e.target.value;
+            this.#buildPageButtons(0);
+            this.#fillScroll(0);
+        });
+    }
+
+    get = () => {
+        return this.#filter;
+    }
+}
+
+/***/ }),
+
+/***/ "./src/popup/scroll/ScrollBuilder.js":
+/*!*******************************************!*\
+  !*** ./src/popup/scroll/ScrollBuilder.js ***!
+  \*******************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   ScrollBuilder: () => (/* binding */ ScrollBuilder)
+/* harmony export */ });
+/* harmony import */ var _core_builder_ContentView__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../core/builder/ContentView */ "./src/core/builder/ContentView.js");
+
+
+class ScrollBuilder extends _core_builder_ContentView__WEBPACK_IMPORTED_MODULE_0__.ContentView {
+
+    build = () => {
+        const html = __webpack_require__(/*! apply-loader!pug-loader!./templates/scroll.pug */ "./node_modules/apply-loader/index.js!./node_modules/pug-loader/index.js!./src/popup/scroll/templates/scroll.pug");
+        const scroll = this.getHTMLMapper().toElement(html);
+        this.getContent().appendChild(scroll);
+    }
+}
+
+/***/ }),
+
+/***/ "./src/popup/scroll/WordbookScroll.js":
+/*!********************************************!*\
+  !*** ./src/popup/scroll/WordbookScroll.js ***!
+  \********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   WordbookScroll: () => (/* binding */ WordbookScroll)
+/* harmony export */ });
+/* harmony import */ var _core_Context__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../core/Context */ "./src/core/Context.js");
+/* harmony import */ var _WordsAppender__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./WordsAppender */ "./src/popup/scroll/WordsAppender.js");
+/* harmony import */ var _ChangePageButtons__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./ChangePageButtons */ "./src/popup/scroll/ChangePageButtons.js");
+/* harmony import */ var _Filter__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./Filter */ "./src/popup/scroll/Filter.js");
+
+
+
+
+
+class WordbookScroll {
+
+    #wordbookService;
+    #wordsAppender;
+    #pageButtons;
+    #filter;
+
+    constructor() {
+        this.#wordbookService = _core_Context__WEBPACK_IMPORTED_MODULE_0__.Context.getWordbookService();
+        this.#wordsAppender = new _WordsAppender__WEBPACK_IMPORTED_MODULE_1__.WordsAppender();
+        this.#pageButtons = new _ChangePageButtons__WEBPACK_IMPORTED_MODULE_2__.ChangePageButtons(this.fillScroll);
+        this.#filter = new _Filter__WEBPACK_IMPORTED_MODULE_3__.Filter(this.#pageButtons.buildPageButtons, this.fillScroll);
+        _core_Context__WEBPACK_IMPORTED_MODULE_0__.Context.add("filter", this.#filter);
+    }
+
+    fillScroll = (page) => {
+        this.#pageButtons.buildPageButtons(page);
+        const loaded = this.#loadWords(page);
+        this.#fillWords(loaded);
+    }
+
+    #loadWords = (page) => {
+        return this.#wordbookService.getFilteredWordbook(this.#filter.get()).getPage(page);
+    }
+
+    #fillWords = (loaded) => {
+        this.#wordsAppender.clearScroll();
+        loaded.forEach((level, word) => {
+            const ref = this.#wordsAppender.addWord(word, level);
+            this.#whenChangeOption(ref, word);
+            this.#whenEditWord(ref, word);
+        });
+    }
+
+    #whenEditWord = (ref, word) => {
+        const input = ref.getElementsByTagName("input")[0];
+        input.addEventListener("change", (event) => this.#changeWord(event, word));
+    }
+
+    #whenChangeOption = (ref, word) => {
+        const select = ref.getElementsByClassName("level")[0];
+        select.addEventListener("change", (event) => this.#changeLevel(event, word));
+    }
+
+    #changeWord = (event, word) => {
+        const level = this.#wordbookService.getWordbookCache().get(word);
+        const edited = event.target.value;
+        this.#wordbookService.remove(word);
+        this.#updateWord(edited, level);
+        this.fillScroll(0);
+    }
+
+    #changeLevel = (event, word) => {
+        const level = event.target.value;
+        this.#updateWord(word, level);
+    }
+
+    #updateWord = (word, level) => {
+        this.#wordbookService.set([{word, level}]);
+    }
+}
+
+/***/ }),
+
+/***/ "./src/popup/scroll/WordsAppender.js":
+/*!*******************************************!*\
+  !*** ./src/popup/scroll/WordsAppender.js ***!
+  \*******************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   WordsAppender: () => (/* binding */ WordsAppender)
+/* harmony export */ });
+/* harmony import */ var _core_enum__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../core/enum */ "./src/core/enum.js");
+/* harmony import */ var _core_enum_Levels__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../core/enum/Levels */ "./src/core/enum/Levels.js");
+/* harmony import */ var _core_builder_AbstractView__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../core/builder/AbstractView */ "./src/core/builder/AbstractView.ts");
+
+
+
+
+class WordsAppender extends _core_builder_AbstractView__WEBPACK_IMPORTED_MODULE_2__.AbstractView {
+
+    #templateFunction;
+    #options;
+
+    constructor() {
+        super();
+        this.#templateFunction = __webpack_require__(/*! pug-loader!./templates/word.pug */ "./node_modules/pug-loader/index.js!./src/popup/scroll/templates/word.pug");
+        this.#options = [];
+        (0,_core_enum__WEBPACK_IMPORTED_MODULE_0__.enumForEach)(_core_enum_Levels__WEBPACK_IMPORTED_MODULE_1__.Levels, (level) => {
+            this.#options.push(level.name)
+        });
+    }
+
+    addWord = (clear, level) => {
+        const words = this.#getWordsElement();
+        const ref = this.#buildWord(clear, level);
+        words.appendChild(ref);
+        return ref;
+    }
+
+    #buildWord = (clear, level) => {
+        const options = this.#options;
+        const html = this.#templateFunction({clear, level, options})
+        return this.getHTMLMapper().toElement(html);
+    };
+
+    clearScroll = () => {
+        this.#getWordsElement().innerHTML = "";
+    }
+
+    #getWordsElement = () => window.document.getElementById('words');
+}
+
+/***/ }),
+
+/***/ "./src/popup/settings/SettingsBuilder.js":
+/*!***********************************************!*\
+  !*** ./src/popup/settings/SettingsBuilder.js ***!
+  \***********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   SettingsBuilder: () => (/* binding */ SettingsBuilder)
+/* harmony export */ });
+/* harmony import */ var _core_builder_ContentView__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../core/builder/ContentView */ "./src/core/builder/ContentView.js");
+
+
+
+class SettingsBuilder extends _core_builder_ContentView__WEBPACK_IMPORTED_MODULE_0__.ContentView {
+
+    #levers;
+
+    buildSettingsContentStructure = () => {
+        const templateLoader = __webpack_require__(/*! pug-loader!./template/settings.pug */ "./node_modules/pug-loader/index.js!./src/popup/settings/template/settings.pug");
+        const html = templateLoader();
+        const settings = this.getHTMLMapper().toElement(html);
+        this.getContent().appendChild(settings);
+        const block = this.getContent().getElementsByClassName("block")[0];
+        this.appendSlider(block, {id: "russian", title: "Russian"})
+        this.appendSlider(block, {id: "korean", title: "Korean"})
+        this.appendSlider(block, {id: "english", title: "English"})
+        this.appendSlider(block, {id: "china", title: "China"})
+
+    }
+
+    appendSlider = (parent, language) => {
+        const templateLoader = __webpack_require__(/*! pug-loader!./template/slider.pug */ "./node_modules/pug-loader/index.js!./src/popup/settings/template/slider.pug");
+        const html = templateLoader({language});
+        const slider = this.getHTMLMapper().toElement(html);
+        parent.appendChild(slider);
+    }
+    loadLevers = () => {
+        this.#levers = window.document.getElementsByClassName('lever');
+    }
+
+    setupAppEnableLever = (changeEnable) => {
+        this.#setupLever(this.#levers[0], changeEnable, "enable");
+    }
+
+    renderAppEnableLever = (enable) => {
+        this.renderLever(this.#levers[0], enable);
+    };
+
+    setupRussianEnableLever = (changeEnable) => {
+        this.#setupLever(this.#levers[1], changeEnable, "russian");
+    }
+
+    renderRussianEnableLever = (enable) => {
+        this.renderLever(this.#levers[1], enable);
+    };
+
+    setupKoreanEnableLever = (changeEnable) => {
+        this.#setupLever(this.#levers[2], changeEnable, "korean");
+    }
+
+    renderKoreanEnableLever = (enable) => {
+        this.renderLever(this.#levers[2], enable);
+    };
+
+    setupEnglishEnableLever = (changeEnable) => {
+        this.#setupLever(this.#levers[3], changeEnable, "english");
+    }
+
+    renderEnglishEnableLever = (enable) => {
+        this.renderLever(this.#levers[3], enable);
+    };
+
+    setupChinaEnableLever = (changeEnable) => {
+        this.#setupLever(this.#levers[4], changeEnable, "china");
+    }
+
+    renderChinaEnableLever = (enable) => {
+        this.renderLever(this.#levers[4], enable);
+    };
+
+    #setupLever = (lever, changeEnable, name) => {
+        lever.addEventListener('click', () => changeEnable(lever, name));
+    }
+
+    renderLever = (lever, enable) => {
+        lever.style.justifyContent = enable ? 'flex-end' : 'flex-start';
+        lever.style.background = enable ? '#c2d7bf' : '#ffffff';
+    }
+
+}
+
+
+/***/ }),
+
+/***/ "./src/popup/settings/SettingsService.js":
+/*!***********************************************!*\
+  !*** ./src/popup/settings/SettingsService.js ***!
+  \***********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   SettingsService: () => (/* binding */ SettingsService)
+/* harmony export */ });
+/* harmony import */ var _SettingsBuilder__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./SettingsBuilder */ "./src/popup/settings/SettingsBuilder.js");
+
+
+class SettingsService {
+
+    #builder;
+    #settings;
+
+    constructor() {
+        this.#builder = new _SettingsBuilder__WEBPACK_IMPORTED_MODULE_0__.SettingsBuilder();
+        this.#settings = {enable: true, russian: true, english: true, china: true, korean: true}
+    }
+
+    fillSettings = () => {
+        chrome.storage.local.get(['enable', 'russian', "english", "china", "korean"], (settings) => this.#setupSettings(settings));
+    }
+
+    #setupSettings = (settings) => {
+        this.#settings = settings;
+        this.#builder.loadLevers();
+        this.#setupEnableAppLever();
+        this.#setupLangLevers();
+    }
+
+    #setupEnableAppLever = () => {
+        this.#builder.setupAppEnableLever(this.#changeEnable);
+        this.#builder.renderAppEnableLever(this.#settings.enable);
+    }
+
+    #setupLangLevers = () => {
+        //TODO:: Clean code (Remove duplicate)
+        this.#builder.setupRussianEnableLever(this.#changeEnable);
+        this.#builder.renderRussianEnableLever(this.#settings.russian);
+        this.#builder.setupKoreanEnableLever(this.#changeEnable);
+        this.#builder.renderKoreanEnableLever(this.#settings.korean);
+        this.#builder.setupEnglishEnableLever(this.#changeEnable);
+        this.#builder.renderEnglishEnableLever(this.#settings.english);
+        this.#builder.setupChinaEnableLever(this.#changeEnable);
+        this.#builder.renderChinaEnableLever(this.#settings.china);
+    }
+
+    #changeEnable = (lever, name) => {
+        this.#settings[name] = !this.#settings[name];
+        chrome.storage.local.set(this.#settings, () => {
+            this.#builder.renderLever(lever, this.#settings[name]);
+        });
+    };
+}
+
+/***/ }),
+
+/***/ "?8f63":
+/*!********************!*\
+  !*** fs (ignored) ***!
+  \********************/
+/***/ (() => {
+
+/* (ignored) */
+
+/***/ }),
+
+/***/ "./manifest.json":
+/*!***********************!*\
+  !*** ./manifest.json ***!
+  \***********************/
+/***/ ((module) => {
+
+"use strict";
+module.exports = /*#__PURE__*/JSON.parse('{"name":"Reckue Languages (API)","version":"0.6.0","description":"Interactive language learning assistant with API integration","permissions":["storage","activeTab","tabs"],"host_permissions":["https://api.reckue.com/*"],"background":{"service_worker":"background/application.js"},"action":{"default_popup":"dist/popup/popup.html","default_icon":{"16":"images/coach16.png","32":"images/coach32.png","48":"images/coach48.png","128":"images/coach128.png"}},"content_scripts":[{"matches":["http://*/*","https://*/*"],"exclude_matches":["https://translate.google.com/*"],"run_at":"document_idle","js":["dist/page/page.js"]}],"icons":{"16":"images/coach16.png","32":"images/coach32.png","48":"images/coach48.png","128":"images/coach128.png"},"manifest_version":3}');
+
+/***/ })
+
+/******/ 	});
+/************************************************************************/
+/******/ 	// The module cache
+/******/ 	var __webpack_module_cache__ = {};
+/******/ 	
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/ 		// Check if module is in cache
+/******/ 		var cachedModule = __webpack_module_cache__[moduleId];
+/******/ 		if (cachedModule !== undefined) {
+/******/ 			return cachedModule.exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = __webpack_module_cache__[moduleId] = {
+/******/ 			// no module.id needed
+/******/ 			// no module.loaded needed
+/******/ 			exports: {}
+/******/ 		};
+/******/ 	
+/******/ 		// Execute the module function
+/******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
+/******/ 	
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/ 	
+/************************************************************************/
+/******/ 	/* webpack/runtime/define property getters */
+/******/ 	(() => {
+/******/ 		// define getter functions for harmony exports
+/******/ 		__webpack_require__.d = (exports, definition) => {
+/******/ 			for(var key in definition) {
+/******/ 				if(__webpack_require__.o(definition, key) && !__webpack_require__.o(exports, key)) {
+/******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
+/******/ 				}
+/******/ 			}
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/hasOwnProperty shorthand */
+/******/ 	(() => {
+/******/ 		__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/make namespace object */
+/******/ 	(() => {
+/******/ 		// define __esModule on exports
+/******/ 		__webpack_require__.r = (exports) => {
+/******/ 			if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 				Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 			}
+/******/ 			Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/************************************************************************/
+var __webpack_exports__ = {};
+// This entry need to be wrapped in an IIFE because it need to be in strict mode.
+(() => {
+"use strict";
+/*!**************************!*\
+  !*** ./src/api-popup.ts ***!
+  \**************************/
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _core_ApiApp_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./core/ApiApp.js */ "./src/core/ApiApp.js");
+/* harmony import */ var _popup_ApiPopupService_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./popup/ApiPopupService.js */ "./src/popup/ApiPopupService.js");
+
+
+const service = new _popup_ApiPopupService_js__WEBPACK_IMPORTED_MODULE_1__.ApiPopupService();
+const app = new _core_ApiApp_js__WEBPACK_IMPORTED_MODULE_0__.ApiApp(service);
+app.start();
+
+})();
+
+/******/ })()
+;
+//# sourceMappingURL=popup.js.map

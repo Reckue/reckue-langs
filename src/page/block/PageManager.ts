@@ -36,14 +36,21 @@ export class PageManager {
     run = () => {
         const body = document.querySelector('body'); 
 
-        const textNodeArray: Array<any> = this.nodeManager.getTextNodes(body);
+        const textNodeArray: Array<Node> = this.nodeManager.getTextNodes(body);
 
         console.log(textNodeArray)
 
-        const cloneArray: Array<CloneBlockModel> = textNodeArray.map((el) => {
-            const {width, height} = el.getBoundingClientRect();
-            return this.cloneBlockService.getSize(el, el.textContent, new SizeModel(width, height));
-        });
+        const cloneArray: Array<CloneBlockModel> = textNodeArray.map((node) => {
+            // Для текстовых узлов нужно получить родительский элемент
+            const parentElement = node.parentElement;
+            if (!parentElement) {
+                console.warn('Parent element not found for text node:', node);
+                return null;
+            }
+            
+            const {width, height} = parentElement.getBoundingClientRect();
+            return this.cloneBlockService.getSize(parentElement, node.textContent, new SizeModel(width, height));
+        }).filter(Boolean); // Убираем null значения
 
         console.log(cloneArray.length);
 

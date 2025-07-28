@@ -31,10 +31,13 @@ export class NodeManager {
         return childNodes;
     }
 
-    getTextNodes = (element: any): Array<String> => {
+    getTextNodes = (element: any): Array<Node> => {
         const ELEMENT_NODE = 1;
         const TEXT_NODE = 3;
         const childNodes = this.getChildNodes(element);
+        
+        // Очищаем массив перед новым поиском
+        this.resultArray = [];
 
         for (const elememt of childNodes) {
             if (elememt.nodeType === TEXT_NODE) {
