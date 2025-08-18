@@ -3,4 +3,8 @@ import {PageService} from "./page/PageService";
 
 const service = new PageService();
 const app = new App(service);
-app.start();
+
+// Запускаем приложение асинхронно
+app.start().catch(error => {
+    console.error('Failed to start page app:', error);
+});

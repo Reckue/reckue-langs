@@ -13,8 +13,9 @@ export class WordbookScroll {
     constructor() {
         this.#wordbookService = Context.getWordbookService();
         this.#wordsAppender = new WordsAppender();
-        this.#pageButtons = new ChangePageButtons(this.fillScroll);
-        this.#filter = new Filter(this.#pageButtons.buildPageButtons, this.fillScroll);
+        this.#filter = new Filter(null, this.fillScroll);
+        this.#pageButtons = new ChangePageButtons(this.fillScroll, this.#filter);
+        this.#filter.setBuildPageButtons(this.#pageButtons.buildPageButtons);
         Context.add("filter", this.#filter);
     }
 
@@ -47,20 +48,20 @@ export class WordbookScroll {
         select.addEventListener("change", (event) => this.#changeLevel(event, word));
     }
 
-    #changeWord = (event, word) => {
+    #changeWord = async (event, word) => {
         const level = this.#wordbookService.getWordbookCache().get(word);
         const edited = event.target.value;
-        this.#wordbookService.remove(word);
-        this.#updateWord(edited, level);
+        await this.#wordbookService.remove(word);
+        await this.#updateWord(edited, level);
         this.fillScroll(0);
     }
 
-    #changeLevel = (event, word) => {
+    #changeLevel = async (event, word) => {
         const level = event.target.value;
-        this.#updateWord(word, level);
+        await this.#updateWord(word, level);
     }
 
-    #updateWord = (word, level) => {
-        this.#wordbookService.set([{word, level}]);
+    #updateWord = async (word, level) => {
+        await this.#wordbookService.set([{word, level}]);
     }
 }

@@ -11,11 +11,17 @@ export class Filter {
         this.#setupInput();
     }
 
+    setBuildPageButtons = (buildPageButtons) => {
+        this.#buildPageButtons = buildPageButtons;
+    }
+
     #setupInput = () => {
         const filterInput = window.document.getElementById("filter-terms");
         filterInput.addEventListener("change", (e) => {
             this.#filter = e.target.value;
-            this.#buildPageButtons(0);
+            if (this.#buildPageButtons) {
+                this.#buildPageButtons(0);
+            }
             this.#fillScroll(0);
         });
     }

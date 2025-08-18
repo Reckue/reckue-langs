@@ -1,1 +1,3 @@
-chrome.storage.local.set({enable: true, russian: true, english: true, china: false, korean: true});
+// Background script - инициализация API режима
+// Настройки теперь управляются через API
+console.log('Reckue Languages extension started in API mode');
