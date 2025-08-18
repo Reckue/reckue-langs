@@ -52,6 +52,9 @@ export class Menu {
     #createPopup = () => {
         const html = require("apply-loader!pug-loader!./blocks/templates/popup.pug");
         this.#ref = this.#HTMLMapper.toElement(html);
+        
+        // Добавляем атрибут для идентификации popup
+        this.#ref.setAttribute('data-popup', 'true');
 
         this.displayOff();
         this.#onMouseOver();

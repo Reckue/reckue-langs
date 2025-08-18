@@ -26,7 +26,8 @@ export class DOMBuilder {
     }
 
     #appendText = (textRef, list) => {
-        if (textRef.parentNode.nodeName !== "A") {
+        // Проверяем, что элемент не находится внутри popup меню
+        if (textRef.parentNode.nodeName !== "A" && !this.#isInsidePopup(textRef)) {
             list.forEach((word) => {
                 const wordRef = this.#createRef(word);
                 if (wordRef.textContent !== "") {
@@ -36,6 +37,18 @@ export class DOMBuilder {
             });
             textRef.textContent = "";
         }
+    }
+
+    #isInsidePopup = (element) => {
+        let current = element;
+        while (current && current !== document.body) {
+            // Проверяем, есть ли у элемента или его родителей атрибут data-popup
+            if (current.getAttribute && current.getAttribute('data-popup') === 'true') {
+                return true;
+            }
+            current = current.parentNode;
+        }
+        return false;
     }
 
     #saveRef = (clear, wordRef) => {

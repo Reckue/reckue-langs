@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
 .menu-container {
     text-align: center;
 }
@@ -36,7 +38,7 @@ a:hover {
     flex-direction: row;
     justify-content: space-around;
     align-items: center;
-    font-family: Impact, serif;
+    font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     position: relative;
     font-size: 18px;
     z-index: 1001;
@@ -57,7 +59,8 @@ a:hover {
 }
 
 .display-word-menu .word-text {
-    font-weight: bold;
+    font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-weight: 600;
     color: #1e81c6;
     cursor: default;
 }
@@ -70,5 +73,5 @@ a:hover {
 
 .display-word-menu .edit-button {
     margin-left: 4px;
-    font-family: Impact, serif;
+    font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
