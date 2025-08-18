@@ -29,10 +29,11 @@ export class Menu {
         this.#setWordPosition();
     }
 
-    setPosition = (left, top) => {
+    setPosition = (left, top, wordHeight = 0) => {
         const offset = Context.get("POPUP_WIDTH") / 2;
         this.#left = `${left - offset}px`;
-        this.#top = `${top}px`;
+        // Позиционируем popup под словом с небольшим отступом
+        this.#top = `${top + wordHeight + 5}px`;
         this.#updatePosition();
     }
 
