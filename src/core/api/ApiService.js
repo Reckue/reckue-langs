@@ -1,6 +1,19 @@
 import {ApiConfig} from './ApiConfig.js';
 import {Logger} from '../Logger.js';
 
+/**
+ * ApiService - Основной сервис для работы с reckue.com API
+ * 
+ * НОВАЯ ЛОГИКА АВТОРИЗАЦИИ:
+ * 1. При первом вызове tempAuth() автоматически создается временный пользователь
+ *    через /api/1/temp-users/create
+ * 2. Полученный tempId сохраняется в chrome.storage.local
+ * 3. При последующих вызовах используется сохраненный tempId для авторизации
+ * 4. Авторизация выполняется через /api/1/auth/tempin с передачей tempId в body
+ * 
+ * Это решает проблему, когда мы пытались авторизоваться без создания пользователя.
+ */
+
 export class ApiService {
     #logger;
     #token;
@@ -15,10 +28,22 @@ export class ApiService {
     // Auth methods
     async tempAuth() {
         try {
+            // Сначала пытаемся получить сохраненный tempId из chrome.storage.local
+            let tempId = await this.#getStoredTempId();
+            
+            // Если tempId нет, создаем нового временного пользователя
+            if (!tempId) {
+                tempId = await this.#createTempUser();
+                await this.#storeTempId(tempId);
+            }
+            
+            // Теперь делаем авторизацию с полученным tempId
             const response = await fetch(ApiConfig.getFullUrl(ApiConfig.AUTH_TEMP_IN), {
                 method: 'POST',
                 headers: ApiConfig.getHeaders(),
-                body: JSON.stringify({})
+                body: JSON.stringify({
+                    tempId: tempId
+                })
             });
             
             if (!response.ok) {
@@ -35,6 +60,50 @@ export class ApiService {
             this.#logger.log(`Temp auth error: ${error.message}`);
             throw error;
         }
+    }
+    
+    // Создание временного пользователя
+    async #createTempUser() {
+        try {
+            const response = await fetch(ApiConfig.getFullUrl(ApiConfig.TEMP_USERS_CREATE), {
+                method: 'POST',
+                headers: ApiConfig.getHeaders()
+            });
+            
+            if (!response.ok) {
+                throw new Error(`Create temp user failed: ${response.status}`);
+            }
+            
+            const tempId = await response.text(); // Получаем строку с ID
+            this.#logger.log(`Temp user created with ID: ${tempId}`);
+            return tempId;
+        } catch (error) {
+            this.#logger.log(`Create temp user error: ${error.message}`);
+            throw error;
+        }
+    }
+    
+    // Сохранение tempId в chrome.storage.local
+    async #storeTempId(tempId) {
+        return new Promise((resolve) => {
+            chrome.storage.local.set({ tempUserId: tempId }, () => {
+                this.#logger.log(`Temp ID stored: ${tempId}`);
+                resolve();
+            });
+        });
+    }
+    
+    // Получение tempId из chrome.storage.local
+    async #getStoredTempId() {
+        return new Promise((resolve) => {
+            chrome.storage.local.get(['tempUserId'], (result) => {
+                const tempId = result.tempUserId;
+                if (tempId) {
+                    this.#logger.log(`Retrieved stored temp ID: ${tempId}`);
+                }
+                resolve(tempId);
+            });
+        });
     }
     
     async whoami() {
@@ -203,5 +272,15 @@ export class ApiService {
     
     isAuthenticated() {
         return !!this.#token;
+    }
+    
+    // Очистка сохраненного tempId
+    async clearStoredTempId() {
+        return new Promise((resolve) => {
+            chrome.storage.local.remove(['tempUserId'], () => {
+                this.#logger.log('Stored temp ID cleared');
+                resolve();
+            });
+        });
     }
 }

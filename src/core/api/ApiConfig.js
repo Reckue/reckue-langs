@@ -22,6 +22,7 @@ export class ApiConfig {
     // Users endpoints
     static USERS_CHECK = '/users/check';
     static TEMP_USERS = '/temp-users';
+    static TEMP_USERS_CREATE = '/temp-users/create';
     
     static getFullUrl(endpoint) {
         return `${this.BASE_URL}${this.API_VERSION}${endpoint}`;
