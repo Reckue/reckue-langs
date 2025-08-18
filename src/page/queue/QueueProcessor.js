@@ -3,6 +3,7 @@ import {Context} from "../../core/Context";
 import {Parser} from "../parser/Parser";
 import {Queue} from "./Queue";
 import {Logger} from "../../core/Logger";
+import {franc} from "franc";
 
 export class QueueProcessor {
 
@@ -26,12 +27,31 @@ export class QueueProcessor {
 
     #startPageParsing = () => {
         let body = window.document.querySelector('body');
+        this.#detectPageLanguage(body);
         this.#parser.putInQueue(body);
         setInterval(() => {
             if (this.#isParsingQueueReady() && this.#isParsingPageQueueReady()) {
                 this.#parser.parsePage();
             }
         }, 100);
+    }
+
+    #detectPageLanguage = (bodyElement) => {
+        try {
+            // Получаем весь текст со страницы для анализа
+            const pageText = bodyElement.textContent || bodyElement.innerText || '';
+            
+            // Ограничиваем текст для более быстрого анализа (первые 1000 символов)
+            const sampleText = pageText.substring(0, 1000);
+            
+            // Определяем язык с помощью franc
+            const detectedLanguage = franc(sampleText);
+            
+            this.#logger.log(`Detected page language: ${detectedLanguage}`);
+            
+        } catch (error) {
+            this.#logger.log(`Error detecting page language: ${error.message}`);
+        }
     }
 
     #startTextsParsing = () => {
