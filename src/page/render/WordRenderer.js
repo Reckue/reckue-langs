@@ -10,6 +10,7 @@ export class WordRenderer {
     }
 
     #showPopup = (event, popup, word) => {
+        event.preventDefault();
         popup.displayOn();
         popup.setPosition(event.clientX, event.clientY);
         popup.setContent(word);

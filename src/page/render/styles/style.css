@@ -56,6 +56,12 @@ a:hover {
     font-size: 12px;
 }
 
+.display-word-menu .word-text {
+    font-weight: bold;
+    color: #1e81c6;
+    cursor: default;
+}
+
 .display-word-menu a {
     line-height: normal;
     text-decoration: none;

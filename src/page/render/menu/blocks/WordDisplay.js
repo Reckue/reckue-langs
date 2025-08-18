@@ -14,24 +14,11 @@ export class WordDisplay extends BaseBlock {
     }
 
     updateLink = (word) => {
-        const href = this.#buildHref(word);
-        const html = this.#templateFunction({word, href});
+        // Убираем логику с href, просто передаем слово
+        const html = this.#templateFunction({word});
         const ref = this.getHTMLMapper().toElement(html);
         const old = this.getRef();
         this.setRef(ref);
         this.#parent.replaceChild(this.getRef(), old);
-    }
-
-    #buildHref = (word) => {
-        const language = Context.get("language");
-        const url = `${Context.get("TRANSLATE_URL")}&sl=${language.sl}&tl=${language.tl}&text=${word}`;
-        this.#printPageContent(url);
-        return url;
-    }
-
-    #printPageContent = (url) => {
-        window.console.log(chrome.tabs);
-        const opened = window.open(url, "_blank");
-        opened.close();
     }
 }

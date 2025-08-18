@@ -17,7 +17,6 @@ export class Menu {
     constructor() {
         this.#HTMLMapper = new HTMLMapper();
         Context.add("POPUP_WIDTH", 120);
-        Context.add("TRANSLATE_URL", "https://translate.google.com/#view=home&op=translate");
         this.#createPopup();
     }
 
