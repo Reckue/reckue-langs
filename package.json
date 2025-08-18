@@ -4,7 +4,7 @@
   "description": "It's your vocabulary-book built-in any pages you visit.",
   "main": "index.js",
   "scripts": {
-    "build": "D:/Projs/Reckue_Language/reckue-langs/node_modules/.bin/webpack"
+    "build": "webpack"
   },
   "repository": {
     "type": "git",
@@ -17,8 +17,7 @@
   },
   "homepage": "https://github.com/Reckue/terms-plugin#readme",
   "devDependencies": {
-    "pug": "^3.0.2",
-    
+    "pug": "^2.0.4",
     "pug-loader": "^2.4.0",
     "apply-loader": "^2.0.0",
     "webpack": "^5.70.0",

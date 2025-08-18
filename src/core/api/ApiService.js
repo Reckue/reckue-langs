@@ -171,7 +171,7 @@ export class ApiService {
         }
         
         try {
-            const response = await fetch(`${ApiConfig.getFullUrl(ApiConfig.WORDBOOK_WORDS)}/levels`, {
+            const response = await fetch(ApiConfig.getFullUrl(ApiConfig.WORDBOOK_WORDS_LEVELS), {
                 method: 'POST',
                 headers: ApiConfig.getHeaders(this.#token),
                 body: JSON.stringify({

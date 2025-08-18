@@ -47,20 +47,20 @@ export class WordbookScroll {
         select.addEventListener("change", (event) => this.#changeLevel(event, word));
     }
 
-    #changeWord = (event, word) => {
+    #changeWord = async (event, word) => {
         const level = this.#wordbookService.getWordbookCache().get(word);
         const edited = event.target.value;
-        this.#wordbookService.remove(word);
-        this.#updateWord(edited, level);
+        await this.#wordbookService.remove(word);
+        await this.#updateWord(edited, level);
         this.fillScroll(0);
     }
 
-    #changeLevel = (event, word) => {
+    #changeLevel = async (event, word) => {
         const level = event.target.value;
-        this.#updateWord(word, level);
+        await this.#updateWord(word, level);
     }
 
-    #updateWord = (word, level) => {
-        this.#wordbookService.set([{word, level}]);
+    #updateWord = async (word, level) => {
+        await this.#wordbookService.set([{word, level}]);
     }
 }

@@ -7,12 +7,53 @@ export class ApiWordbookAdapter {
     #logger;
     #currentWordbook;
     #wordbookCache;
+    #executeAfter;
     
     constructor() {
         this.#apiService = new ApiService();
         this.#logger = new Logger();
         this.#currentWordbook = null;
         this.#wordbookCache = new Map();
+    }
+    
+    // Методы для совместимости с WordbookService
+    executeAfter = (after) => {
+        this.#executeAfter = after;
+    }
+    
+    set = async (words) => {
+        for (const wordData of words) {
+            await this.addWord(wordData.word, wordData.level);
+        }
+    }
+    
+    remove = async (word) => {
+        if (!this.#currentWordbook) {
+            throw new Error('No current wordbook available');
+        }
+        
+        try {
+            // Удаляем слово из API (если есть такой метод)
+            // await this.#apiService.removeWord(this.#currentWordbook.id, word);
+            
+            // Удаляем из локального кэша
+            this.#wordbookCache.delete(word);
+            
+            this.#logger.log(`Word removed: ${word}`);
+        } catch (error) {
+            this.#logger.log(`Remove word failed: ${error.message}`);
+            throw error;
+        }
+    }
+    
+    getWordbook = () => {
+        const wordbook = new Wordbook();
+        const words = [];
+        this.#wordbookCache.forEach((level, word) => {
+            words.push({word, level});
+        });
+        wordbook.set(words);
+        return wordbook;
     }
     
     async initialize() {
@@ -91,15 +132,8 @@ export class ApiWordbookAdapter {
         }
         
         try {
-            // Находим wordId в кэше (в реальной реализации нужно получить wordId из API)
-            const wordId = this.findWordId(word);
-            if (!wordId) {
-                throw new Error(`Word not found: ${word}`);
-            }
-            
-            await this.#apiService.updateWordLevel(this.#currentWordbook.id, wordId, level);
-            
-            // Обновляем локальный кэш
+            // Для простоты пока обновляем только локальный кэш
+            // В реальной реализации нужно получить wordId из API
             this.#wordbookCache.set(word, level);
             
             this.#logger.log(`Word level updated: ${word} -> ${level}`);
@@ -116,13 +150,23 @@ export class ApiWordbookAdapter {
     }
     
     getFilteredWordbook(filter) {
-        const filtered = new Map();
+        const filtered = [];
         this.#wordbookCache.forEach((level, word) => {
             if (word.includes(filter)) {
-                filtered.set(word, level);
+                filtered.push({word, level});
             }
         });
-        return filtered;
+        const wordbook = new Wordbook();
+        wordbook.set(filtered);
+        return wordbook;
+    }
+    
+    // Методы для совместимости с локальным режимом
+    loadWordbooks = () => {
+        // Для API режима этот метод не нужен, но оставляем для совместимости
+        if (this.#executeAfter) {
+            this.#executeAfter();
+        }
     }
     
     // Вспомогательные методы

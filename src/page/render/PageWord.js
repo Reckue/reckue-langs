@@ -38,10 +38,10 @@ export class PageWord {
         return ref;
     }
 
-    #saveWord = () => {
+    #saveWord = async () => {
         const level = Levels.BEGINNER.name;
         const word = this.#word.getClear();
-        this.#wordbookService.set([{word, level}]);
+        await this.#wordbookService.set([{word, level}]);
         this.#renderer.renderAll(word, level);
         this.#renderer.onHoverAll(this.#word.getClear());
     }

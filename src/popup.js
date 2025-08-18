@@ -3,4 +3,8 @@ import {PopupService} from "./popup/PopupService";
 
 const service = new PopupService();
 const app = new App(service);
-app.start();
+
+// Запускаем приложение асинхронно
+app.start().catch(error => {
+    console.error('Failed to start popup app:', error);
+});

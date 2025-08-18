@@ -14,6 +14,7 @@ export class ApiConfig {
     // Words endpoints
     static WORDS = '/words';
     static WORDBOOK_WORDS = '/wordbook/words';
+    static WORDBOOK_WORDS_LEVELS = '/wordbook/words/levels';
     
     // Texts endpoints
     static TEXTS = '/texts';
