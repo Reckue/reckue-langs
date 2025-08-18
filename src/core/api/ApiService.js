@@ -4,14 +4,22 @@ import {Logger} from '../Logger.js';
 /**
  * ApiService - Основной сервис для работы с reckue.com API
  * 
- * НОВАЯ ЛОГИКА АВТОРИЗАЦИИ:
+ * ЛОГИКА АВТОРИЗАЦИИ:
  * 1. При первом вызове tempAuth() автоматически создается временный пользователь
  *    через /api/1/temp-users/create
  * 2. Полученный tempId сохраняется в chrome.storage.local
  * 3. При последующих вызовах используется сохраненный tempId для авторизации
  * 4. Авторизация выполняется через /api/1/auth/tempin с передачей tempId в body
  * 
- * Это решает проблему, когда мы пытались авторизоваться без создания пользователя.
+ * FALLBACK ЛОГИКА ДЛЯ СЛОВАРЕЙ:
+ * 1. При попытке получить основной словарь проверяется его наличие
+ * 2. Если словарь не найден (ошибка 500 с сообщением "Current user hasn't wordbooks")
+ * 3. Автоматически создается новый основной словарь через POST /api/1/wordbooks
+ * 4. Язык определяется из настроек пользователя (russian, english, china, korean)
+ * 5. После создания словаря повторяется попытка его получения
+ * 
+ * Это решает проблему, когда мы пытались авторизоваться без создания пользователя
+ * и проблему отсутствия словарей у нового пользователя.
  */
 
 export class ApiService {
@@ -162,15 +170,73 @@ export class ApiService {
                 headers: ApiConfig.getHeaders(this.#token)
             });
             
-            if (!response.ok) {
-                throw new Error(`Get main wordbook failed: ${response.status}`);
+            if (response.ok) {
+                return await response.json();
             }
             
-            return await response.json();
+            // Если получили ошибку 500 о том, что у пользователя нет словарей
+            if (response.status === 500) {
+                const errorData = await response.json();
+                if (errorData.message === "Current user hasn't wordbooks") {
+                    this.#logger.log('User has no wordbooks, creating main wordbook...');
+                    
+                    // Создаем основной словарь
+                    await this.#createMainWordbook();
+                    
+                    // Повторяем попытку получения основного словаря
+                    this.#logger.log('Retrying to get main wordbook...');
+                    const retryResponse = await fetch(ApiConfig.getFullUrl(ApiConfig.WORDBOOKS_MAIN), {
+                        method: 'GET',
+                        headers: ApiConfig.getHeaders(this.#token)
+                    });
+                    
+                    if (!retryResponse.ok) {
+                        throw new Error(`Get main wordbook retry failed: ${retryResponse.status}`);
+                    }
+                    
+                    return await retryResponse.json();
+                }
+            }
+            
+            throw new Error(`Get main wordbook failed: ${response.status}`);
         } catch (error) {
             this.#logger.log(`Get main wordbook error: ${error.message}`);
             throw error;
         }
+    }
+    
+    // Создание основного словаря
+    async #createMainWordbook() {
+        try {
+            // Получаем язык из настроек или используем английский по умолчанию
+            const language = await this.#getUserLanguage() || 'English';
+            
+            const response = await fetch(ApiConfig.getFullUrl(ApiConfig.WORDBOOKS), {
+                method: 'POST',
+                headers: ApiConfig.getHeaders(this.#token),
+                body: JSON.stringify({
+                    language: language
+                })
+            });
+            
+            if (!response.ok) {
+                throw new Error(`Create main wordbook failed: ${response.status}`);
+            }
+            
+            const result = await response.json();
+            this.#logger.log(`Main wordbook created with language: ${language}`);
+            return result;
+        } catch (error) {
+            this.#logger.log(`Create main wordbook error: ${error.message}`);
+            throw error;
+        }
+    }
+    
+    // Получение языка пользователя из настроек
+    async #getUserLanguage() {
+        // Пока используем английский по умолчанию
+        // В будущем можно интегрировать с ApiSettingsService
+        return 'English';
     }
     
     async getWordbookWords(wordbookId, page = 0, size = 100, filter = '') {
@@ -179,28 +245,54 @@ export class ApiService {
         }
         
         try {
-            const params = new URLSearchParams({
-                page: page.toString(),
-                size: size.toString()
-            });
+            // Создаем параметры запроса согласно API документации
+            const pageRequest = {
+                limit: size,
+                offset: page * size
+            };
             
+            const filterRequest = {
+                alphabetFilter: "",
+                startDateFilter: "",
+                endDateFilter: "",
+                levelsFilter: []
+            };
+            
+            // Если есть фильтр, применяем его к alphabetFilter
             if (filter) {
-                params.append('filter', filter);
+                filterRequest.alphabetFilter = filter;
             }
             
-            const response = await fetch(
-                `${ApiConfig.getFullUrl(ApiConfig.WORDBOOK_WORDS)}/${wordbookId}?${params}`,
+            // Тело запроса согласно API документации
+            const requestBody = [
                 {
-                    method: 'POST',
-                    headers: ApiConfig.getHeaders(this.#token)
+                    sortType: "word",
+                    asc: true
                 }
-            );
+            ];
+            
+            const url = `${ApiConfig.getFullUrl(ApiConfig.WORDBOOK_WORDS)}/${wordbookId}`;
+            const params = new URLSearchParams({
+                pageRequest: JSON.stringify(pageRequest),
+                filterRequest: JSON.stringify(filterRequest)
+            });
+            
+            this.#logger.log(`Fetching words from: ${url}?${params}`);
+            
+            const response = await fetch(`${url}?${params}`, {
+                method: 'POST',
+                headers: ApiConfig.getHeaders(this.#token),
+                body: JSON.stringify(requestBody)
+            });
             
             if (!response.ok) {
                 throw new Error(`Get wordbook words failed: ${response.status}`);
             }
             
-            return await response.json();
+            const data = await response.json();
+            this.#logger.log(`API response for words:`, data);
+            
+            return data;
         } catch (error) {
             this.#logger.log(`Get wordbook words error: ${error.message}`);
             throw error;

@@ -13,8 +13,9 @@ export class WordbookScroll {
     constructor() {
         this.#wordbookService = Context.getWordbookService();
         this.#wordsAppender = new WordsAppender();
-        this.#pageButtons = new ChangePageButtons(this.fillScroll);
-        this.#filter = new Filter(this.#pageButtons.buildPageButtons, this.fillScroll);
+        this.#filter = new Filter(null, this.fillScroll);
+        this.#pageButtons = new ChangePageButtons(this.fillScroll, this.#filter);
+        this.#filter.setBuildPageButtons(this.#pageButtons.buildPageButtons);
         Context.add("filter", this.#filter);
     }
 

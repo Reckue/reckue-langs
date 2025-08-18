@@ -1,5 +1,5 @@
 import {Logger} from "../core/Logger";
-import {Store} from "../core/Store";
+import {ApiSettingsService} from "../core/api/ApiSettingsService.js";
 import {Styles} from "./render/styles/Styles";
 import {Context} from "../core/Context";
 import {QueueProcessor} from "./queue/QueueProcessor";
@@ -10,18 +10,39 @@ export class PageService {
 
     #logger;
     #styles;
-    #storage;
+    #settingsService;
 
     constructor() {
         this.#logger = new Logger();
-        this.#storage = new Store();
+        this.#settingsService = new ApiSettingsService();
         this.#styles = new Styles();
     }
 
-    run = () => {
-        this.#storage.appParams().then(enable => {
+    run = async () => {
+        try {
+            // Инициализируем API сервис настроек
+            await this.#settingsService.initialize();
+            
+            // Добавляем настройки в контекст для использования в UnicodeLanguages
+            const settings = this.#settingsService.getSettings();
+            Context.add("settings", settings);
+            
+            const enable = this.#settingsService.isEnabled();
             this.#joinPoint(enable, this.#server, this.#local);
-        });
+        } catch (error) {
+            this.#logger.log(`PageService initialization failed: ${error.message}`);
+            // Fallback на дефолтные настройки
+            const defaultSettings = {
+                enable: true, 
+                russian: true, 
+                english: true, 
+                china: false, 
+                korean: true
+            };
+            Context.add("settings", defaultSettings);
+            // Fallback на отключенное состояние
+            this.#joinPoint(false, this.#server, this.#local);
+        }
     }
 
     #joinPoint = (enable, serverLogic, localLogic) => {

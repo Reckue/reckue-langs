@@ -1,5 +1,5 @@
 import {ApiService} from './ApiService.js';
-import {Wordbook} from '../words/Wordbook.js';
+import {ApiWordbook} from './ApiWordbook.js';
 import {Logger} from '../Logger.js';
 
 export class ApiWordbookAdapter {
@@ -8,12 +8,13 @@ export class ApiWordbookAdapter {
     #currentWordbook;
     #wordbookCache;
     #executeAfter;
+    #onWordbookReadyCallbacks = [];
     
     constructor() {
         this.#apiService = new ApiService();
         this.#logger = new Logger();
         this.#currentWordbook = null;
-        this.#wordbookCache = new Map();
+        this.#wordbookCache = new ApiWordbook();
     }
     
     // Методы для совместимости с WordbookService
@@ -22,8 +23,13 @@ export class ApiWordbookAdapter {
     }
     
     set = async (words) => {
-        for (const wordData of words) {
-            await this.addWord(wordData.word, wordData.level);
+        try {
+            for (const wordData of words) {
+                await this.addWord(wordData.word, wordData.level);
+            }
+        } catch (error) {
+            this.#logger.log(`Set words failed: ${error.message}`);
+            throw error;
         }
     }
     
@@ -37,7 +43,7 @@ export class ApiWordbookAdapter {
             // await this.#apiService.removeWord(this.#currentWordbook.id, word);
             
             // Удаляем из локального кэша
-            this.#wordbookCache.delete(word);
+            this.#wordbookCache.remove(word);
             
             this.#logger.log(`Word removed: ${word}`);
         } catch (error) {
@@ -47,13 +53,7 @@ export class ApiWordbookAdapter {
     }
     
     getWordbook = () => {
-        const wordbook = new Wordbook();
-        const words = [];
-        this.#wordbookCache.forEach((level, word) => {
-            words.push({word, level});
-        });
-        wordbook.set(words);
-        return wordbook;
+        return this.#wordbookCache;
     }
     
     async initialize() {
@@ -74,7 +74,19 @@ export class ApiWordbookAdapter {
             this.#currentWordbook = wordbookData;
             
             // Загружаем слова из основного словаря
-            await this.loadWordbookWords(wordbookData.id);
+            try {
+                const words = await this.loadWordbookWords(wordbookData.id);
+                this.#logger.log(`Successfully loaded ${words.length} words from wordbook`);
+                
+                // Проверяем, что слова действительно загружены
+                if (words.length === 0) {
+                    this.#logger.log('Warning: No words loaded from wordbook');
+                }
+            } catch (wordsError) {
+                this.#logger.log(`Failed to load words, but continuing: ${wordsError.message}`);
+                // Инициализируем пустой кэш
+                this.#wordbookCache.set([]);
+            }
             
             this.#logger.log(`Main wordbook loaded: ${wordbookData.language}`);
             return wordbookData;
@@ -86,24 +98,45 @@ export class ApiWordbookAdapter {
     
     async loadWordbookWords(wordbookId, page = 0, size = 100) {
         try {
+            this.#logger.log(`Loading words from wordbook ${wordbookId}, page ${page}, size ${size}`);
             const wordsData = await this.#apiService.getWordbookWords(wordbookId, page, size);
             
-            // Преобразуем данные в формат, совместимый с Wordbook
-            const words = wordsData.content.map(item => ({
-                word: item.word,
-                level: item.level
-            }));
+            this.#logger.log('Received words data:', wordsData);
+            
+            // Проверяем структуру данных и безопасно извлекаем слова
+            let words = [];
+            if (wordsData && wordsData.content && Array.isArray(wordsData.content)) {
+                words = wordsData.content.map(item => ({
+                    word: item.word,
+                    level: item.level
+                }));
+            } else if (Array.isArray(wordsData)) {
+                // Если API возвращает массив напрямую
+                words = wordsData.map(item => ({
+                    word: item.word,
+                    level: item.level
+                }));
+            } else {
+                this.#logger.log('Unexpected API response structure, using empty array');
+                words = [];
+            }
             
             // Кэшируем слова
-            words.forEach(wordData => {
-                this.#wordbookCache.set(wordData.word, wordData.level);
-            });
+            this.#wordbookCache.set(words);
             
-            this.#logger.log(`Loaded ${words.length} words from wordbook ${wordbookId}`);
+            this.#logger.log(`Successfully loaded and cached ${words.length} words from wordbook ${wordbookId}`);
+            
+            // Уведомляем о готовности словаря, если есть слова
+            if (words.length > 0) {
+                this.#notifyWordbookReady();
+            }
+            
             return words;
         } catch (error) {
             this.#logger.log(`Load wordbook words failed: ${error.message}`);
-            throw error;
+            // Возвращаем пустой массив вместо выброса ошибки
+            this.#wordbookCache.set([]);
+            return [];
         }
     }
     
@@ -113,10 +146,36 @@ export class ApiWordbookAdapter {
         }
         
         try {
-            await this.#apiService.addWord(this.#currentWordbook.id, word, level);
+            // Преобразуем строковый уровень в числовой
+            let numericLevel = 1;
+            if (typeof level === 'string') {
+                switch (level) {
+                    case 'NATIVE':
+                        numericLevel = 5;
+                        break;
+                    case 'ADVANCED':
+                        numericLevel = 4;
+                        break;
+                    case 'INTERMEDIATE':
+                        numericLevel = 3;
+                        break;
+                    case 'ELEMENTARY':
+                        numericLevel = 2;
+                        break;
+                    case 'BEGINNER':
+                        numericLevel = 1;
+                        break;
+                    default:
+                        numericLevel = 1;
+                }
+            } else {
+                numericLevel = level;
+            }
+            
+            await this.#apiService.addWord(this.#currentWordbook.id, word, numericLevel);
             
             // Обновляем локальный кэш
-            this.#wordbookCache.set(word, level);
+            this.#wordbookCache.set([{word, level}]);
             
             this.#logger.log(`Word added: ${word} (level ${level})`);
             return true;
@@ -134,7 +193,7 @@ export class ApiWordbookAdapter {
         try {
             // Для простоты пока обновляем только локальный кэш
             // В реальной реализации нужно получить wordId из API
-            this.#wordbookCache.set(word, level);
+            this.#wordbookCache.set([{word, level}]);
             
             this.#logger.log(`Word level updated: ${word} -> ${level}`);
             return true;
@@ -146,17 +205,21 @@ export class ApiWordbookAdapter {
     
     // Методы для совместимости с существующим WordbookService
     getWordbookCache() {
-        return this.#wordbookCache;
+        if (!this.#wordbookCache) {
+            this.#logger.log('Wordbook cache not initialized, returning empty Map');
+            return new Map();
+        }
+        return this.#wordbookCache.get();
     }
     
     getFilteredWordbook(filter) {
         const filtered = [];
-        this.#wordbookCache.forEach((level, word) => {
+        this.#wordbookCache.get().forEach((level, word) => {
             if (word.includes(filter)) {
                 filtered.push({word, level});
             }
         });
-        const wordbook = new Wordbook();
+        const wordbook = new ApiWordbook();
         wordbook.set(filtered);
         return wordbook;
     }
@@ -181,6 +244,36 @@ export class ApiWordbookAdapter {
     }
     
     isInitialized() {
-        return this.#apiService.isAuthenticated();
+        return this.#apiService.isAuthenticated() && 
+               this.#currentWordbook && 
+               this.#wordbookCache && 
+               this.#wordbookCache.get().size > 0;
+    }
+    
+    isWordbookReady() {
+        return this.isInitialized() && this.#wordbookCache.get().size > 0;
+    }
+    
+    onWordbookReady(callback) {
+        if (typeof callback === 'function') {
+            this.#onWordbookReadyCallbacks.push(callback);
+            
+            // Если словарь уже готов, сразу вызываем callback
+            if (this.isWordbookReady()) {
+                this.#logger.log('Wordbook already ready, calling callback immediately');
+                setTimeout(() => callback(), 0);
+            }
+        }
+    }
+    
+    #notifyWordbookReady() {
+        this.#logger.log(`Notifying ${this.#onWordbookReadyCallbacks.length} callbacks about wordbook ready`);
+        this.#onWordbookReadyCallbacks.forEach(callback => {
+            try {
+                callback();
+            } catch (error) {
+                this.#logger.log(`Error in wordbook ready callback: ${error.message}`);
+            }
+        });
     }
 }

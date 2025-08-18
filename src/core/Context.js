@@ -15,5 +15,7 @@ export class Context {
         if (wordbook) {
             return wordbook;
         }
+        console.error('WordbookService not found in context. Make sure App is initialized properly.');
+        throw new Error('WordbookService not available');
     }
 }

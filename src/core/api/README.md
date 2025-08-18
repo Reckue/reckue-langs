@@ -9,35 +9,19 @@
 1. **ApiConfig** - Конфигурация API endpoints и базовые настройки
 2. **ApiService** - Основной сервис для работы с API
 3. **ApiWordbookAdapter** - Адаптер для совместимости с существующей архитектурой
-4. **WordbookServiceFactory** - Фабрика для переключения между локальным и API режимами
-5. **ApiUtils** - Утилиты для работы с API
-6. **Languages** - Константы поддерживаемых языков
+4. **ApiWordbook** - Класс для работы со словарями в API режиме
+5. **ApiSettingsService** - Сервис для работы с настройками через API
+6. **WordbookServiceFactory** - Фабрика для создания API сервисов
+7. **ApiUtils** - Утилиты для работы с API
+8. **Languages** - Константы поддерживаемых языков
 
-### Режимы работы
+### Режим работы
 
-- **Локальный режим** - Использует chrome.storage.local (существующая функциональность)
 - **API режим** - Использует reckue.com API с временной авторизацией
 
 ## Использование
 
 ### Базовое использование
-
-```javascript
-import {ApiIntegrationExample} from './src/core/api/index.js';
-
-const integration = new ApiIntegrationExample();
-
-// Переключение на API режим
-await integration.switchToApiMode();
-
-// Добавление слова
-await integration.addWord('hello', 1);
-
-// Переключение на локальный режим
-integration.switchToLocalMode();
-```
-
-### Прямое использование API
 
 ```javascript
 import {ApiService} from './src/core/api/index.js';
@@ -59,12 +43,29 @@ await apiService.addWord('wordbookId', 'word', 1);
 ```javascript
 import {WordbookServiceFactory} from './src/core/api/index.js';
 
-const factory = new WordbookServiceFactory(true); // API режим
+const factory = new WordbookServiceFactory();
 const wordbookService = factory.createService();
 
 // Инициализация API адаптера
 await wordbookService.initialize();
 await wordbookService.loadMainWordbook();
+```
+
+### Использование настроек
+
+```javascript
+import {ApiSettingsService} from './src/core/api/index.js';
+
+const settingsService = new ApiSettingsService();
+
+// Инициализация
+await settingsService.initialize();
+
+// Получение настроек
+const settings = settingsService.getSettings();
+
+// Обновление настройки
+await settingsService.updateSetting('enable', false);
 ```
 
 ## API Endpoints
@@ -76,7 +77,8 @@ await wordbookService.loadMainWordbook();
 
 ### Словари
 - `GET /api/1/wordbooks` - Получение всех словарей
-- `GET /api/1/wordbooks/main` - Основной словарь
+- `POST /api/1/wordbooks` - Создание нового словаря
+- `GET /api/1/wordbooks/main` - Основной словарь (с fallback логикой)
 - `GET /api/1/wordbooks/language/{language}` - Словари по языку
 
 ### Слова
@@ -84,60 +86,65 @@ await wordbookService.loadMainWordbook();
 - `POST /api/1/wordbook/words` - Добавление слова
 - `POST /api/1/wordbook/words/levels` - Обновление уровня слова
 
+## Логика работы со словарями
+
+### Получение основного словаря
+
+Метод `getMainWordbook()` включает fallback логику:
+
+1. **Попытка получения основного словаря** (`GET /api/1/wordbooks/main`)
+2. **Если словарь не найден** (ошибка 500 с сообщением "Current user hasn't wordbooks"):
+   - Автоматически создается новый основной словарь (`POST /api/1/wordbooks`)
+   - Язык определяется из настроек пользователя (russian, english, china, korean)
+   - По умолчанию используется English
+3. **Повторная попытка получения** основного словаря после создания
+
+### Создание словаря
+
+При создании словаря используется POST запрос с телом:
+```json
+{
+  "language": "English"
+}
+```
+
+Поддерживаемые языки: English, Russian, Chinese, Korean, French, Spanish, German
+
 ## Логика авторизации
 
 Процесс временной авторизации состоит из двух этапов:
 
-1. **Создание временного пользователя** (`/temp-users/create`)
-   - Создает нового временного пользователя на сервере
-   - Возвращает уникальный tempId (например: `0a4f1f49-9582-4af3-9197-913c358ec571`)
-   - TempId сохраняется в `chrome.storage.local` для повторного использования
+1. **Создание временного пользователя**:
+   - POST запрос к `/api/1/temp-users/create`
+   - Возвращает tempId (строка)
 
-2. **Авторизация** (`/auth/tempin`)
-   - Использует сохраненный tempId для авторизации
-   - Возвращает JWT токен для последующих запросов
-   - Если tempId отсутствует, автоматически создает нового пользователя
+2. **Временная авторизация**:
+   - POST запрос к `/api/1/auth/tempin` с tempId в body
+   - Возвращает token и userId
 
-### Хранение данных
+### Особенности авторизации
 
-- TempId сохраняется в `chrome.storage.local` под ключом `tempUserId`
-- При первом запуске создается новый временный пользователь
-- При последующих запусках используется сохраненный tempId
-- Метод `clearStoredTempId()` позволяет очистить сохраненный tempId
+- TempId создается заново при каждом вызове tempAuth()
+- TempId не сохраняется между сессиями
+- Авторизация действительна только для текущей сессии
 
-## Поддерживаемые языки
+## Миграция с Local Storage
 
-- ENGLISH
-- RUSSIAN
-- FRENCH
-- SPANISH
-- KOREAN
-- CHINESE
-- GERMAN
+### Удаленные компоненты
 
-## Обработка ошибок
+- `Store.js` - Класс для работы с chrome.storage.local
+- `WordbookService.js` - Локальная реализация сервиса словарей
+- `Wordbook.js` - Локальная реализация словаря
+- `Pages.js` - Класс для пагинации в локальном режиме
 
-Модуль включает встроенную обработку ошибок:
+### Новые компоненты
 
-- Сетевые ошибки
-- Ошибки авторизации
-- Ошибки валидации
-- Автоматические повторные попытки
+- `ApiWordbook.js` - Класс для работы со словарями в API режиме
+- `ApiSettingsService.js` - Сервис для работы с настройками через API
 
-## Миграция с локального хранилища
+### Изменения в существующих компонентах
 
-Для перехода с локального хранилища на API:
-
-1. Создайте экземпляр `ApiIntegrationExample`
-2. Вызовите `switchToApiMode()`
-3. Используйте существующие методы - они будут автоматически работать с API
-
-## Безопасность
-
-- Используется двухэтапная временная авторизация:
-  1. Создание временного пользователя через `/temp-users/create`
-  2. Авторизация через `/auth/tempin` с полученным tempId
-- TempId сохраняется в `chrome.storage.local` для повторного использования
-- JWT токены для аутентификации
-- Валидация всех входных данных
-- Безопасная обработка ошибок
+- `App.js` - Убрана fallback логика на локальный режим
+- `WordbookServiceFactory.js` - Убрана поддержка локального режима
+- `PageService.js` - Использует ApiSettingsService вместо Store
+- `SettingsService.js` - Использует ApiSettingsService вместо chrome.storage.local

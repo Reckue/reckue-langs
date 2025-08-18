@@ -11,38 +11,32 @@ export class App {
     constructor(logicService) {
         this.#context = new Context();
         this.#logicService = logicService;
-        this.#factory = new WordbookServiceFactory(true); // Включаем API режим
+        this.#factory = new WordbookServiceFactory(); // API режим
         this.#wordbookService = this.#factory.createService();
     }
 
     start = async () => {
         try {
             // Инициализация API адаптера
-            if (this.#wordbookService.initialize) {
-                const initialized = await this.#wordbookService.initialize();
-                if (!initialized) {
-                    throw new Error('Failed to initialize API adapter');
-                }
+            const initialized = await this.#wordbookService.initialize();
+            if (!initialized) {
+                throw new Error('Failed to initialize API adapter');
             }
 
             // Загрузка основного словаря
-            if (this.#wordbookService.loadMainWordbook) {
-                await this.#wordbookService.loadMainWordbook();
+            await this.#wordbookService.loadMainWordbook();
+            
+            // Проверяем, что словарь действительно загружен
+            if (!this.#wordbookService.isWordbookReady()) {
+                console.warn('Wordbook not fully loaded, but continuing...');
             } else {
-                // Fallback для локального режима
-                this.#wordbookService.executeAfter(this.#runService);
-                this.#wordbookService.loadWordbooks();
-                return;
+                console.log('Wordbook is ready, starting service...');
             }
-
+            
             this.#runService();
         } catch (error) {
-            console.error('Failed to start with API mode, falling back to local mode:', error);
-            // Fallback на локальный режим при ошибке API
-            this.#factory.setUseApi(false);
-            this.#wordbookService = this.#factory.createService();
-            this.#wordbookService.executeAfter(this.#runService);
-            this.#wordbookService.loadWordbooks();
+            console.error('Failed to start with API mode:', error);
+            throw error; // Не fallback на локальный режим
         }
     }
 

@@ -1,11 +1,11 @@
 export const Languages = Object.freeze({
-    ENGLISH: 'ENGLISH',
-    RUSSIAN: 'RUSSIAN',
-    FRENCH: 'FRENCH',
-    SPANISH: 'SPANISH',
-    KOREAN: 'KOREAN',
-    CHINESE: 'CHINESE',
-    GERMAN: 'GERMAN'
+    ENGLISH: 'English',
+    RUSSIAN: 'Russian',
+    FRENCH: 'French',
+    SPANISH: 'Spanish',
+    KOREAN: 'Korean',
+    CHINESE: 'Chinese',
+    GERMAN: 'German'
 });
 
 export const LanguageNames = Object.freeze({

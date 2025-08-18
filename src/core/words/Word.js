@@ -58,5 +58,15 @@ export class Word {
         }
     }
 
-    #found = (word) => Context.getWordbookService().getWordbookCache().get(word);
+    #found = (word) => {
+        try {
+            const wordbookService = Context.getWordbookService();
+            if (!wordbookService || !wordbookService.isWordbookReady()) {
+                return false; // Если словарь не готов, считаем слово не найденным
+            }
+            return wordbookService.getWordbookCache().get(word);
+        } catch (error) {
+            return false; // В случае ошибки считаем слово не найденным
+        }
+    };
 }

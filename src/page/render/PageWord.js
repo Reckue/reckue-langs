@@ -39,11 +39,24 @@ export class PageWord {
     }
 
     #saveWord = async () => {
-        const level = Levels.BEGINNER.name;
-        const word = this.#word.getClear();
-        await this.#wordbookService.set([{word, level}]);
-        this.#renderer.renderAll(word, level);
-        this.#renderer.onHoverAll(this.#word.getClear());
+        try {
+            const level = Levels.BEGINNER.name;
+            const word = this.#word.getClear();
+            
+            console.log('Attempting to save word:', word, 'with level:', level);
+            console.log('WordbookService:', this.#wordbookService);
+            
+            await this.#wordbookService.set([{word, level}]);
+            
+            console.log('Word saved successfully');
+            
+            this.#renderer.renderAll(word, level);
+            this.#renderer.onHoverAll(this.#word.getClear());
+        } catch (error) {
+            console.error('Failed to save word:', error);
+            // Показываем пользователю ошибку
+            alert(`Failed to save word: ${error.message}`);
+        }
     }
 
     #pullInContext = () => (this.#word.getClear() !== " ") && Context.get("notSavedWords").add(this.#word.getClear());
