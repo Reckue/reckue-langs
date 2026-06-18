@@ -1,8 +1,8 @@
 {
   "name": "Reckue Languages",
-  "version": "0.5.7",
+  "version": "0.5.8",
   "description": "Interactive language learning assistant",
-  "permissions": ["storage", "activeTab", "tabs"],
+  "permissions": ["storage", "activeTab", "tabs", "scripting"],
   "background": {
     "service_worker": "background/application.js"
   },

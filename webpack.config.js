@@ -4,7 +4,7 @@ module.exports = {
     mode: "production",
     entry: {
         page: "./src/page.ts",
-        popup: "./src/popup.ts"
+        popup: "./src/popup.tsx"
     },
     module: {
         rules: [
@@ -12,6 +12,10 @@ module.exports = {
                 test: /\.tsx?$/,
                 use: 'ts-loader',
                 exclude: /node_modules/,
+            },
+            {
+                test: /\.css$/,
+                type: 'asset/source',
             },
         ],
     },

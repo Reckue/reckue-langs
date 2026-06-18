@@ -3,27 +3,47 @@ import {Context} from "../../../../core/Context";
 
 export class WordView extends AbstractContainerView {
 
-    #templateFunction;
     #parent;
 
     constructor(parent) {
         super(parent);
-        this.#templateFunction = require("pug-loader!../templates/word-display.pug");
         this.#parent = parent;
         this.#parent.prepend(this.getRef());
     }
     /**
-     * Берем собранный Href > делаем через pug ссылку со словом
+     * Берем собранный Href > делаем ссылку со словом
      * > оборачиваем через HTMLMapper в див
      * Заменяем old контейнер на новый ref
      */
     updateLink = (word, netGraph) => {
         //const href = this.#buildHref(word);
-        const html = this.#templateFunction({word, netGraph});
+        const html = this.#renderDisplay(word, netGraph);
         const ref = this.getHTMLMapper().toElement(html);
         const old = this.getRef();
         this.setRef(ref);
         this.#parent.replaceChild(this.getRef(), old);
+    }
+
+    /**
+     * Debug-дисплей слова: ссылка-перевод + метрики netGraph.
+     * Раньше собирался pug-шаблоном word-display.pug.
+     */
+    #renderDisplay = (word, netGraph) => {
+        const row = (label, value) => `<div><span>${label}:</span><span>${value ?? ""}</span></div>`;
+        return `<div class="display-word-menu">`
+            + `<a class="translate-link" target="_blank">${word}</a>`
+            + row("cursor-x", netGraph?.cursor?.x)
+            + row("cursor-y", netGraph?.cursor?.y)
+            + row("block-width", netGraph?.block?.width)
+            + row("block-height", netGraph?.block?.height)
+            + row("text-length", netGraph?.textLength)
+            + row("text-blocks-count", netGraph?.textBlocksCount)
+            + row("text-block-index", netGraph?.currentLine)
+            + row("text-block-size-width", netGraph?.currentTextBlockSize?.width)
+            + row("text-block-size-height", netGraph?.currentTextBlockSize?.height)
+            + row("real-height", netGraph?.realHeight)
+            + row("coefficient", netGraph?.coefficient)
+            + `</div>`;
     }
 
     /*

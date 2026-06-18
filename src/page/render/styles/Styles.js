@@ -1,4 +1,6 @@
 import {HTMLMapper} from "../../../core/HTMLMapper";
+// CSS подключается как сырой текст (webpack asset/source), раньше — через style.pug.
+import css from "./style.css";
 
 export class Styles {
 
@@ -9,8 +11,7 @@ export class Styles {
     }
 
     append = () => {
-        const html = require("apply-loader!pug-loader!./style.pug");
-        const styles = this.#HTMLMapper.toElement(html);
+        const styles = this.#HTMLMapper.toElement(`<style>${css}</style>`);
         window.document.querySelector("head").appendChild(styles);
     }
 }

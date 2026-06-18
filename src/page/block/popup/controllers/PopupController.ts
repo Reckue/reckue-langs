@@ -70,8 +70,7 @@ export class PopupController implements IWebController {
     * Создаем контейнеры для слов и для уровня
     */
     #createPopup = () => {
-        const html = require("apply-loader!pug-loader!../templates/popup.pug");
-        this.#ref = this.#HTMLMapper.toElement(html);
+        this.#ref = this.#HTMLMapper.toElement('<div class="page-popup-menu"></div>');
 
         this.displayOff();
         this.#onMouseOver();

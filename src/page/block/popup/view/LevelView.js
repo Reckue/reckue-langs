@@ -94,8 +94,13 @@ export class LevelView extends AbstractContainerView {
      * @param number - текущее число обозначающее уровень
      */
     #renderLevelDisplay = (number) => {
-        const pug = require("pug-loader!../templates/level-display.pug");
-        const display = this.getHTMLMapper().toElement(pug(this.#buildOptions(number)));
+        const {width} = this.#buildOptions(number);
+        const html = `<div class="change-level-menu" style="width: ${width}">`
+            + `<a class="wb-level-controller">+</a>`
+            + `<a class="wb-level-number">${number}</a>`
+            + `<a class="wb-level-controller">-</a>`
+            + `</div>`;
+        const display = this.getHTMLMapper().toElement(html);
         this.#replaceReferences(display);
         this.#setupControllers(number);
     }

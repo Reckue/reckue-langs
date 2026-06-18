@@ -6,8 +6,7 @@ export abstract class AbstractContainerView extends AbstractView {
 
     protected constructor(parent: HTMLElement) {
         super();
-        const html = require("apply-loader!pug-loader!../templates/container.pug");
-        this.#ref = this.getHTMLMapper().toElement(html);
+        this.#ref = this.getHTMLMapper().toElement('<div class="menu-container"></div>');
         parent.appendChild(this.#ref);
     }
 
