@@ -34,26 +34,17 @@ export class PageManager {
     }
 
     run = () => {
-        const body = document.querySelector('body'); 
+        const body = document.querySelector('body');
 
-        const textNodeArray: Array<any> = this.nodeManager.getTextNodes(body);
+        const textNodeArray: Array<Node> = this.nodeManager.getTextNodes(body);
 
-        console.log(textNodeArray)
-
-        const cloneArray: Array<CloneBlockModel> = textNodeArray.map((el) => {
-            const {width, height} = el.getBoundingClientRect();
-            return this.cloneBlockService.getSize(el, el.textContent, new SizeModel(width, height));
-        });
-
-        console.log(cloneArray.length);
-
-        cloneArray.forEach((el) => {
-            console.log(el.inline.width);
-            console.log(el.inline.height);
-            console.log(el.block.width);
-            console.log(el.block.height);
-        })
-}
+        // TODO: измерение блоков и рендер слов — следующий этап.
+        // Прежний замер через клон-элемент (cloneBlockService.getSize) вызывал layout
+        // thrashing и выполнялся только ради debug-логов, поэтому убран. При реализации
+        // рендера измерять батчем: все чтения (offsetWidth/getComputedStyle) отдельно
+        // от записей в DOM, и кешировать getComputedStyle по шрифту блока.
+        void textNodeArray;
+    }
  // => [div#root, div.page-wrapper.document-page, ...]
 
 }
