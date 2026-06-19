@@ -233,7 +233,6 @@ export class HighlightPoc {
         const rect = range.getBoundingClientRect();
         if (!this.hint) {
             this.hint = document.createElement("div");
-            this.hint.textContent = "ctrl + shift + click";
             Object.assign(this.hint.style, {
                 position: "fixed",
                 background: "#111111",
@@ -247,6 +246,9 @@ export class HighlightPoc {
             });
             document.body.appendChild(this.hint);
         }
+        this.hint.textContent = this.isInsideLink(range.startContainer)
+            ? "ctrl + shift + click"
+            : "click";
         this.hint.style.left = `${rect.left}px`;
         this.hint.style.top = `${rect.bottom + 4}px`;
         this.hint.style.display = "block";
@@ -267,19 +269,23 @@ export class HighlightPoc {
                 return;
             }
             const combo = (event.ctrlKey || event.metaKey) && event.shiftKey;
-            if (!combo) {
-                this.hidePopup(); // обычный клик вне попапа — закрыть попап
-                return;
-            }
             const hit = this.wordHitAt(event.clientX, event.clientY);
             if (!hit) {
-                this.hidePopup();
+                if (!combo) {
+                    this.hidePopup(); // клик мимо слова — закрыть попап
+                }
                 return;
             }
-            // Перехватываем у браузера: Ctrl+Shift+Click на ссылке иначе открыл бы вкладку.
-            event.preventDefault();
-            event.stopPropagation();
-
+            const isLink = this.isInsideLink(hit.range.startContainer);
+            if (isLink && !combo) {
+                // Обычный клик по ссылке не трогаем — пусть переходит как обычно.
+                return;
+            }
+            if (isLink) {
+                // Комбо по ссылке: перехватываем, иначе откроется вкладка/переход.
+                event.preventDefault();
+                event.stopPropagation();
+            }
             const key = hit.word.toLowerCase();
             if (!this.cache.get(key)) {
                 // Незнакомое слово: сохраняем (с записью в storage) и перекрашиваем.
@@ -289,6 +295,13 @@ export class HighlightPoc {
             this.hideHint();
             this.showPopup(key, event.clientX, event.clientY);
         });
+    }
+
+    private isInsideLink = (node: Node): boolean => {
+        const el = node.nodeType === Node.TEXT_NODE
+            ? (node as Text).parentElement
+            : (node as Element);
+        return !!(el && el.closest && el.closest("a"));
     }
 
     // --- определение слова под точкой ---
