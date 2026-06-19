@@ -12,15 +12,6 @@ import {Levels} from "../../core/enum/Levels";
 
 type WordbookCache = Map<string, string>; // нормализованное слово -> имя уровня
 
-// PoC-сид: если словарь пуст, подсветим несколько слов, чтобы фичу было видно сразу.
-const DEMO_SEED: ReadonlyArray<[string, string]> = [
-    ["the", "beginner"],
-    ["and", "elementary"],
-    ["language", "intermediate"],
-    ["word", "advanced"],
-    ["page", "native"]
-];
-
 const WORD_CHAR = /[\p{L}\p{M}]/u;
 const WORD_TOKEN = /[\p{L}\p{M}]+/gu;
 
@@ -30,7 +21,7 @@ export class HighlightPoc {
     private popup: HTMLElement | null = null;
 
     constructor(cache: WordbookCache) {
-        this.cache = cache && cache.size > 0 ? cache : new Map(DEMO_SEED);
+        this.cache = cache ?? new Map();
     }
 
     run = () => {
