@@ -1,12 +1,13 @@
-import {Levels} from "../../core/enum/Levels";
+import {levelHex} from "../../core/enum/Levels";
 import {markUi} from "../ui/Ui";
+import {LevelSlider} from "./LevelSlider";
 
-/** Интерактивный попап смены уровня слова. */
+/** Интерактивный попап смены уровня слова: слово + слайдер уровня (как в reckue langs). */
 export class Popup {
 
     private el: HTMLElement | null = null;
     private label: HTMLElement | null = null;
-    private select: HTMLSelectElement | null = null;
+    private slider: LevelSlider | null = null;
     private onChange: ((level: string) => void) | null = null;
 
     contains = (node: Node | null): boolean => {
@@ -19,11 +20,9 @@ export class Popup {
             this.build();
         }
         (this.label as HTMLElement).textContent = word;
-        if (this.select) {
-            this.select.value = level;
-        }
+        this.slider?.set(level);
         const el = this.el as HTMLElement;
-        el.style.borderLeft = `3px solid ${this.hex(level)}`;
+        el.style.borderLeft = `3px solid ${levelHex(level)}`;
         el.style.left = `${x}px`;
         el.style.top = `${y + 14}px`;
         el.style.display = "flex";
@@ -42,7 +41,8 @@ export class Popup {
             position: "fixed",
             display: "none",
             alignItems: "center",
-            gap: "8px",
+            gap: "10px",
+            maxWidth: "320px",
             background: "#ffffff",
             color: "#111111",
             border: "1px solid #cccccc",
@@ -54,34 +54,24 @@ export class Popup {
         });
 
         const label = document.createElement("span");
-        label.style.fontWeight = "600";
-
-        const select = document.createElement("select");
-        Object.keys(Levels).forEach((key) => {
-            const name = (Levels as any)[key].name;
-            const option = document.createElement("option");
-            option.value = name;
-            option.textContent = name;
-            select.appendChild(option);
-        });
-        select.addEventListener("change", () => {
-            el.style.borderLeft = `3px solid ${this.hex(select.value)}`;
-            this.onChange && this.onChange(select.value);
+        Object.assign(label.style, {
+            fontWeight: "600",
+            maxWidth: "160px",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap"
         });
 
-        el.appendChild(label);
-        el.appendChild(select);
+        const slider = new LevelSlider((level) => {
+            el.style.borderLeft = `3px solid ${levelHex(level)}`;
+            this.onChange && this.onChange(level);
+        });
+
+        el.append(label, slider.el);
         document.body.appendChild(el);
 
         this.el = el;
         this.label = label;
-        this.select = select;
-    };
-
-    private hex = (level: string): string => {
-        const found = Object.keys(Levels)
-            .map((key) => (Levels as any)[key])
-            .find((entry) => entry.name === level);
-        return found ? found.hex : "#1e81c6";
+        this.slider = slider;
     };
 }
