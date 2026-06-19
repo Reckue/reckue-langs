@@ -4,6 +4,8 @@ import {HighlightingService} from "./highlighting/HighlightingService";
 import {CloneBlockService} from "../../lib/services/CloneBlockService";
 import {IndexService} from "./IndexService";
 import {NodeManager} from "./NodeManager";
+import {Context} from "../../core/Context";
+import {HighlightPoc} from "../highlight/HighlightPoc";
 
 
 export class PageManager {
@@ -25,16 +27,10 @@ export class PageManager {
     }
 
     run = () => {
-        const body = document.querySelector('body');
-
-        const textNodeArray: Array<Node> = this.nodeManager.getTextNodes(body);
-
-        // TODO: измерение блоков и рендер слов — следующий этап.
-        // Прежний замер через клон-элемент (cloneBlockService.getSize) вызывал layout
-        // thrashing и выполнялся только ради debug-логов, поэтому убран. При реализации
-        // рендера измерять батчем: все чтения (offsetWidth/getComputedStyle) отдельно
-        // от записей в DOM, и кешировать getComputedStyle по шрифту блока.
-        void textNodeArray;
+        // PoC: подсветка слов словаря через CSS Custom Highlight API + клик -> попап.
+        const service = Context.getWordbookService();
+        const cache: Map<string, string> = service ? service.getWordbookCache() : new Map();
+        new HighlightPoc(cache).run();
     }
  // => [div#root, div.page-wrapper.document-page, ...]
 
