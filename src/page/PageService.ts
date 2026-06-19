@@ -1,7 +1,6 @@
 import {Store} from "../core/Store";
 import {Styles} from "./render/styles/Styles";
 import {Context} from "../core/Context";
-import {QueueProcessor} from "./queue/QueueProcessor";
 import {PopupController} from "./block/popup/controllers/PopupController";
 import {PageManager} from "./block/PageManager";
 
@@ -33,16 +32,5 @@ export class PageService {
             this.#styles.append();
             this.#manager.run();
         }
-    }
-
-    /**
-     * Устанавливаются настройки языка
-     * Запускается бесконечный процесс парсинга и рендеринга страницы локально
-     */
-    #old = () => {
-        Context.add("language", {sl: "en", tl: "ru"});
-        const processor = new QueueProcessor();
-        processor.runInfinityParsing();
-        processor.runInfinityRender();
     }
 }

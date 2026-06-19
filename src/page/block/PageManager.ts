@@ -1,18 +1,11 @@
-import {BlockHighlighting} from "../realtime/highlighting/BlockHighlighting";
 import {CacheManager} from "./cache/CacheManager";
 import {PopupManager} from "./popup/PopupManager";
-import {CacheModel} from "./cache/models/CacheModel";
-import {wordService} from "../realtime/parser/services/WordService";
 import {HighlightingService} from "./highlighting/HighlightingService";
-import { CloneBlockModel } from "../../lib/models/CloneBlockModel";
-import { CloneBlockService } from "../../lib/services/CloneBlockService";
-import { getSize } from "../realtime/parser/services/BlockService";
-import { TextBlockModel } from "../realtime/blocks/TextBlockModel";
-import { TextBlocks } from "../realtime/blocks/TextBlocks";
-import { CursorModel } from "../realtime/parser/models/CursorModel";
-import { IndexService } from "./IndexService";
-import { NodeManager } from "./NodeManager";
-import { SizeModel } from "../../lib/models/SizeModel";
+import {CloneBlockService} from "../../lib/services/CloneBlockService";
+import {IndexService} from "./IndexService";
+import {NodeManager} from "./NodeManager";
+import {Context} from "../../core/Context";
+import {HighlightPoc} from "../highlight/HighlightPoc";
 
 
 export class PageManager {
@@ -34,26 +27,13 @@ export class PageManager {
     }
 
     run = () => {
-        const body = document.querySelector('body'); 
-
-        const textNodeArray: Array<any> = this.nodeManager.getTextNodes(body);
-
-        console.log(textNodeArray)
-
-        const cloneArray: Array<CloneBlockModel> = textNodeArray.map((el) => {
-            const {width, height} = el.getBoundingClientRect();
-            return this.cloneBlockService.getSize(el, el.textContent, new SizeModel(width, height));
-        });
-
-        console.log(cloneArray.length);
-
-        cloneArray.forEach((el) => {
-            console.log(el.inline.width);
-            console.log(el.inline.height);
-            console.log(el.block.width);
-            console.log(el.block.height);
-        })
-}
+        // PoC: подсветка слов словаря через CSS Custom Highlight API + клик -> сохранение/попап.
+        const service = Context.getWordbookService();
+        if (!service) {
+            return;
+        }
+        new HighlightPoc(service).run();
+    }
  // => [div#root, div.page-wrapper.document-page, ...]
 
 }

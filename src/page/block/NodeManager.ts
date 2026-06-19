@@ -17,33 +17,34 @@ export class NodeManager {
     private isComment = (node: Node) => node instanceof Comment;
     private isUnverifiableInteractiveElement = (node: Node) => node.nodeName === "CODE" /*|| node.nodeName === "A"*/;
 
-    private resultArray: Array<any> = [];
-
-
-    getChildNodes = (element: HTMLElement) => {
-        if (!element) 
-            return
-        const childNodes = [];
-        for (const node of element.childNodes) {
-            if (this.notInteractiveElement(node))  
-            childNodes.push(node);
+    /**
+     * Собирает текстовые узлы поддерева через нативный TreeWalker.
+     * Интерактивные элементы отбрасываются целиком (FILTER_REJECT пропускает их поддерево),
+     * остальные элементы пропускаем как контейнеры (FILTER_SKIP) и спускаемся глубже.
+     */
+    getTextNodes = (element: Node | null): Array<Node> => {
+        const result: Array<Node> = [];
+        if (!element) {
+            return result;
         }
-        return childNodes;
-    }
-
-    getTextNodes = (element: any): Array<String> => {
-        const ELEMENT_NODE = 1;
-        const TEXT_NODE = 3;
-        const childNodes = this.getChildNodes(element);
-
-        for (const elememt of childNodes) {
-            if (elememt.nodeType === TEXT_NODE) {
-                console.log(elememt.textContent)
-                this.resultArray.push(elememt);
-            } else if (elememt.nodeType === ELEMENT_NODE) {
-                this.getTextNodes(elememt)
+        const walker = document.createTreeWalker(
+            element,
+            NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT,
+            {
+                acceptNode: (node: Node) => {
+                    if (node.nodeType === Node.ELEMENT_NODE) {
+                        return this.notInteractiveElement(node)
+                            ? NodeFilter.FILTER_SKIP
+                            : NodeFilter.FILTER_REJECT;
+                    }
+                    return NodeFilter.FILTER_ACCEPT;
+                }
             }
+        );
+        let node: Node | null;
+        while ((node = walker.nextNode())) {
+            result.push(node);
         }
-        return this.resultArray;
+        return result;
     }
 }

@@ -1,6 +1,6 @@
 {
   "name": "reckue-lang",
-  "version": "0.5.7",
+  "version": "0.6.6",
   "description": "Vacabulary Assistant helps you effortlessly build and organize your vocabulary while browsing the web.",
   "main": "index.js",
   "scripts": {
@@ -17,12 +17,13 @@
   },
   "homepage": "https://github.com/Reckue/terms-plugin#readme",
   "devDependencies": {
-    "apply-loader": "^2.0.0",
-    "pug": "3.0.3",
-    "pug-loader": "^2.4.0",
-    "ts-loader": "^9.5.1",
-    "typescript": "^5.3.3",
-    "webpack": "5.94.0",
+    "@types/chrome": "^0.1.43",
+    "ts-loader": "^9.6.1",
+    "typescript": "^5.9.3",
+    "webpack": "^5.107.2",
     "webpack-cli": "^4.9.2"
+  },
+  "dependencies": {
+    "preact": "^10.29.2"
   }
 }

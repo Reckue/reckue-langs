@@ -1,6 +1,5 @@
 import {HighlightingController} from "./HighlightingController";
 import {TextBlocks} from "../../realtime/blocks/TextBlocks";
-import {TextBlockModel} from "../../realtime/blocks/TextBlockModel";
 import {CoordinateBlockModel} from "../../realtime/parser/models/CoordinateBlockModel";
 
 export class HighlightingService {
