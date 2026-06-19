@@ -133,8 +133,29 @@ export class HighlightPoc {
         while (end < text.length && WORD_CHAR.test(text[end])) {
             end++;
         }
-        const word = text.slice(start, end);
-        return word.length > 0 ? word : null;
+        if (end <= start) {
+            return null;
+        }
+        // caretPositionFromPoint «прилипает» к ближайшему слову даже при клике мимо
+        // текста. Проверяем, что точка реально внутри прямоугольника слова.
+        const range = document.createRange();
+        range.setStart(caret.node, start);
+        range.setEnd(caret.node, end);
+        if (!this.pointInRange(x, y, range)) {
+            return null;
+        }
+        return text.slice(start, end);
+    }
+
+    private pointInRange = (x: number, y: number, range: Range): boolean => {
+        const rects = range.getClientRects();
+        for (let i = 0; i < rects.length; i++) {
+            const r = rects[i];
+            if (x >= r.left && x <= r.right && y >= r.top && y <= r.bottom) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private caretFromPoint = (x: number, y: number): { node: Node, offset: number } | null => {
