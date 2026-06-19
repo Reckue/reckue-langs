@@ -54,7 +54,11 @@ export class PageManager {
         const popup = new Popup();
         const hover = new HoverController(hit, store, hint);
         hover.attach();
-        new ClickController(hit, store, matcher, service, popup, hint).attach();
+        // refresh: после смены уровня пере-сканируем всю страницу, иначе остальные
+        // вхождения того же слова и его формы не перекрасятся (store.apply трогал
+        // только кликнутую ноду). Скан идемпотентен; клики редки.
+        const refresh = () => pipeline.scan(document.body);
+        new ClickController(hit, store, matcher, service, popup, hint, refresh).attach();
 
         this.lifecycle(hover, pipeline);
     };

@@ -20,15 +20,17 @@ export class ClickController {
     private readonly service: WordbookService;
     private readonly popup: Popup;
     private readonly hint: Hint;
+    private readonly refresh: () => void;
 
     constructor(hit: HitTester, store: HighlightStore, matcher: WordMatcher,
-                service: WordbookService, popup: Popup, hint: Hint) {
+                service: WordbookService, popup: Popup, hint: Hint, refresh: () => void) {
         this.hit = hit;
         this.store = store;
         this.matcher = matcher;
         this.service = service;
         this.popup = popup;
         this.hint = hint;
+        this.refresh = refresh;
     }
 
     attach = () => {
@@ -62,6 +64,8 @@ export class ClickController {
 
     private save = (node: Text, word: string, level: string) => {
         this.service.set([{word, level}]);
-        this.store.apply(node, this.matcher.matchNode(node));
+        // Перекрашиваем все вхождения слова и его форм по всей странице, а не
+        // только кликнутую ноду.
+        this.refresh();
     };
 }
