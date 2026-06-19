@@ -4,18 +4,19 @@
   "description": "Vacabulary Assistant helps you effortlessly build and organize your vocabulary while browsing the web.",
   "main": "index.js",
   "scripts": {
-    "build": "webpack --config webpack.config.js"
+    "build": "webpack --config webpack.config.js",
+    "typecheck": "tsc --noEmit"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Reckue/terms-plugin.git"
+    "url": "git+https://github.com/Reckue/reckue-langs.git"
   },
   "author": "Hardelele",
-  "license": "ISC",
+  "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/Reckue/terms-plugin/issues"
+    "url": "https://github.com/Reckue/reckue-langs/issues"
   },
-  "homepage": "https://github.com/Reckue/terms-plugin#readme",
+  "homepage": "https://github.com/Reckue/reckue-langs#readme",
   "devDependencies": {
     "@types/chrome": "^0.1.43",
     "ts-loader": "^9.6.1",
