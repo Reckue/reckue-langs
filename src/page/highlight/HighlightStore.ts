@@ -22,6 +22,16 @@ export class HighlightStore {
     private readonly levels = new Map<string, any>();
     private hover: any = null;
     private readonly index = new Map<Text, Entry[]>();
+    private readonly background: boolean;
+
+    /**
+     * background=false (страница): уровни красятся цветом текста + подчёркиванием.
+     * background=true (reader/PDF): текстовый слой PDF.js прозрачный поверх canvas,
+     * цвет текста не виден — поэтому уровни рисуются фоновой заливкой, как hover.
+     */
+    constructor(opts: { background?: boolean } = {}) {
+        this.background = !!opts.background;
+    }
 
     static supported = (): boolean => {
         const css = (window as any).CSS;
@@ -106,10 +116,13 @@ export class HighlightStore {
         }
         const rules = Object.keys(Levels).map((key) => {
             const level = (Levels as any)[key];
-            return `::highlight(reckue-${level.name}) {`
-                + ` color: ${level.hex};`
-                + ` text-decoration: underline; text-decoration-color: ${level.hex};`
-                + ` }`;
+            // 40 = ~25% альфа в 8-значном hex; заливка читаема поверх растра PDF.
+            return this.background
+                ? `::highlight(reckue-${level.name}) { background-color: ${level.hex}40; }`
+                : `::highlight(reckue-${level.name}) {`
+                    + ` color: ${level.hex};`
+                    + ` text-decoration: underline; text-decoration-color: ${level.hex};`
+                    + ` }`;
         });
         rules.push("::highlight(reckue-hover) { background-color: rgba(30, 129, 198, .25); }");
         this.sheet = new CSSStyleSheet();

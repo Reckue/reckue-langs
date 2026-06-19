@@ -23,7 +23,13 @@ import {Popup} from "./interact/Popup";
  */
 export class PageManager {
 
-    run = () => {
+    /**
+     * background=true — для reader-поверхности (PDF): подсветка уровней рисуется
+     * фоновой заливкой, т.к. текстовый слой PDF.js прозрачный поверх canvas.
+     * Скан/observe идут по document.body в обоих случаях: страницы PDF
+     * добавляются в body лениво, MutationPipeline подхватывает их по мере появления.
+     */
+    run = (opts: { background?: boolean } = {}) => {
         const service: WordbookService = Context.getWordbookService();
         if (!service) {
             return;
@@ -36,7 +42,7 @@ export class PageManager {
         const roots = new RootRegistry();
         const scanner = new PageScanner();
         const matcher = new WordMatcher(service.getWordbookCache());
-        const store = new HighlightStore();
+        const store = new HighlightStore({background: opts.background});
         store.init(document);
 
         const pipeline = new MutationPipeline(scanner, matcher, store, roots);
