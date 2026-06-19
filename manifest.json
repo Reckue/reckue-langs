@@ -1,6 +1,6 @@
 {
   "name": "Reckue Languages",
-  "version": "0.6.6",
+  "version": "0.6.7",
   "description": "Interactive language learning assistant",
   "permissions": [
     "storage",
@@ -30,6 +30,7 @@
         "https://translate.google.com/*"
       ],
       "run_at": "document_idle",
+      "all_frames": true,
       "js": [
         "dist/page/page.js"
       ]

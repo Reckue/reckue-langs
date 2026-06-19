@@ -1,0 +1,10 @@
+# Нормализуем переводы строк к LF в репозитории и рабочем дереве,
+# чтобы не было шума CRLF<->LF на Windows.
+* text=auto eol=lf
+
+# Бинарные файлы не трогаем
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
