@@ -3,11 +3,11 @@ import {UnicodeLanguages} from "./UnicodeLanguages";
 
 export class Word {
 
-    #unicode;
-    #original;
-    #clear;
+    #unicode: UnicodeLanguages;
+    #original: string;
+    #clear: string;
 
-    constructor(word) {
+    constructor(word: string) {
         this.#unicode = new UnicodeLanguages();
         this.#original = word;
         this.#setupClear();
@@ -30,7 +30,7 @@ export class Word {
     }
 
     #checkEnding = () => {
-        let ending = null;
+        let ending: string | null = null;
         this.#clear.endsWith('s') && (ending = "s");
         this.#clear.endsWith('ed') && (ending = "ed");
         this.#clear.endsWith('ing') && (ending = "ing");
@@ -41,22 +41,22 @@ export class Word {
         this.#clear.startsWith('un') && this.#trimPrefix('un');
     }
 
-    #trimEnding = (ending) => {
+    #trimEnding = (ending: string) => {
         this.#clear = this.#clear.substr(0,this.#clear.length - ending.length);
         this.#enrichEnding(this.#clear);
     }
 
-    #trimPrefix = (prefix) => {
+    #trimPrefix = (prefix: string) => {
         //TODO:: Косячный метод, пока что убрал его из алгоритма.
         this.#clear = this.#clear.substr(prefix.length - 1);
     }
 
-    #enrichEnding = (shorted) => {
+    #enrichEnding = (shorted: string) => {
         if (!this.#found(shorted)) {
             this.#found(shorted + 's') && (this.#clear = shorted + 's');
             this.#found(shorted + 'e') && (this.#clear = shorted + 'e');
         }
     }
 
-    #found = (word) => Context.getWordbookService().getWordbookCache().get(word);
+    #found = (word: string) => Context.getWordbookService().getWordbookCache().get(word);
 }

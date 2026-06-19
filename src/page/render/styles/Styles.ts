@@ -4,7 +4,7 @@ import css from "./style.css";
 
 export class Styles {
 
-    #HTMLMapper;
+    #HTMLMapper: HTMLMapper;
 
     constructor() {
         this.#HTMLMapper = new HTMLMapper();
@@ -12,6 +12,6 @@ export class Styles {
 
     append = () => {
         const styles = this.#HTMLMapper.toElement(`<style>${css}</style>`);
-        window.document.querySelector("head").appendChild(styles);
+        window.document.querySelector("head")!.appendChild(styles);
     }
 }

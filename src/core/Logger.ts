@@ -1,5 +1,5 @@
 export class Logger {
-    log = (massage) => {
+    log = (massage: string) => {
         window.console.log("Reckue language app: " + massage);
     }
 
@@ -9,11 +9,11 @@ export class Logger {
      *
      * @param node - Вся нужная информация для дебага содержится в этой ноде.
      */
-    #debugNode = (node) => {
+    #debugNode = (node: Node) => {
         window.console.log(node.textContent);
         window.console.log(node.toString());
-        window.console.log(node.parentNode.toString());
-        window.console.log(node.parentNode.nodeName);
-        window.console.log(node.parentNode.role);
+        window.console.log(node.parentNode!.toString());
+        window.console.log(node.parentNode!.nodeName);
+        window.console.log((node.parentNode as any).role);
     }
 }

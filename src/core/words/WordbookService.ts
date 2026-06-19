@@ -2,15 +2,20 @@ import {Logger} from "../Logger";
 import {Store} from "../Store";
 import {Wordbook} from "./Wordbook";
 
+interface Bundle {
+    word: string;
+    level: string;
+}
+
 export class WordbookService {
 
-    #storage;
-    #logger;
-    #wordbook;
+    #storage: Store;
+    #logger: Logger;
+    #wordbook: Wordbook;
 
-    #executeAfter;
+    #executeAfter: () => void;
 
-    executeAfter = (after) => {
+    executeAfter = (after: () => void) => {
         this.#executeAfter = after;
     }
 
@@ -20,12 +25,12 @@ export class WordbookService {
         this.#wordbook = new Wordbook();
     }
 
-    set = (words) => {
+    set = (words: Bundle[]) => {
         this.#wordbook.set(words);
         this.#updateStorage();
     }
 
-    remove = (word) => {
+    remove = (word: string) => {
         this.#wordbook.remove(word);
         this.#updateStorage();
     }
@@ -39,8 +44,8 @@ export class WordbookService {
         return this.#wordbook;
     }
 
-    getFilteredWordbook = (filter) => {
-        const filtered = [];
+    getFilteredWordbook = (filter: string) => {
+        const filtered: Bundle[] = [];
         this.#wordbook.get().forEach((level, word) => word && word.includes(filter) && filtered.push({word, level}));
         const wordbook = new Wordbook();
         wordbook.set(filtered);
@@ -61,13 +66,13 @@ export class WordbookService {
         this.#preload(0);
     }
 
-    #preload = (number) => {
+    #preload = (number: number) => {
         const name = this.#wordbook.getName(number);
         this.#logger.log(`Loaded ${name} from storage`);
         this.#storage.getByName(name).then(wordbook => this.#load(wordbook, number));
     }
 
-    #load = (wordbook, number) => {
+    #load = (wordbook: Bundle[] | undefined, number: number) => {
         if (wordbook) {
             this.#wordbook.set(wordbook);
             this.#loadNext(number);
@@ -76,7 +81,7 @@ export class WordbookService {
         }
     }
 
-    #loadNext = (number) => {
+    #loadNext = (number: number) => {
         const next = number + 1;
         this.#preload(next);
     }

@@ -4,25 +4,31 @@ import {enumForEach} from "../../../../core/enum";
 import {Context} from "../../../../core/Context";
 import {WordRenderer} from "../../../render/WordRenderer";
 
+interface Level {
+    name: string;
+    hex: string;
+    number: number;
+}
+
 export class LevelView extends AbstractContainerView {
 
-    #wordbookService;
-    #wordRenderer;
-    #word;
+    #wordbookService: any;
+    #wordRenderer: WordRenderer;
+    #word!: string;
 
-    constructor(parent, word) {
+    constructor(parent: HTMLElement, word?: string) {
         super(parent);
         this.#wordbookService = Context.getWordbookService();
-        this.#word = word;
+        this.#word = word as string;
         this.#wordRenderer = new WordRenderer();
     }
 
     updateLevel = () => {
         const level = this.#wordbookService.getWordbookCache().get(this.#word);
-        this.#renderLevelDisplay(Levels[level.toUpperCase()].number);
+        this.#renderLevelDisplay((Levels as Record<string, Level>)[level.toUpperCase()].number);
     }
 
-    setWord = (word) => {
+    setWord = (word: string) => {
         this.#word = word;
     }
 
@@ -31,7 +37,7 @@ export class LevelView extends AbstractContainerView {
      *
      * @param current - текущее число.
      */
-    #increaseLevel = (current) => {
+    #increaseLevel = (current: number) => {
         const next = current + 1;
         this.#changeLevel(next);
     }
@@ -47,7 +53,7 @@ export class LevelView extends AbstractContainerView {
      *
      * @param current - текущее число.
      */
-    #decreaseLevel = (current) => {
+    #decreaseLevel = (current: number) => {
         if (current > 0) {
             const next = current - 1;
             //TODO:: Потенциально стоит поменять (не заходить в matchConcurrence).
@@ -64,8 +70,8 @@ export class LevelView extends AbstractContainerView {
      *
      * @param next - Число обозначающее уровень после изменений
      */
-    #changeLevel = (next) => {
-        this.#matchConcurrence(next, (next, level) => {
+    #changeLevel = (next: number) => {
+        this.#matchConcurrence(next, (next: number, level: Level) => {
             this.#renderLevelDisplay(next)
             this.#wordRenderer.renderAll(this.#word, level.name);
             this.#wordbookService.set([{word: this.#word, level: level.name}]);
@@ -79,8 +85,8 @@ export class LevelView extends AbstractContainerView {
      * @param next - Число обозначающее уровень после изменений
      * @param doChange - Функция которая заменит уровень
      */
-    #matchConcurrence = (next, doChange) => {
-        enumForEach(Levels, (level) => (level.number === next) && doChange(next, level));
+    #matchConcurrence = (next: number, doChange: (next: number, level: Level) => void) => {
+        enumForEach(Levels, (level: Level) => (level.number === next) && doChange(next, level));
     }
 
     /**
@@ -93,7 +99,7 @@ export class LevelView extends AbstractContainerView {
      *
      * @param number - текущее число обозначающее уровень
      */
-    #renderLevelDisplay = (number) => {
+    #renderLevelDisplay = (number: number) => {
         const {width} = this.#buildOptions(number);
         const html = `<div class="change-level-menu" style="width: ${width}">`
             + `<a class="wb-level-controller">+</a>`
@@ -105,7 +111,7 @@ export class LevelView extends AbstractContainerView {
         this.#setupControllers(number);
     }
 
-    #replaceReferences = (ref) => {
+    #replaceReferences = (ref: HTMLElement) => {
         this.getRef().replaceWith(ref);
         this.setRef(ref);
     }
@@ -114,7 +120,7 @@ export class LevelView extends AbstractContainerView {
      * Добавляем click событие на новые кнопки + и - (Уровень)
      * Для корректной работы нужен заполненный display
      */
-    #setupControllers = (current) => {
+    #setupControllers = (current: number) => {
         const controllers = this.getRef().getElementsByClassName("wb-level-controller");
         controllers[0].addEventListener("click", () => this.#increaseLevel(current));
         controllers[1].addEventListener("click", () => this.#decreaseLevel(current));
@@ -125,7 +131,7 @@ export class LevelView extends AbstractContainerView {
      * @param number
      * @returns {{number, width: string}}
      */
-    #buildOptions = (number) => {
+    #buildOptions = (number: number) => {
         return {
             number: number,
             width: Context.get("POPUP_WIDTH") + "px"

@@ -2,22 +2,22 @@ import {Context} from "../Context";
 
 // Кеш на уровне модуля: regex одинаков для всех слов при неизменных настройках языков.
 // Пересобираем только когда меняется набор включённых языков.
-let cachedKey = null;
-let cachedRegex = null;
+let cachedKey: string | null = null;
+let cachedRegex: RegExp | null = null;
 
 export class UnicodeLanguages {
 
-    getRegex = () => {
+    getRegex = (): RegExp => {
         const settings = Context.get("settings") || {};
         const key = `${!!settings.russian}|${!!settings.english}|${!!settings.korean}|${!!settings.china}`;
         if (key !== cachedKey) {
             cachedKey = key;
             cachedRegex = new RegExp(this.#unicode(this.#combinedLanguages()));
         }
-        return cachedRegex;
+        return cachedRegex!;
     }
 
-    #unicode = (string) => {
+    #unicode = (string: string) => {
         return `[^${string}]+`;
     }
 

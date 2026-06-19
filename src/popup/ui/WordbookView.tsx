@@ -1,5 +1,5 @@
 import {useMemo, useState} from "preact/hooks";
-import {Levels} from "../../core/enum/Levels.js";
+import {Levels} from "../../core/enum/Levels";
 
 const LEVEL_NAMES: string[] = Object.keys(Levels).map((key) => (Levels as any)[key].name);
 

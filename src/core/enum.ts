@@ -6,7 +6,7 @@
  * @param Enum - enum который нужно распарсить
  * @param callback - функция обрабатывающая входящие в enum объекты.
  */
-export const enumForEach = (Enum, callback) => {
+export const enumForEach = (Enum: Record<string, any>, callback: (entry: any) => void) => {
     Object.entries(Enum).forEach((value) => {
         const entry = value[1];
         callback(entry);

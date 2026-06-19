@@ -3,7 +3,7 @@
     "outDir": "./dist/",
     "noImplicitAny": true,
     "module": "es6",
-    "target": "es6",
+    "target": "es2022",
     "jsx": "react-jsx",
     "jsxImportSource": "preact",
     "allowJs": true,

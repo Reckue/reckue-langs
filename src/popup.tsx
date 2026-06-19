@@ -1,6 +1,6 @@
 import {render} from "preact";
 import {App} from "./popup/ui/App";
-import {WordbookService} from "./core/words/WordbookService.js";
+import {WordbookService} from "./core/words/WordbookService";
 
 /**
  * Точка входа попапа. Поднимаем словарь из chrome.storage (грузится кусками),

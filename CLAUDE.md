@@ -2,7 +2,7 @@
 
 Chrome-расширение (Manifest V3) — интерактивный словарь: пользователь кликает слова на любой странице, они сохраняются, подсвечиваются и превращаются в карточки.
 
-Стек: JavaScript + TypeScript (миграция в процессе), сборка Webpack 5 + ts-loader. Точки входа: `src/page.ts`, `src/popup.tsx` → `dist/page/page.js`, `dist/popup/popup.js`.
+Стек: TypeScript (миграция с JS завершена — в `src/` только `.ts`/`.tsx`), сборка Webpack 5 + ts-loader, `target: es2022` (нативные `#private`-поля, без даунлевела). Точки входа: `src/page.ts`, `src/popup.tsx` → `dist/page/page.js`, `dist/popup/popup.js`.
 
 ## Архитектура: две независимые поверхности
 
