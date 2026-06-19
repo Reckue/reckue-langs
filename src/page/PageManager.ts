@@ -1,0 +1,69 @@
+import {Context} from "../core/Context";
+import {WordbookService} from "../core/words/WordbookService";
+import {HighlightStore} from "./highlight/HighlightStore";
+import {PageScanner} from "./scan/PageScanner";
+import {RootRegistry} from "./scan/RootRegistry";
+import {WordMatcher} from "./word/WordMatcher";
+import {MutationPipeline} from "./invalidate/MutationPipeline";
+import {HitTester} from "./interact/HitTester";
+import {HoverController} from "./interact/HoverController";
+import {ClickController} from "./interact/ClickController";
+import {Hint} from "./interact/Hint";
+import {Popup} from "./interact/Popup";
+
+/**
+ * Оркестратор работы со страницей: проводит слои и держит жизненный цикл.
+ *
+ * Слои (структура из 0.5.0) поверх движка 0.6.x (CSS Custom Highlight API):
+ *   PageScanner   — обход DOM + shadow roots → текстовые ноды
+ *   WordMatcher   — токен → уровень из словаря
+ *   HighlightStore— Range'и по уровням, инкрементально
+ *   MutationPipeline — событийная инвалидация только изменённого
+ *   HitTester/Hover/Click/Popup/Hint — взаимодействие через caretFromPoint
+ */
+export class PageManager {
+
+    run = () => {
+        const service: WordbookService = Context.getWordbookService();
+        if (!service) {
+            return;
+        }
+        if (!HighlightStore.supported()) {
+            window.console.warn("Reckue: CSS Custom Highlight API не поддерживается этим браузером");
+            return;
+        }
+
+        const roots = new RootRegistry();
+        const scanner = new PageScanner();
+        const matcher = new WordMatcher(service.getWordbookCache());
+        const store = new HighlightStore();
+        store.init(document);
+
+        const pipeline = new MutationPipeline(scanner, matcher, store, roots);
+        pipeline.scan(document.body);
+        pipeline.observe(document.body);
+
+        const hit = new HitTester(roots);
+        const hint = new Hint();
+        const popup = new Popup();
+        const hover = new HoverController(hit, store, hint);
+        hover.attach();
+        new ClickController(hit, store, matcher, service, popup, hint).attach();
+
+        this.lifecycle(hover, pipeline);
+    };
+
+    /**
+     * Жизненный цикл контент-скрипта: глушим hover на скрытой вкладке, а при
+     * восстановлении из bfcache (тот же realm оживает) пере-сканируем body —
+     * apply идемпотентен, так что повторный проход безопасен.
+     */
+    private lifecycle = (hover: HoverController, pipeline: MutationPipeline) => {
+        document.addEventListener("visibilitychange", () => hover.setEnabled(!document.hidden));
+        window.addEventListener("pageshow", (event: PageTransitionEvent) => {
+            if (event.persisted) {
+                pipeline.scan(document.body);
+            }
+        });
+    };
+}

@@ -1,6 +1,6 @@
 import {Store} from "../core/Store";
 import {Styles} from "./render/styles/Styles";
-import {PageManager} from "./block/PageManager";
+import {PageManager} from "./PageManager";
 
 export class PageService {
 
