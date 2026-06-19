@@ -1,4 +1,5 @@
 import {Word, WORD_TOKEN} from "./Word";
+import {Inflector} from "./Inflector";
 
 export interface WordMatch {
     start: number;
@@ -8,16 +9,18 @@ export interface WordMatch {
 
 /**
  * Матчинг текстовой ноды против словаря (бывш. TextBlocksParser из 0.5.0).
- * Токенизирует текст и для каждого токена ищет уровень в кэше словаря.
- * Кэш — это живая Map из Wordbook.get(), поэтому после service.set новые слова
- * видны сразу, без перезагрузки.
+ * Токенизирует текст и для каждого токена ищет уровень: сперва точное совпадение,
+ * затем базовые формы из Inflector (runs→run). Кэш — это живая Map из Wordbook.get(),
+ * поэтому после service.set новые слова видны сразу, без перезагрузки.
  */
 export class WordMatcher {
 
     private readonly cache: Map<string, string>;
+    private readonly inflector: Inflector;
 
-    constructor(cache: Map<string, string>) {
+    constructor(cache: Map<string, string>, inflector: Inflector = new Inflector()) {
         this.cache = cache;
+        this.inflector = inflector;
     }
 
     matchNode = (node: Text): WordMatch[] => {
@@ -40,8 +43,12 @@ export class WordMatcher {
     };
 
     private lookup = (word: Word): string | undefined => {
-        for (const candidate of word.candidates()) {
-            const level = this.cache.get(candidate);
+        const direct = this.cache.get(word.clear);
+        if (direct) {
+            return direct;
+        }
+        for (const base of this.inflector.bases(word.clear)) {
+            const level = this.cache.get(base);
             if (level) {
                 return level;
             }
