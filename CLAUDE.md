@@ -4,9 +4,13 @@ Chrome-расширение (Manifest V3) — интерактивный сло�
 
 Стек: TypeScript (миграция с JS завершена — в `src/` только `.ts`/`.tsx`), сборка Webpack 5 + ts-loader, `target: es2022` (нативные `#private`-поля, без даунлевела). Точки входа: `src/page.ts`, `src/popup.tsx` → `dist/page/page.js`, `dist/popup/popup.js`.
 
+## Принцип документации
+
+Кратко. По умолчанию в пару слов, если не просят иначе — не буквально, но без полотен текста. Разжёвывать в большинстве случаев не нужно. Касается и того, что пишется в этот CLAUDE.md.
+
 ## Архитектура: две независимые поверхности
 
-- **Content script (`src/page/*`, бандл `page.js`)** — vanilla TS/JS, прямая работа с DOM хост-страницы (парсинг, подсветка, попапы). React/Preact сюда НЕ применять. Разметка — обычные template-литералы (`HTMLMapper.toElement(html)`); CSS подключается как сырой текст через webpack `asset/source` (`{test: /\.css$/, type: 'asset/source'}`). Активный путь `PageManager.run` — фактически debug-прототип с проблемами производительности (layout thrashing, синхронный обход DOM).
+- **Content script (`src/page/*`, бандл `page.js`)** — vanilla TS, прямая работа с DOM хост-страницы. React/Preact сюда НЕ применять. CSS подключается как сырой текст через webpack `asset/source` (`{test: /\.css$/, type: 'asset/source'}`). Активный путь: `page.ts → App → PageService → PageManager.run → HighlightPoc` (`src/page/highlight/HighlightPoc.ts`). Подсветка — через **CSS Custom Highlight API** (красит `Range`'и, чужой DOM НЕ переписывает), событийно (MutationObserver + rAF/`requestIdleCallback`, без `setInterval`), с заходом в shadow roots. Старые поколения (координатный парсер `realtime/*`, `block/cache|highlighting|node|popup`, `lib/`) удалены. Планируется рефакторинг `HighlightPoc` в слои (Scanner/WordMatcher/HighlightStore/Interaction) с инкрементальным rebuild.
 - **Popup (`src/popup/ui/*`, бандл `popup.js`)** — **Preact** (`src/popup.tsx` → `render(<App/>)`). Компоненты: `App`, `Navbar`, `WordbookView`, `SettingsView`, `InfoBar`. Слой данных (`src/core/words/*`: `WordbookService`, `Wordbook`, `Word`) — общий, vanilla, НЕ трогать React'ом. UI попапа на pug/ручном DOM удалён.
 
 JSX настроен на Preact: `tsconfig` → `"jsx": "react-jsx"`, `"jsxImportSource": "preact"`.
@@ -15,9 +19,9 @@ JSX настроен на Preact: `tsconfig` → `"jsx": "react-jsx"`, `"jsxImpo
 
 ## Версионирование
 
-Схема — **SemVer на стадии 0.x** (`0.MINOR.PATCH`), до релиза 1.0. Сейчас `0.5.7`.
+Схема — **SemVer на стадии 0.x** (`0.MINOR.PATCH`), до релиза 1.0. Текущую версию смотреть в `manifest.json`/`package.json`, не дублировать здесь.
 
-- **Источник истины — два файла, держать синхронными:** `manifest.json` → `version` и `package.json` → `version`. При бампе менять оба на одно значение в одном коммите. Версия из `manifest.json` читается в рантайме и выводится в инфобар попапа (`src/popup/info/InfoBarBuilder.js`).
+- **Источник истины — два файла, держать синхронными:** `manifest.json` → `version` и `package.json` → `version`. При бампе менять оба на одно значение в одном коммите. Версия из `manifest.json` читается в рантайме (`chrome.runtime.getManifest().version`) и выводится в инфобар попапа (`src/popup/ui/InfoBar.tsx`).
 - **Git-тегов и GitHub Releases нет** — версия не маркируется тегами, не полагаться на `git tag`/`git describe`.
 - **Ветки:** `version/<x.y.z>_<краткий-слаг>`, где слаг — тема или автор работы. Примеры: `version/0.5.0_manifest_3`, `version/0.5.3_parse-by-click`, `version/0.5.7_TS_Viktor_Refactoring`. Несколько фич могут идти параллельно под близкими версиями.
 - **Интеграция — через Pull Request в `master`** (см. историю merge-коммитов). Прямые пуши в master не приняты.
@@ -32,3 +36,26 @@ JSX настроен на Preact: `tsconfig` → `"jsx": "react-jsx"`, `"jsxImpo
 - PATCH (`0.5.x`) — багфиксы, хотфиксы рендера/парсинга, мелкие правки UI.
 - MINOR (`0.x.0`) — новые фичи и заметные изменения поведения (новый способ парсинга, миграция манифеста, редизайн попапа).
 - MAJOR (`1.0.0`) — пока не используется (проект до-релизный).
+
+## План развития (19.06.2026)
+
+Фичи (free, если не помечено):
+1. Выбор языка, деление на языки
+2. Автоопределение языка
+3. Автоопределение инфинитива
+4. Грамматики — **платно**
+5. Автоопределение грамматик — **платно**
+6. Подсветка грамматик — **платно**
+7. Работа с грамматиками в popup — **платно**
+8. Группы слов — **платно** (предварительно)
+9. % слов на странице, известных из словаря
+10. Авторизация
+11. Синхронизация словаря
+12. Платные подписки
+13. Определения слов, по умолчанию скрыты
+14. Определение в текущем контексте
+
+Определения:
+- Free — перевод через Google Translate (или базовое из БД, коротко).
+- Платно — контекстный разбор через ИИ, на языке слова и на родном языке пользователя.
+- Не вываливать сырые словарные значения списком (как делала старая Reckue) — коротко и по делу.

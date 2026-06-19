@@ -1,7 +1,5 @@
 import {Store} from "../core/Store";
 import {Styles} from "./render/styles/Styles";
-import {Context} from "../core/Context";
-import {PopupController} from "./block/popup/controllers/PopupController";
 import {PageManager} from "./block/PageManager";
 
 export class PageService {
@@ -13,7 +11,6 @@ export class PageService {
     constructor() {
         this.#storage = new Store();
         this.#styles = new Styles();
-        Context.add("menu", new PopupController());
         this.#manager = new PageManager();
     }
 
