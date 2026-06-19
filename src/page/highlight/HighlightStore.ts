@@ -119,10 +119,7 @@ export class HighlightStore {
             // 40 = ~25% альфа в 8-значном hex; заливка читаема поверх растра PDF.
             return this.background
                 ? `::highlight(reckue-${level.name}) { background-color: ${level.hex}40; }`
-                : `::highlight(reckue-${level.name}) {`
-                    + ` color: ${level.hex};`
-                    + ` text-decoration: underline; text-decoration-color: ${level.hex};`
-                    + ` }`;
+                : `::highlight(reckue-${level.name}) { color: ${level.hex}; }`;
         });
         rules.push("::highlight(reckue-hover) { background-color: rgba(30, 129, 198, .25); }");
         this.sheet = new CSSStyleSheet();
