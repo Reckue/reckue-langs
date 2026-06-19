@@ -24,7 +24,17 @@ Saved words stay highlighted across pages, so you keep seeing them in context â€
 - A popup wordbook to review and manage what you've collected
 - Works inside iframes and shadow DOM
 
-![Extension in action](img_2.png)
+<p align="center">
+  <img src="docs/screenshots/highlight.png" alt="Words highlighted by level on a web page" width="640">
+  <br>
+  <em>Saved words highlighted by level, right in the page you're reading.</em>
+</p>
+
+<p align="center">
+  <img src="docs/screenshots/wordbook.png" alt="The popup wordbook" width="280">
+  <br>
+  <em>The popup wordbook â€” review and manage what you've collected.</em>
+</p>
 
 ## Install
 
@@ -57,7 +67,7 @@ This compiles the source in `src/` into the loadable bundles:
 2. Enable **Developer mode** (top-right toggle).
 3. Click **Load unpacked** and select this project's root folder (the one containing `manifest.json`).
 
-![Load unpacked](img_1.png)
+![Load unpacked](docs/screenshots/load-unpacked.png)
 
 **4. Try it**
 
