@@ -1,18 +1,9 @@
-import {BlockHighlighting} from "../realtime/highlighting/BlockHighlighting";
 import {CacheManager} from "./cache/CacheManager";
 import {PopupManager} from "./popup/PopupManager";
-import {CacheModel} from "./cache/models/CacheModel";
-import {wordService} from "../realtime/parser/services/WordService";
 import {HighlightingService} from "./highlighting/HighlightingService";
-import { CloneBlockModel } from "../../lib/models/CloneBlockModel";
-import { CloneBlockService } from "../../lib/services/CloneBlockService";
-import { getSize } from "../realtime/parser/services/BlockService";
-import { TextBlockModel } from "../realtime/blocks/TextBlockModel";
-import { TextBlocks } from "../realtime/blocks/TextBlocks";
-import { CursorModel } from "../realtime/parser/models/CursorModel";
-import { IndexService } from "./IndexService";
-import { NodeManager } from "./NodeManager";
-import { SizeModel } from "../../lib/models/SizeModel";
+import {CloneBlockService} from "../../lib/services/CloneBlockService";
+import {IndexService} from "./IndexService";
+import {NodeManager} from "./NodeManager";
 
 
 export class PageManager {

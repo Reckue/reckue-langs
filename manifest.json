@@ -1,8 +1,13 @@
 {
   "name": "Reckue Languages",
-  "version": "0.5.9",
+  "version": "0.5.10",
   "description": "Interactive language learning assistant",
-  "permissions": ["storage", "activeTab", "tabs", "scripting"],
+  "permissions": [
+    "storage",
+    "activeTab",
+    "tabs",
+    "scripting"
+  ],
   "background": {
     "service_worker": "background/application.js"
   },
@@ -17,8 +22,13 @@
   },
   "content_scripts": [
     {
-      "matches": ["http://*/*", "https://*/*"],
-      "exclude_matches": ["https://translate.google.com/*"],
+      "matches": [
+        "http://*/*",
+        "https://*/*"
+      ],
+      "exclude_matches": [
+        "https://translate.google.com/*"
+      ],
       "run_at": "document_idle",
       "js": [
         "dist/page/page.js"
