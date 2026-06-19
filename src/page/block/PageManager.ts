@@ -27,10 +27,12 @@ export class PageManager {
     }
 
     run = () => {
-        // PoC: подсветка слов словаря через CSS Custom Highlight API + клик -> попап.
+        // PoC: подсветка слов словаря через CSS Custom Highlight API + клик -> сохранение/попап.
         const service = Context.getWordbookService();
-        const cache: Map<string, string> = service ? service.getWordbookCache() : new Map();
-        new HighlightPoc(cache).run();
+        if (!service) {
+            return;
+        }
+        new HighlightPoc(service).run();
     }
  // => [div#root, div.page-wrapper.document-page, ...]
 

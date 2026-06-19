@@ -1,4 +1,5 @@
 import {Levels} from "../../core/enum/Levels";
+import {WordbookService} from "../../core/words/WordbookService";
 
 /**
  * PoC подсветки слов словаря через CSS Custom Highlight API.
@@ -12,16 +13,20 @@ import {Levels} from "../../core/enum/Levels";
 
 type WordbookCache = Map<string, string>; // нормализованное слово -> имя уровня
 
+const DEFAULT_LEVEL = "beginner"; // новое слово считаем самым незнакомым
+
 const WORD_CHAR = /[\p{L}\p{M}]/u;
 const WORD_TOKEN = /[\p{L}\p{M}]+/gu;
 
 export class HighlightPoc {
 
+    private readonly service: WordbookService;
     private readonly cache: WordbookCache;
     private popup: HTMLElement | null = null;
 
-    constructor(cache: WordbookCache) {
-        this.cache = cache ?? new Map();
+    constructor(service: WordbookService) {
+        this.service = service;
+        this.cache = (service.getWordbookCache() ?? new Map()) as WordbookCache;
     }
 
     run = () => {
@@ -97,12 +102,19 @@ export class HighlightPoc {
     private attachClick = () => {
         document.addEventListener("click", (event: MouseEvent) => {
             const word = this.wordAt(event.clientX, event.clientY);
-            const level = word && this.cache.get(word.toLowerCase());
-            if (word && level) {
-                this.showPopup(word, level, event.clientX, event.clientY);
-            } else {
+            if (!word) {
                 this.hidePopup();
+                return;
             }
+            const key = word.toLowerCase();
+            let level = this.cache.get(key);
+            if (!level) {
+                // Незнакомое слово: сохраняем в словарь (с записью в storage) и перекрашиваем.
+                level = DEFAULT_LEVEL;
+                this.service.set([{word: key, level}]);
+                this.buildHighlights();
+            }
+            this.showPopup(word, level, event.clientX, event.clientY);
         });
     }
 

@@ -1,6 +1,6 @@
 {
   "name": "Reckue Languages",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "description": "Interactive language learning assistant",
   "permissions": [
     "storage",
