@@ -6,12 +6,15 @@ import {WordbookService} from "../../core/words/WordbookService";
  *
  * - Слова словаря подсвечиваются по уровню владения (по одному Highlight на уровень).
  * - При наведении слово подсвечивается фоном (reckue-hover) + снизу подсказка.
- * - Ctrl/Cmd + Shift + клик по слову: сохраняет новое / открывает попап для смены уровня.
- *   Комбо перехватывается (preventDefault), чтобы не конфликтовать с открытием ссылок.
+ * - Ctrl+Click по тексту / Ctrl+Shift+Click по ссылкам -> сохранение нового / смена уровня.
  * - SPA-изменения отслеживаются MutationObserver'ом с коалесингом через requestIdleCallback.
+ * - Shadow DOM: обход и observer рекурсивно заходят в открытые shadow roots, а стили
+ *   ::highlight инжектятся в каждый shadow root через adoptedStyleSheets (иначе из-за
+ *   инкапсуляции стилей подсветка внутри shadow не отрисуется).
  */
 
 type WordbookCache = Map<string, string>;
+type StyleRoot = Document | ShadowRoot;
 
 const DEFAULT_LEVEL = "beginner";
 
@@ -32,9 +35,13 @@ export class HighlightPoc {
     private levelSelect: HTMLSelectElement | null = null;
     private popupWord = "";
     private hint: HTMLElement | null = null;
-    private observer: MutationObserver | null = null;
     private rebuildScheduled = false;
     private lastHover: { node: Node, start: number, end: number } | null = null;
+
+    private sheet: CSSStyleSheet | null = null;
+    private styledRoots = new WeakSet<StyleRoot>();
+    private observedRoots = new WeakSet<Node>();
+    private shadowRoots: ShadowRoot[] = [];
 
     constructor(service: WordbookService) {
         this.service = service;
@@ -47,26 +54,60 @@ export class HighlightPoc {
             window.console.warn("Reckue: CSS Custom Highlight API не поддерживается этим браузером");
             return;
         }
-        this.injectStyles();
+        this.ensureSheet();
+        this.adoptInto(document);
         const matches = this.buildHighlights();
         this.attachHover();
         this.attachClick();
-        this.observe();
-        window.console.log(`Reckue PoC: подсвечено слов — ${matches}`);
+        this.ensureObserver(document.body);
+        window.console.log(`Reckue PoC: подсвечено слов — ${matches}, shadow roots — ${this.shadowRoots.length}`);
     }
 
-    // --- SPA-инвалидация ---
+    // --- стили (::highlight), в т.ч. внутрь shadow roots ---
 
-    private observe = () => {
-        this.observer = new MutationObserver((records) => {
+    private ensureSheet = () => {
+        if (this.sheet) {
+            return;
+        }
+        const rules = Object.keys(Levels).map((key) => {
+            const level = (Levels as any)[key];
+            return `::highlight(reckue-${level.name}) {`
+                + ` color: ${level.hex};`
+                + ` text-decoration: underline; text-decoration-color: ${level.hex};`
+                + ` }`;
+        });
+        rules.push("::highlight(reckue-hover) { background-color: rgba(30, 129, 198, .25); }");
+        this.sheet = new CSSStyleSheet();
+        this.sheet.replaceSync(rules.join("\n"));
+    }
+
+    private adoptInto = (root: StyleRoot) => {
+        if (!this.sheet || this.styledRoots.has(root)) {
+            return;
+        }
+        try {
+            (root as any).adoptedStyleSheets = [...(root as any).adoptedStyleSheets, this.sheet];
+            this.styledRoots.add(root);
+        } catch (e) {
+            // некоторые shadow roots могут не поддерживать adoptedStyleSheets — пропускаем
+        }
+    }
+
+    // --- SPA-инвалидация (включая shadow roots) ---
+
+    private ensureObserver = (root: Node) => {
+        if (this.observedRoots.has(root)) {
+            return;
+        }
+        const observer = new MutationObserver((records) => {
             if (this.isRelevant(records)) {
                 this.scheduleRebuild();
             }
         });
-        this.observer.observe(document.body, {childList: true, subtree: true, characterData: true});
+        observer.observe(root, {childList: true, subtree: true, characterData: true});
+        this.observedRoots.add(root);
     }
 
-    /** Релевантны только изменения реального контента, а не нашего попапа/подсказки. */
     private isRelevant = (records: MutationRecord[]): boolean => {
         for (const record of records) {
             if (record.type === "characterData") {
@@ -113,59 +154,12 @@ export class HighlightPoc {
         }
     }
 
-    // --- подсветка словаря ---
-
-    private injectStyles = () => {
-        const rules = Object.keys(Levels).map((key) => {
-            const level = (Levels as any)[key];
-            return `::highlight(reckue-${level.name}) {`
-                + ` color: ${level.hex};`
-                + ` text-decoration: underline; text-decoration-color: ${level.hex};`
-                + ` }`;
-        });
-        rules.push("::highlight(reckue-hover) { background-color: rgba(30, 129, 198, .25); }");
-        const style = document.createElement("style");
-        style.textContent = rules.join("\n");
-        document.head.appendChild(style);
-    }
+    // --- подсветка словаря (рекурсивно по shadow roots) ---
 
     private buildHighlights = (): number => {
         const rangesByLevel: Record<string, Range[]> = {};
-        const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {
-            acceptNode: (node: Node) => {
-                const parent = (node as Text).parentElement;
-                if (!parent) {
-                    return NodeFilter.FILTER_REJECT;
-                }
-                const tag = parent.tagName;
-                if (tag === "SCRIPT" || tag === "STYLE" || tag === "NOSCRIPT" || parent.isContentEditable) {
-                    return NodeFilter.FILTER_REJECT;
-                }
-                if (this.isOwnNode(node)) {
-                    return NodeFilter.FILTER_REJECT;
-                }
-                const value = node.nodeValue;
-                return value && value.trim() ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
-            }
-        });
-
-        let count = 0;
-        let node: Node | null;
-        while ((node = walker.nextNode())) {
-            const text = node.nodeValue as string;
-            for (const match of text.matchAll(WORD_TOKEN)) {
-                const token = match[0];
-                const level = this.cache.get(token.toLowerCase());
-                if (!level || match.index === undefined) {
-                    continue;
-                }
-                const range = document.createRange();
-                range.setStart(node, match.index);
-                range.setEnd(node, match.index + token.length);
-                (rangesByLevel[level] ||= []).push(range);
-                count++;
-            }
-        }
+        this.shadowRoots = [];
+        const count = this.walkRoot(document.body, rangesByLevel);
 
         const highlights = (window as any).CSS.highlights;
         const HighlightCtor = (window as any).Highlight;
@@ -175,6 +169,65 @@ export class HighlightPoc {
             const ranges = rangesByLevel[name] ?? [];
             highlights.set(`reckue-${name}`, new HighlightCtor(...ranges));
         });
+        return count;
+    }
+
+    private walkRoot = (root: Node, rangesByLevel: Record<string, Range[]>): number => {
+        let count = 0;
+        const walker = document.createTreeWalker(root, NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_TEXT, {
+            acceptNode: (node: Node) => {
+                if (node.nodeType === Node.ELEMENT_NODE) {
+                    const el = node as HTMLElement;
+                    const tag = el.tagName;
+                    if (tag === "SCRIPT" || tag === "STYLE" || tag === "NOSCRIPT" || el.isContentEditable) {
+                        return NodeFilter.FILTER_REJECT;
+                    }
+                    if (this.isOwnNode(node)) {
+                        return NodeFilter.FILTER_REJECT;
+                    }
+                    // принимаем элемент, чтобы заглянуть в его shadowRoot
+                    return NodeFilter.FILTER_ACCEPT;
+                }
+                if (this.isOwnNode(node)) {
+                    return NodeFilter.FILTER_REJECT;
+                }
+                const value = node.nodeValue;
+                return value && value.trim() ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
+            }
+        });
+
+        let node: Node | null;
+        while ((node = walker.nextNode())) {
+            if (node.nodeType === Node.ELEMENT_NODE) {
+                const shadow = (node as Element).shadowRoot;
+                if (shadow) {
+                    this.shadowRoots.push(shadow);
+                    this.adoptInto(shadow);
+                    this.ensureObserver(shadow);
+                    count += this.walkRoot(shadow, rangesByLevel);
+                }
+                continue;
+            }
+            count += this.collectMatches(node, rangesByLevel);
+        }
+        return count;
+    }
+
+    private collectMatches = (node: Node, rangesByLevel: Record<string, Range[]>): number => {
+        const text = node.nodeValue as string;
+        let count = 0;
+        for (const match of text.matchAll(WORD_TOKEN)) {
+            const token = match[0];
+            const level = this.cache.get(token.toLowerCase());
+            if (!level || match.index === undefined) {
+                continue;
+            }
+            const range = document.createRange();
+            range.setStart(node, match.index);
+            range.setEnd(node, match.index + token.length);
+            (rangesByLevel[level] ||= []).push(range);
+            count++;
+        }
         return count;
     }
 
@@ -228,7 +281,6 @@ export class HighlightPoc {
         (window as any).CSS.highlights.delete("reckue-hover");
     }
 
-    /** Подсказка с комбо под словом, не перекрывая его. */
     private showHint = (range: Range) => {
         const rect = range.getBoundingClientRect();
         if (!this.hint) {
@@ -260,35 +312,30 @@ export class HighlightPoc {
         }
     }
 
-    // --- клик (Ctrl/Cmd + Shift) ---
+    // --- клик (Ctrl+Click текст / Ctrl+Shift+Click ссылка) ---
 
     private attachClick = () => {
         document.addEventListener("click", (event: MouseEvent) => {
-            // Клик внутри нашего попапа — не мешаем (там меняется уровень).
             if (this.popup && this.popup.contains(event.target as Node)) {
                 return;
             }
             const ctrl = event.ctrlKey || event.metaKey;
             const hit = this.wordHitAt(event.clientX, event.clientY);
             if (!hit) {
-                this.hidePopup(); // клик мимо слова — закрыть попап
-                return;
-            }
-            const isLink = this.isInsideLink(hit.range.startContainer);
-            // Не ссылка -> Ctrl+Click; ссылка -> Ctrl+Shift+Click.
-            const gesture = isLink ? (ctrl && event.shiftKey) : ctrl;
-            if (!gesture) {
-                // Обычный клик: по ссылке — переход как всегда, иначе просто закрыть попап.
                 this.hidePopup();
                 return;
             }
-            // Перехватываем у браузера (на ссылке иначе откроется вкладка/переход).
+            const isLink = this.isInsideLink(hit.range.startContainer);
+            const gesture = isLink ? (ctrl && event.shiftKey) : ctrl;
+            if (!gesture) {
+                this.hidePopup();
+                return;
+            }
             event.preventDefault();
             event.stopPropagation();
 
             const key = hit.word.toLowerCase();
             if (!this.cache.get(key)) {
-                // Незнакомое слово: сохраняем (с записью в storage) и перекрашиваем.
                 this.service.set([{word: key, level: DEFAULT_LEVEL}]);
                 this.buildHighlights();
             }
@@ -304,7 +351,7 @@ export class HighlightPoc {
         return !!(el && el.closest && el.closest("a"));
     }
 
-    // --- определение слова под точкой ---
+    // --- определение слова под точкой (с заходом в shadow roots) ---
 
     private wordHitAt = (x: number, y: number): WordHit | null => {
         const caret = this.caretFromPoint(x, y);
@@ -323,8 +370,6 @@ export class HighlightPoc {
         if (end <= start) {
             return null;
         }
-        // caretPositionFromPoint «прилипает» к ближайшему слову даже при клике мимо
-        // текста. Проверяем, что точка реально внутри прямоугольника слова.
         const range = document.createRange();
         range.setStart(caret.node, start);
         range.setEnd(caret.node, end);
@@ -348,7 +393,11 @@ export class HighlightPoc {
     private caretFromPoint = (x: number, y: number): { node: Node, offset: number } | null => {
         const doc = document as any;
         if (doc.caretPositionFromPoint) {
-            const pos = doc.caretPositionFromPoint(x, y);
+            // опция shadowRoots заставляет caret пробивать теневые границы (Chrome 128+);
+            // на старых версиях лишний аргумент просто игнорируется (подсветка ещё работает).
+            const pos = this.shadowRoots.length
+                ? doc.caretPositionFromPoint(x, y, {shadowRoots: this.shadowRoots})
+                : doc.caretPositionFromPoint(x, y);
             return pos ? {node: pos.offsetNode, offset: pos.offset} : null;
         }
         if (doc.caretRangeFromPoint) {
