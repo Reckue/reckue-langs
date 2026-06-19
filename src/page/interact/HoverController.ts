@@ -10,6 +10,7 @@ export class HoverController {
 
     private last: { node: Text, start: number, end: number } | null = null;
     private enabled = true;
+    private fast = false;
 
     private readonly hit: HitTester;
     private readonly store: HighlightStore;
@@ -22,6 +23,13 @@ export class HoverController {
     }
 
     attach = () => {
+        chrome.storage.local.get(["fastMode"], (s) => (this.fast = !!s.fastMode));
+        chrome.storage.onChanged.addListener((changes, area) => {
+            if (area === "local" && changes.fastMode) {
+                this.fast = !!changes.fastMode.newValue;
+            }
+        });
+
         let pending = false;
         let mx = 0;
         let my = 0;
@@ -61,7 +69,7 @@ export class HoverController {
         }
         this.last = {node: hit.node, start: hit.start, end: hit.end};
         this.store.setHover(hit.range);
-        this.hint.show(hit.range, hit.isLink);
+        this.hint.show(hit.range, hit.isLink, this.fast);
     };
 
     private clear = () => {

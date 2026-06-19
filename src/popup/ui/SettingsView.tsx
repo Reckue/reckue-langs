@@ -7,7 +7,7 @@ const LANGUAGES = [
     {id: "china", title: "China"}
 ];
 
-const KEYS = ["enable", "russian", "english", "china", "korean"];
+const KEYS = ["enable", "fastMode", "russian", "english", "china", "korean"];
 
 type Settings = Record<string, boolean>;
 
@@ -47,6 +47,7 @@ export function SettingsView() {
     return (
         <div class="settings">
             <Lever label="Enable" on={!!settings.enable} onToggle={() => toggle("enable")}/>
+            <Lever label="Quick mode (click without Ctrl)" on={!!settings.fastMode} onToggle={() => toggle("fastMode")}/>
             <div class="block">
                 <div class="title">Languages</div>
                 {LANGUAGES.map((lang) => (

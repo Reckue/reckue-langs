@@ -5,12 +5,12 @@ export class Hint {
 
     private el: HTMLElement | null = null;
 
-    show = (range: Range, link: boolean) => {
+    show = (range: Range, link: boolean, fast: boolean) => {
         const rect = range.getBoundingClientRect();
         if (!this.el) {
             this.el = this.build();
         }
-        this.el.textContent = link ? "ctrl + shift + click" : "ctrl + click";
+        this.el.textContent = link ? "ctrl + shift + click" : (fast ? "click" : "ctrl + click");
         this.el.style.left = `${rect.left}px`;
         this.el.style.top = `${rect.bottom + 4}px`;
         this.el.style.display = "block";

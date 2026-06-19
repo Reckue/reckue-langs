@@ -58,7 +58,7 @@ export class PageManager {
         // вхождения того же слова и его формы не перекрасятся (store.apply трогал
         // только кликнутую ноду). Скан идемпотентен; клики редки.
         const refresh = () => pipeline.scan(document.body);
-        new ClickController(hit, store, matcher, service, popup, hint, refresh).attach();
+        new ClickController(hit, matcher, service, popup, hint, refresh).attach();
 
         this.lifecycle(hover, pipeline);
     };
