@@ -23,6 +23,8 @@ export class HighlightPoc {
     private readonly service: WordbookService;
     private readonly cache: WordbookCache;
     private popup: HTMLElement | null = null;
+    private observer: MutationObserver | null = null;
+    private rebuildScheduled = false;
 
     constructor(service: WordbookService) {
         this.service = service;
@@ -38,7 +40,58 @@ export class HighlightPoc {
         this.injectStyles();
         const matches = this.buildHighlights();
         this.attachClick();
+        this.observe();
         window.console.log(`Reckue PoC: подсвечено слов — ${matches}`);
+    }
+
+    /**
+     * SPA-инвалидация: следим за изменениями DOM и пересобираем подсветку.
+     * Полный ребилд дёшев (нет чтения геометрии), поэтому коалесцируем мутации
+     * через requestIdleCallback и пересобираем с нуля — это заодно решает
+     * проблему «протухших» Range от удалённых узлов.
+     */
+    private observe = () => {
+        this.observer = new MutationObserver((records) => {
+            if (this.isRelevant(records)) {
+                this.scheduleRebuild();
+            }
+        });
+        this.observer.observe(document.body, {
+            childList: true,
+            subtree: true,
+            characterData: true
+        });
+    }
+
+    /** Игнорируем мутации, вызванные нашим же попапом (иначе петля). */
+    private isRelevant = (records: MutationRecord[]): boolean => {
+        for (const record of records) {
+            if (!this.isOwnNode(record.target)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private isOwnNode = (node: Node | null): boolean => {
+        return !!this.popup && (node === this.popup || this.popup.contains(node));
+    }
+
+    private scheduleRebuild = () => {
+        if (this.rebuildScheduled) {
+            return;
+        }
+        this.rebuildScheduled = true;
+        const run = () => {
+            this.rebuildScheduled = false;
+            this.buildHighlights();
+        };
+        const idle = (window as any).requestIdleCallback;
+        if (idle) {
+            idle(run, {timeout: 500});
+        } else {
+            setTimeout(run, 200);
+        }
     }
 
     /** ::highlight(reckue-<level>) — цвет берём из Levels. */
@@ -68,6 +121,9 @@ export class HighlightPoc {
                 if (tag === "SCRIPT" || tag === "STYLE" || tag === "NOSCRIPT" || parent.isContentEditable) {
                     return NodeFilter.FILTER_REJECT;
                 }
+                if (this.isOwnNode(node)) {
+                    return NodeFilter.FILTER_REJECT;
+                }
                 const value = node.nodeValue;
                 return value && value.trim() ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
             }
@@ -93,9 +149,12 @@ export class HighlightPoc {
 
         const highlights = (window as any).CSS.highlights;
         const HighlightCtor = (window as any).Highlight;
-        for (const level of Object.keys(rangesByLevel)) {
-            highlights.set(`reckue-${level}`, new HighlightCtor(...rangesByLevel[level]));
-        }
+        // Обновляем подсветку для всех уровней (пустой Highlight гасит исчезнувшие слова).
+        Object.keys(Levels).forEach((key) => {
+            const name = (Levels as any)[key].name;
+            const ranges = rangesByLevel[name] ?? [];
+            highlights.set(`reckue-${name}`, new HighlightCtor(...ranges));
+        });
         return count;
     }
 
