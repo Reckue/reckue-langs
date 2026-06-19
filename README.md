@@ -2,6 +2,10 @@
 
 > An interactive vocabulary builder for Chrome â€” click words on any page to save, highlight, and turn them into flashcards.
 
+<a href="https://chromewebstore.google.com/detail/reckue-languages/lebjogkihmfhiojkmnbadppoebfkhfcg">
+  <img src="https://storage.googleapis.com/web-dev-uploads/image/WlD8wC6g8khYWPJUsQceQkhXSlv1/UV4C4ybeBTsZt43U4xis.png" alt="Available in the Chrome Web Store" height="58">
+</a>
+
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
 [![Version](https://img.shields.io/github/package-json/v/Reckue/reckue-langs)](https://github.com/Reckue/reckue-langs)
 [![Contributions Welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg)](CONTRIBUTING.md)
@@ -22,7 +26,11 @@ Saved words stay highlighted across pages, so you keep seeing them in context â€
 
 ![Extension in action](img_2.png)
 
-## Build & install (development)
+## Install
+
+Get the published extension from the [Chrome Web Store](https://chromewebstore.google.com/detail/reckue-languages/lebjogkihmfhiojkmnbadppoebfkhfcg).
+
+## Build & run from source (development)
 
 The extension is built from TypeScript with Webpack. To run it locally as an unpacked extension:
 

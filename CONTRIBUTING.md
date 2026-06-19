@@ -10,7 +10,7 @@ npm run build    # build the extension bundles into dist/
 npm run typecheck # type-check without emitting
 ```
 
-Load the unpacked extension from the project root (the folder with `manifest.json`) via `chrome://extensions/` → **Developer mode** → **Load unpacked**. See the [README](README.md#build--install-development) for the full walkthrough.
+Load the unpacked extension from the project root (the folder with `manifest.json`) via `chrome://extensions/` → **Developer mode** → **Load unpacked**. See the [README](README.md#build--run-from-source-development) for the full walkthrough.
 
 ## Project layout
 
