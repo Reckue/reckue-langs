@@ -1,4 +1,5 @@
 import {Pages} from "./Pages";
+import {migrateLevel} from "../enum/Levels";
 
 interface Bundle {
     word: string;
@@ -23,7 +24,9 @@ export class Wordbook {
 
     set = (list: Bundle[]) => {
         list.forEach((bundle) => {
-            this.#cache.set(bundle.word, bundle.level);
+            // migrateLevel: нормализуем уровень при загрузке из storage (старый
+            // `native` → advanced). Сохранится при следующей записи словаря.
+            this.#cache.set(bundle.word, migrateLevel(bundle.level));
         });
         this.#pages = new Pages(this.#cache.size, 50);
         this.#pages.calcPagesCount();
