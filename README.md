@@ -83,6 +83,10 @@ Open any web page and click a word — it should be saved and highlighted. Open 
 
 Contributions are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) for the workflow, branch and commit conventions, and how to open a pull request. Found a bug or have an idea? [Open an issue](https://github.com/Reckue/reckue-langs/issues).
 
+## Privacy
+
+All data stays on your device — the extension makes no external requests. See [PRIVACY.md](PRIVACY.md).
+
 ## License
 
 Licensed under the Apache License 2.0. See [LICENSE](LICENSE).
