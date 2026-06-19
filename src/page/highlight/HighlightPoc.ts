@@ -5,8 +5,9 @@ import {WordbookService} from "../../core/words/WordbookService";
  * PoC подсветки слов словаря через CSS Custom Highlight API.
  *
  * - Слова словаря подсвечиваются по уровню владения (по одному Highlight на уровень).
- * - При наведении слово подсвечивается фоном (reckue-hover) + снизу подсказка "ctrl + click".
- * - Ctrl/Cmd + клик по слову сохраняет его в словарь / показывает попап с уровнем.
+ * - При наведении слово подсвечивается фоном (reckue-hover) + снизу подсказка.
+ * - Ctrl/Cmd + Shift + клик по слову: сохраняет новое / открывает попап для смены уровня.
+ *   Комбо перехватывается (preventDefault), чтобы не конфликтовать с открытием ссылок.
  * - SPA-изменения отслеживаются MutationObserver'ом с коалесингом через requestIdleCallback.
  */
 
@@ -27,6 +28,9 @@ export class HighlightPoc {
     private readonly service: WordbookService;
     private readonly cache: WordbookCache;
     private popup: HTMLElement | null = null;
+    private popupLabel: HTMLElement | null = null;
+    private levelSelect: HTMLSelectElement | null = null;
+    private popupWord = "";
     private hint: HTMLElement | null = null;
     private observer: MutationObserver | null = null;
     private rebuildScheduled = false;
@@ -224,12 +228,12 @@ export class HighlightPoc {
         (window as any).CSS.highlights.delete("reckue-hover");
     }
 
-    /** Подсказка "ctrl + click" под словом, не перекрывая его. */
+    /** Подсказка с комбо под словом, не перекрывая его. */
     private showHint = (range: Range) => {
         const rect = range.getBoundingClientRect();
         if (!this.hint) {
             this.hint = document.createElement("div");
-            this.hint.textContent = "ctrl + click";
+            this.hint.textContent = "ctrl + shift + click";
             Object.assign(this.hint.style, {
                 position: "fixed",
                 background: "#111111",
@@ -254,11 +258,17 @@ export class HighlightPoc {
         }
     }
 
-    // --- клик (только с Ctrl/Cmd) ---
+    // --- клик (Ctrl/Cmd + Shift) ---
 
     private attachClick = () => {
         document.addEventListener("click", (event: MouseEvent) => {
-            if (!event.ctrlKey && !event.metaKey) {
+            // Клик внутри нашего попапа — не мешаем (там меняется уровень).
+            if (this.popup && this.popup.contains(event.target as Node)) {
+                return;
+            }
+            const combo = (event.ctrlKey || event.metaKey) && event.shiftKey;
+            if (!combo) {
+                this.hidePopup(); // обычный клик вне попапа — закрыть попап
                 return;
             }
             const hit = this.wordHitAt(event.clientX, event.clientY);
@@ -266,16 +276,18 @@ export class HighlightPoc {
                 this.hidePopup();
                 return;
             }
+            // Перехватываем у браузера: Ctrl+Shift+Click на ссылке иначе открыл бы вкладку.
+            event.preventDefault();
+            event.stopPropagation();
+
             const key = hit.word.toLowerCase();
-            let level = this.cache.get(key);
-            if (!level) {
-                // Незнакомое слово: сохраняем в словарь (с записью в storage) и перекрашиваем.
-                level = DEFAULT_LEVEL;
-                this.service.set([{word: key, level}]);
+            if (!this.cache.get(key)) {
+                // Незнакомое слово: сохраняем (с записью в storage) и перекрашиваем.
+                this.service.set([{word: key, level: DEFAULT_LEVEL}]);
                 this.buildHighlights();
             }
             this.hideHint();
-            this.showPopup(hit.word, level, event.clientX, event.clientY);
+            this.showPopup(key, event.clientX, event.clientY);
         });
     }
 
@@ -283,7 +295,7 @@ export class HighlightPoc {
 
     private wordHitAt = (x: number, y: number): WordHit | null => {
         const caret = this.caretFromPoint(x, y);
-        if (!caret || caret.node.nodeType !== Node.TEXT_NODE) {
+        if (!caret || caret.node.nodeType !== Node.TEXT_NODE || this.isOwnNode(caret.node)) {
             return null;
         }
         const text = caret.node.nodeValue ?? "";
@@ -333,31 +345,73 @@ export class HighlightPoc {
         return null;
     }
 
-    // --- попап результата ---
+    // --- интерактивный попап (редактирование уровня) ---
 
-    private showPopup = (word: string, level: string, x: number, y: number) => {
-        const hex = this.hexForLevel(level);
+    private showPopup = (word: string, x: number, y: number) => {
+        this.popupWord = word;
+        const level = this.cache.get(word) ?? DEFAULT_LEVEL;
         if (!this.popup) {
-            this.popup = document.createElement("div");
-            Object.assign(this.popup.style, {
-                position: "fixed",
-                background: "#ffffff",
-                color: "#111111",
-                borderRadius: "6px",
-                padding: "4px 8px",
-                font: "12px system-ui, sans-serif",
-                zIndex: "2147483647",
-                boxShadow: "0 2px 8px rgba(0,0,0,.2)",
-                pointerEvents: "none"
-            });
-            document.body.appendChild(this.popup);
+            this.buildPopup();
         }
-        this.popup.textContent = `${word} — ${level}`;
-        this.popup.style.border = `1px solid ${hex}`;
-        this.popup.style.borderLeft = `3px solid ${hex}`;
-        this.popup.style.left = `${x}px`;
-        this.popup.style.top = `${y + 14}px`;
-        this.popup.style.display = "block";
+        const el = this.popup as HTMLElement;
+        (this.popupLabel as HTMLElement).textContent = word;
+        if (this.levelSelect) {
+            this.levelSelect.value = level;
+        }
+        el.style.borderLeft = `3px solid ${this.hexForLevel(level)}`;
+        el.style.left = `${x}px`;
+        el.style.top = `${y + 14}px`;
+        el.style.display = "flex";
+    }
+
+    private buildPopup = () => {
+        const el = document.createElement("div");
+        Object.assign(el.style, {
+            position: "fixed",
+            display: "none",
+            alignItems: "center",
+            gap: "8px",
+            background: "#ffffff",
+            color: "#111111",
+            border: "1px solid #cccccc",
+            borderRadius: "6px",
+            padding: "6px 10px",
+            font: "12px system-ui, sans-serif",
+            zIndex: "2147483647",
+            boxShadow: "0 2px 8px rgba(0,0,0,.2)"
+        });
+
+        const label = document.createElement("span");
+        label.style.fontWeight = "600";
+
+        const select = document.createElement("select");
+        Object.keys(Levels).forEach((key) => {
+            const name = (Levels as any)[key].name;
+            const option = document.createElement("option");
+            option.value = name;
+            option.textContent = name;
+            select.appendChild(option);
+        });
+        select.addEventListener("change", () => this.changeLevel(this.popupWord, select.value));
+
+        el.appendChild(label);
+        el.appendChild(select);
+        document.body.appendChild(el);
+
+        this.popup = el;
+        this.popupLabel = label;
+        this.levelSelect = select;
+    }
+
+    private changeLevel = (word: string, level: string) => {
+        if (!word) {
+            return;
+        }
+        this.service.set([{word, level}]);
+        this.buildHighlights();
+        if (this.popup) {
+            this.popup.style.borderLeft = `3px solid ${this.hexForLevel(level)}`;
+        }
     }
 
     private hidePopup = () => {
