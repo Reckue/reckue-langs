@@ -30,6 +30,7 @@
         "https://translate.google.com/*"
       ],
       "run_at": "document_idle",
+      "all_frames": true,
       "js": [
         "dist/page/page.js"
       ]
