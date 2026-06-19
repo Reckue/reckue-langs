@@ -248,7 +248,7 @@ export class HighlightPoc {
         }
         this.hint.textContent = this.isInsideLink(range.startContainer)
             ? "ctrl + shift + click"
-            : "click";
+            : "ctrl + click";
         this.hint.style.left = `${rect.left}px`;
         this.hint.style.top = `${rect.bottom + 4}px`;
         this.hint.style.display = "block";
@@ -268,24 +268,24 @@ export class HighlightPoc {
             if (this.popup && this.popup.contains(event.target as Node)) {
                 return;
             }
-            const combo = (event.ctrlKey || event.metaKey) && event.shiftKey;
+            const ctrl = event.ctrlKey || event.metaKey;
             const hit = this.wordHitAt(event.clientX, event.clientY);
             if (!hit) {
-                if (!combo) {
-                    this.hidePopup(); // клик мимо слова — закрыть попап
-                }
+                this.hidePopup(); // клик мимо слова — закрыть попап
                 return;
             }
             const isLink = this.isInsideLink(hit.range.startContainer);
-            if (isLink && !combo) {
-                // Обычный клик по ссылке не трогаем — пусть переходит как обычно.
+            // Не ссылка -> Ctrl+Click; ссылка -> Ctrl+Shift+Click.
+            const gesture = isLink ? (ctrl && event.shiftKey) : ctrl;
+            if (!gesture) {
+                // Обычный клик: по ссылке — переход как всегда, иначе просто закрыть попап.
+                this.hidePopup();
                 return;
             }
-            if (isLink) {
-                // Комбо по ссылке: перехватываем, иначе откроется вкладка/переход.
-                event.preventDefault();
-                event.stopPropagation();
-            }
+            // Перехватываем у браузера (на ссылке иначе откроется вкладка/переход).
+            event.preventDefault();
+            event.stopPropagation();
+
             const key = hit.word.toLowerCase();
             if (!this.cache.get(key)) {
                 // Незнакомое слово: сохраняем (с записью в storage) и перекрашиваем.
