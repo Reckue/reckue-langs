@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Reckue Reader</title>
+    <style>
+        :root { color-scheme: light dark; }
+        html, body { margin: 0; height: 100%; }
+        body {
+            background: #525659;
+            font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+        }
+
+        .reckue-reader { display: flex; flex-direction: column; height: 100vh; }
+
+        #toolbar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 10px;
+            background: #323639;
+            color: #fff;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, .4);
+            z-index: 1;
+        }
+        #toolbar button {
+            min-width: 32px;
+            padding: 4px 10px;
+            cursor: pointer;
+            border: 1px solid rgba(255, 255, 255, .25);
+            border-radius: 6px;
+            background: transparent;
+            color: #fff;
+            font-size: 14px;
+        }
+        #toolbar button:hover { background: rgba(255, 255, 255, .12); }
+        #toolbar .title { font-size: 13px; max-width: 50vw; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        #toolbar .pages { font-size: 12px; opacity: .7; margin-right: auto; }
+
+        #pages { flex: 1; overflow: auto; padding: 16px 0; }
+
+        .page {
+            --user-unit: 1;
+            --total-scale-factor: calc(var(--scale-factor) * var(--user-unit));
+            position: relative;
+            margin: 0 auto 16px;
+            background: #fff;
+            box-shadow: 0 1px 6px rgba(0, 0, 0, .35);
+            overflow: hidden;
+        }
+        .page canvas { display: block; }
+
+        /* Текстовый слой PDF.js (из официального web/pdf_viewer.css): прозрачные
+           абсолютно спозиционированные span'ы поверх canvas. По их text-нодам
+           работает подсветка слов; уровни рисуются фоновой заливкой (background-режим). */
+        .textLayer {
+            position: absolute;
+            text-align: initial;
+            inset: 0;
+            overflow: clip;
+            opacity: 1;
+            line-height: 1;
+            text-size-adjust: none;
+            forced-color-adjust: none;
+            transform-origin: 0 0;
+            caret-color: CanvasText;
+            z-index: 0;
+            --min-font-size: 1;
+            --text-scale-factor: calc(var(--total-scale-factor) * var(--min-font-size));
+            --min-font-size-inv: calc(1 / var(--min-font-size));
+        }
+        .textLayer :is(span, br) {
+            color: transparent;
+            position: absolute;
+            white-space: pre;
+            cursor: text;
+            transform-origin: 0% 0%;
+        }
+        .textLayer > :not(.markedContent),
+        .textLayer .markedContent span:not(.markedContent) {
+            z-index: 1;
+            --font-height: 0;
+            font-size: calc(var(--text-scale-factor) * var(--font-height));
+            --scale-x: 1;
+            --rotate: 0deg;
+            transform: rotate(var(--rotate)) scaleX(var(--scale-x)) scale(var(--min-font-size-inv));
+        }
+        .textLayer .markedContent { display: contents; }
+        .textLayer ::selection { background: transparent; }
+    </style>
+</head>
+<body>
+    <div class="reckue-reader">
+        <header id="toolbar"></header>
+        <main id="pages"></main>
+    </div>
+    <script src="reader.js"></script>
+</body>
+</html>

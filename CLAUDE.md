@@ -2,16 +2,17 @@
 
 Chrome-расширение (Manifest V3) — интерактивный словарь: пользователь кликает слова на любой странице, они сохраняются, подсвечиваются и превращаются в карточки.
 
-Стек: TypeScript (миграция с JS завершена — в `src/` только `.ts`/`.tsx`), сборка Webpack 5 + ts-loader, `target: es2022` (нативные `#private`-поля, без даунлевела). Точки входа: `src/page.ts`, `src/popup.tsx` → `dist/page/page.js`, `dist/popup/popup.js`.
+Стек: TypeScript (миграция с JS завершена — в `src/` только `.ts`/`.tsx`), сборка Webpack 5 + ts-loader, `target: es2022` (нативные `#private`-поля, без даунлевела). Точки входа: `src/page.ts`, `src/popup.tsx`, `src/reader.ts` → `dist/page/page.js`, `dist/popup/popup.js`, `dist/reader/reader.js`.
 
 ## Принцип документации
 
 Кратко. По умолчанию в пару слов, если не просят иначе — не буквально, но без полотен текста. Разжёвывать в большинстве случаев не нужно. Касается и того, что пишется в этот CLAUDE.md.
 
-## Архитектура: две независимые поверхности
+## Архитектура: три независимые поверхности
 
 - **Content script (`src/page/*`, бандл `page.js`)** — vanilla TS, прямая работа с DOM хост-страницы. React/Preact сюда НЕ применять. CSS подключается как сырой текст через webpack `asset/source` (`{test: /\.css$/, type: 'asset/source'}`). Активный путь: `page.ts → App → PageService → PageManager.run`. Подсветка — через **CSS Custom Highlight API** (красит `Range`'и, чужой DOM НЕ переписывает), событийно (MutationObserver + rAF/`requestIdleCallback`, без `setInterval`), с заходом в shadow roots. Разложено на слои: `scan/PageScanner` (обход + shadow), `word/WordMatcher` (токен→уровень), `highlight/HighlightStore` (Range'и по уровням, **инкрементально** через `Highlight.add/delete` + индекс `Node→Range`), `invalidate/MutationPipeline` (обрабатывает только изменённое поддерево, не весь body), `interact/*` (HitTester/Hover/Click/Popup/Hint через `caretFromPoint`). `PageManager` оркестрирует и держит lifecycle (visibility/bfcache). Старые поколения (координатный парсер `realtime/*`, `block/*`, `lib/`, PoC `HighlightPoc`) удалены.
 - **Popup (`src/popup/ui/*`, бандл `popup.js`)** — **Preact** (`src/popup.tsx` → `render(<App/>)`). Компоненты: `App`, `Navbar`, `WordbookView`, `SettingsView`, `InfoBar`. Слой данных (`src/core/words/*`: `WordbookService`, `Wordbook`, `Word`) — общий, vanilla, НЕ трогать React'ом. UI попапа на pug/ручном DOM удалён.
+- **Reader (`src/reader/*`, бандл `reader.js` + `dist/reader/index.html`)** — extension-страница, свой вьювер **PDF** на **PDF.js** (`pdfjs-dist`). Нативный вьювер Chrome контент-скрипту недоступен (PDFium в отдельном процессе), поэтому PDF рендерится в обычный DOM: `pdf/PageView` (canvas + прозрачный `TextLayer`), `pdf/PdfViewer` (ленивый постраничный рендер через IntersectionObserver), `source/PdfSource` (байты из `?file=` / локального файла), `ui/Toolbar`. По text-нодам текстового слоя запускается **тот же движок слов**, что и на странице: `ReaderService` зовёт `PageManager.run({background: true})` — `background` переключает `HighlightStore` на фоновую заливку (цвет текста не виден поверх растра canvas). Перехват PDF: динамическое правило `declarativeNetRequest` в `background/application.js` редиректит `*.pdf` (http/https + file://) на `index.html?file=<url>`. Worker PDF.js кладётся в `dist/reader/pdf.worker.mjs` через `copy-webpack-plugin`. Локальные файлы требуют «Allow access to file URLs». Ограничение: DNR матчит только по URL, PDF без `.pdf` в адресе не перехватывается (запасной путь — кнопка/drag&drop во вьювере).
 
 JSX настроен на Preact: `tsconfig` → `"jsx": "react-jsx"`, `"jsxImportSource": "preact"`.
 

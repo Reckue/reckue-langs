@@ -1,12 +1,17 @@
 {
   "name": "Reckue Languages",
-  "version": "0.6.7",
+  "version": "0.7.0",
   "description": "Interactive language learning assistant",
   "permissions": [
     "storage",
+    "unlimitedStorage",
     "activeTab",
     "tabs",
-    "scripting"
+    "scripting",
+    "declarativeNetRequest"
+  ],
+  "host_permissions": [
+    "<all_urls>"
   ],
   "background": {
     "service_worker": "background/application.js"
@@ -33,6 +38,18 @@
       "all_frames": true,
       "js": [
         "dist/page/page.js"
+      ]
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "dist/reader/index.html",
+        "dist/reader/reader.js",
+        "dist/reader/pdf.worker.mjs"
+      ],
+      "matches": [
+        "<all_urls>"
       ]
     }
   ],

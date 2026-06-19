@@ -1,7 +1,5 @@
 import {useMemo, useState} from "preact/hooks";
-import {Levels} from "../../core/enum/Levels";
-
-const LEVEL_NAMES: string[] = Object.keys(Levels).map((key) => (Levels as any)[key].name);
+import {LevelSlider} from "./LevelSlider";
 
 interface WordbookViewProps {
     service: any;
@@ -96,10 +94,7 @@ export function WordbookView({service}: WordbookViewProps) {
                                        changeWord(word, next);
                                    }
                                }}/>
-                        <select class="level" value={level}
-                                onChange={(e) => changeLevel(word, (e.target as HTMLSelectElement).value)}>
-                            {LEVEL_NAMES.map((name) => <option value={name}>{name}</option>)}
-                        </select>
+                        <LevelSlider level={level} onChange={(next) => changeLevel(word, next)}/>
                     </div>
                 ))}
             </div>

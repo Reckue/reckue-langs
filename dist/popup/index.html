@@ -31,9 +31,14 @@
 
         .header { margin-bottom: 8px; }
         .filter input { width: 100%; box-sizing: border-box; padding: 6px 8px; border-radius: 6px; border: 1px solid rgba(0,0,0,.2); }
-        .word { display: flex; gap: 6px; margin-bottom: 6px; }
-        .word .clear { flex: 1; padding: 4px 6px; border-radius: 4px; border: 1px solid rgba(0,0,0,.15); }
-        .word .level { padding: 4px; border-radius: 4px; }
+        .word { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+        /* min-width:0 — иначе flex-элемент не сжимается и длинное слово ломает строку */
+        .word .clear { flex: 1; min-width: 0; padding: 4px 6px; border-radius: 4px; border: 1px solid rgba(0,0,0,.15); }
+
+        .level-slider { display: flex; align-items: center; gap: 8px; width: 116px; height: 20px; cursor: pointer; user-select: none; flex-shrink: 0; }
+        .level-slider-track { position: relative; flex: 1; height: 6px; background: #e0e0e0; border-radius: 3px; overflow: hidden; }
+        .level-slider-fill { position: absolute; top: 0; left: 0; height: 100%; border-radius: 3px; transition: width .1s ease, background-color .1s ease; }
+        .level-slider-value { font-size: 12px; font-weight: 600; min-width: 10px; text-align: center; opacity: .8; }
 
         #pages { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-top: 8px; }
         #pages .page { cursor: pointer; padding: 2px 6px; border-radius: 4px; }

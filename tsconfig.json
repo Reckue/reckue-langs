@@ -7,6 +7,7 @@
     "jsx": "react-jsx",
     "jsxImportSource": "preact",
     "allowJs": true,
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+    "skipLibCheck": true
   }
 }
