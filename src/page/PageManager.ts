@@ -29,7 +29,7 @@ export class PageManager {
      * Скан/observe идут по document.body в обоих случаях: страницы PDF
      * добавляются в body лениво, MutationPipeline подхватывает их по мере появления.
      */
-    run = (opts: { background?: boolean } = {}) => {
+    run = (opts: { background?: boolean, resolveWord?: (node: Text, offset: number) => string | undefined } = {}) => {
         const service: WordbookService = Context.getWordbookService();
         if (!service) {
             return;
@@ -58,7 +58,7 @@ export class PageManager {
         // вхождения того же слова и его формы не перекрасятся (store.apply трогал
         // только кликнутую ноду). Скан идемпотентен; клики редки.
         const refresh = () => pipeline.scan(document.body);
-        new ClickController(hit, matcher, service, popup, hint, refresh).attach();
+        new ClickController(hit, matcher, service, popup, hint, refresh, opts.resolveWord).attach();
 
         this.lifecycle(hover, pipeline);
     };

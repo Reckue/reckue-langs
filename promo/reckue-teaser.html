@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reckue Languages — teaser</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0c0d0f; --canvas:#f5f6f8; --surface:#ffffff; --ink:#15171b; --muted:#9aa1ab;
+    --line:#e9ebef; --accent:#0d79dd;
+    --new:#d83e3e; --learning:#e0963f; --known:#2aab27;
+    --ease:cubic-bezier(.22,1,.36,1);
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0}
+  body{
+    background:radial-gradient(120% 120% at 50% 0%, #15171b 0%, #0c0d0f 60%);
+    font-family:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
+    display:flex;align-items:center;justify-content:center;overflow:hidden;color:var(--ink);
+  }
+
+  .stage{
+    position:relative;aspect-ratio:9/16;height:min(88vh,792px);max-width:96vw;
+    background:linear-gradient(180deg,#fbfcfd 0%, var(--canvas) 100%);
+    border-radius:26px;overflow:hidden;
+    box-shadow:0 30px 90px rgba(0,0,0,.55), inset 0 0 0 1px rgba(255,255,255,.04);
+    user-select:none;
+  }
+  .scene{position:absolute;inset:0}
+
+  /* ---------- browser + article ---------- */
+  .browser{
+    position:absolute;left:5%;right:5%;top:5.5%;
+    background:var(--surface);border-radius:18px;border:1px solid var(--line);
+    box-shadow:0 18px 50px rgba(20,30,50,.12);
+    transform:scale(1.07);opacity:0;transition:transform 1s var(--ease),opacity .7s ease;
+    overflow:hidden;
+  }
+  .browser.in{transform:scale(1);opacity:1}
+  .browser.dim{transform:scale(.96);opacity:.35;filter:blur(1px)}
+  .chrome{display:flex;align-items:center;gap:8px;padding:16px 20px;border-bottom:1px solid var(--line)}
+  .dot{width:11px;height:11px;border-radius:50%;background:#e2e5ea}
+  .url{flex:1;margin-left:8px;height:28px;border-radius:14px;background:#f1f3f6;
+       display:flex;align-items:center;padding:0 14px;font-size:14px;color:var(--muted);letter-spacing:.2px}
+
+  .track{display:flex;width:200%;transition:transform .62s var(--ease)}
+  .track.swipe{transform:translateX(-50%)}
+  .page{width:50%;padding:30px 28px 34px}
+  .kicker{font-size:15px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);opacity:.85}
+  .article{margin-top:16px;font-size:31px;line-height:1.5;font-weight:500;letter-spacing:-.01em;color:#1d2026}
+
+  .w{position:relative;cursor:pointer;border-radius:5px;padding:1px 2px}
+  .w::before{content:"";position:absolute;inset:-2px -4px;border-radius:6px;
+    background:var(--lvl,#000);opacity:.20;clip-path:inset(0 100% 0 0);
+    transition:clip-path .5s var(--ease)}
+  .w.on::before{clip-path:inset(0 0 0 0)}
+  .w.on{color:var(--lvlInk,inherit)}
+  .w.hint{color:#3a3f47}
+  .w.hint::after{content:"";position:absolute;left:6%;right:6%;bottom:-3px;height:2px;border-radius:2px;
+    background:#cfd4db}
+  .w.pulse{animation:pulse .42s var(--ease)}
+  @keyframes pulse{0%{transform:scale(1)}38%{transform:scale(1.22)}100%{transform:scale(1)}}
+  .w .ring{position:absolute;inset:-6px -8px;border-radius:9px;border:2px solid var(--accent);
+    opacity:0;transform:scale(.7)}
+  .w.click .ring{animation:ring .5s ease-out}
+  @keyframes ring{0%{opacity:.7;transform:scale(.7)}100%{opacity:0;transform:scale(1.35)}}
+
+  /* ---------- wordbook ---------- */
+  .wordbook{
+    position:absolute;right:6%;top:42%;width:68%;
+    background:var(--surface);border-radius:18px;border:1px solid var(--line);
+    box-shadow:0 20px 50px rgba(20,30,50,.16);
+    padding:18px 18px 14px;opacity:0;transform:translateY(14px);
+    transition:opacity .5s ease,transform .6s var(--ease);
+  }
+  .wordbook.in{opacity:1;transform:translateY(0)}
+  .wordbook.dim{opacity:.32;transform:scale(.97);filter:blur(1px)}
+  .wb-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+  .wb-title{font-size:16px;font-weight:700;letter-spacing:.02em}
+  .wb-count{font-size:14px;color:var(--muted);font-weight:600}
+  .wb-row{display:flex;align-items:center;gap:11px;padding:10px 8px;border-radius:11px;
+    opacity:0;transform:translateX(16px) scale(.96);transition:all .42s var(--ease)}
+  .wb-row.in{opacity:1;transform:none}
+  .wb-row+.wb-row{margin-top:2px}
+  .lv{width:14px;height:14px;border-radius:5px;background:#d9dde3;flex:none;transition:background .35s var(--ease)}
+  .wb-word{font-size:19px;font-weight:600;color:#23262c}
+
+  /* ---------- flying card ---------- */
+  .flyer{position:absolute;z-index:30;display:flex;align-items:center;gap:7px;
+    background:var(--surface);border:1px solid var(--line);border-radius:10px;
+    padding:9px 14px;box-shadow:0 12px 30px rgba(20,30,50,.22);
+    font-size:19px;font-weight:600;color:#23262c;
+    transition:transform .42s var(--ease),opacity .42s ease;will-change:transform}
+  .flyer .badge{font-size:14px;font-weight:700;color:var(--known);display:flex;align-items:center;gap:3px}
+
+  /* ---------- level control ---------- */
+  .levelctl{position:absolute;left:50%;top:30%;transform:translate(-50%,8px) scale(.92);
+    background:var(--surface);border:1px solid var(--line);border-radius:16px;
+    box-shadow:0 24px 60px rgba(20,30,50,.24);padding:16px 18px;z-index:40;
+    opacity:0;transition:opacity .4s ease,transform .5s var(--ease);text-align:center}
+  .levelctl.in{opacity:1;transform:translate(-50%,0) scale(1)}
+  .lc-word{font-size:34px;font-weight:700;letter-spacing:-.01em;margin-bottom:18px}
+  .seg{display:flex;gap:7px;background:#f1f3f6;border-radius:13px;padding:6px}
+  .seg button{appearance:none;border:0;background:transparent;cursor:pointer;
+    font:inherit;font-size:17px;font-weight:600;color:var(--muted);
+    padding:11px 20px;border-radius:9px;transition:all .28s var(--ease)}
+  .seg button.sel{background:var(--surface);color:var(--ink);box-shadow:0 2px 8px rgba(20,30,50,.12)}
+  .seg button.sel[data-k="new"]{color:var(--new)}
+  .seg button.sel[data-k="learning"]{color:var(--learning)}
+  .seg button.sel[data-k="known"]{color:var(--known)}
+
+  /* ---------- cursor ---------- */
+  .cursor{position:absolute;z-index:50;width:32px;height:32px;left:0;top:0;
+    opacity:0;transition:transform .42s var(--ease),opacity .3s ease;will-change:transform;
+    filter:drop-shadow(0 3px 5px rgba(0,0,0,.28))}
+  .cursor.show{opacity:1}
+  .cursor.tap{animation:tap .26s ease}
+  @keyframes tap{50%{transform:scale(.82)}}
+
+  /* ---------- caption ---------- */
+  .caption{position:absolute;left:0;right:0;bottom:8.5%;text-align:center;z-index:20}
+  .caption span{display:inline-block;font-size:20px;font-weight:600;letter-spacing:.02em;color:#3c424b;
+    background:rgba(255,255,255,.7);backdrop-filter:blur(6px);padding:11px 24px;border-radius:999px;
+    border:1px solid var(--line);opacity:0;transform:translateY(10px)}
+  .caption span.show{animation:capIn 1.5s var(--ease) forwards}
+  @keyframes capIn{0%{opacity:0;transform:translateY(10px)}12%{opacity:1;transform:translateY(0)}
+    82%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(-8px)}}
+
+  /* ---------- brand ---------- */
+  .brand{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    gap:18px;opacity:0;pointer-events:none;z-index:60}
+  .brand.in{opacity:1;transition:opacity .6s ease}
+  .logo{display:flex;align-items:center;gap:13px;transform:translateY(8px) scale(.96);opacity:0}
+  .brand.in .logo{animation:logoIn .7s var(--ease) .15s forwards}
+  @keyframes logoIn{to{transform:none;opacity:1}}
+  .mark{width:58px;height:58px;border-radius:16px;background:var(--accent);
+    display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:30px;
+    box-shadow:0 10px 28px rgba(13,121,221,.45)}
+  .brand h1{margin:0;font-size:40px;font-weight:700;letter-spacing:-.02em}
+  .brand p{margin:0;font-size:21px;color:var(--muted);font-weight:500;opacity:0;transform:translateY(8px)}
+  .brand.in p{animation:logoIn .7s var(--ease) .4s forwards}
+  .dots{display:flex;gap:9px;margin-top:6px;opacity:0}
+  .brand.in .dots{animation:logoIn .6s var(--ease) .55s forwards}
+  .dots i{width:13px;height:13px;border-radius:4px;display:block}
+
+  /* ---------- overlays ---------- */
+  .ui{position:absolute;inset:0;z-index:90;display:flex;align-items:center;justify-content:center;
+    background:rgba(10,11,13,.55);backdrop-filter:blur(3px);cursor:pointer;transition:opacity .35s ease}
+  .ui.hide{opacity:0;pointer-events:none}
+  .ui .btn{display:flex;align-items:center;gap:11px;background:#fff;color:#15171b;
+    padding:14px 26px;border-radius:999px;font-size:16px;font-weight:600;
+    box-shadow:0 14px 40px rgba(0,0,0,.4)}
+  .ui .play{width:0;height:0;border-left:15px solid #15171b;border-top:9px solid transparent;border-bottom:9px solid transparent}
+  .replay{position:absolute;right:14px;bottom:14px;z-index:80;background:rgba(255,255,255,.85);
+    border:1px solid var(--line);border-radius:999px;padding:8px 14px;font:inherit;font-size:13px;font-weight:600;
+    cursor:pointer;opacity:0;transition:opacity .4s ease}
+  .replay.show{opacity:1}
+</style>
+</head>
+<body>
+<div class="stage" id="stage">
+  <div class="scene">
+    <div class="browser" id="browser">
+      <div class="chrome"><span class="dot"></span><span class="dot"></span><span class="dot"></span>
+        <span class="url">reckue.app/read</span></div>
+      <div class="track" id="track">
+        <div class="page">
+          <div class="kicker">Article</div>
+          <p class="article">
+            The city felt
+            <span class="w hint" data-w="strangely">strangely</span>
+            <span class="w hint" data-w="quiet">quiet</span>
+            after the
+            <span class="w hint" data-w="storm">storm</span>, but the
+            <span class="w" data-w="streets">streets</span> slowly came
+            <span class="w hint" data-w="alive">alive</span> again.
+          </p>
+        </div>
+        <div class="page">
+          <div class="kicker">Another page</div>
+          <p class="article">
+            Even after the <span class="w" data-w="storm2">storm</span>, the
+            <span class="w" data-w="quiet2">quiet</span>
+            <span class="w" data-w="streets2">streets</span> felt
+            <span class="w" data-w="alive2">alive</span> with a strange, restless energy.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="wordbook" id="wb">
+      <div class="wb-head"><span class="wb-title">Wordbook</span><span class="wb-count" id="wbc">0</span></div>
+      <div id="wblist"></div>
+    </div>
+
+    <div class="levelctl" id="lc">
+      <div class="lc-word">strangely</div>
+      <div class="seg" id="seg">
+        <button data-k="new" class="sel">New</button>
+        <button data-k="learning">Learning</button>
+        <button data-k="known">Known</button>
+      </div>
+    </div>
+
+    <svg class="cursor" id="cursor" viewBox="0 0 24 24" fill="#15171b">
+      <path d="M5 3l15 8.5-6.2 1.6L11 19 5 3z"/>
+    </svg>
+
+    <div class="caption"><span id="cap"></span></div>
+
+    <div class="brand" id="brand">
+      <div class="logo"><div class="mark">R</div><h1>Reckue Languages</h1></div>
+      <p>Build vocabulary as you browse.</p>
+      <div class="dots"><i style="background:var(--new)"></i><i style="background:var(--learning)"></i><i style="background:var(--known)"></i></div>
+    </div>
+  </div>
+
+  <button class="replay" id="replay">↻ Replay</button>
+  <div class="ui" id="ui"><div class="btn"><span class="play"></span> Play teaser</div></div>
+</div>
+
+<script>
+const $=s=>document.querySelector(s), stage=$("#stage");
+const LV={new:["var(--new)","#9c2020"],learning:["var(--learning)","#9a6212"],known:["var(--known)","#1c7a1a"]};
+let timers=[], audio=null, beat=null;
+
+/* ---- positions relative to stage ---- */
+function rel(el){const a=el.getBoundingClientRect(),b=stage.getBoundingClientRect();
+  return{x:a.left-b.left,y:a.top-b.top,w:a.width,h:a.height,cx:a.left-b.left+a.width/2,cy:a.top-b.top+a.height/2};}
+function at(t,fn){timers.push(setTimeout(fn,t));}
+function cursorTo(el,extra=0){const r=rel(el);$("#cursor").style.transform=`translate(${r.cx-4}px,${r.cy-2+extra}px)`;}
+function caption(text){const c=$("#cap");c.classList.remove("show");void c.offsetWidth;c.textContent=text;c.classList.add("show");}
+
+/* ---- audio (synthesized, no files) ---- */
+function A(){return audio||(audio=new (window.AudioContext||window.webkitAudioContext)());}
+function tone(f1,f2,dur,type,gain,delay=0){const c=A(),t=c.currentTime+delay;
+  const o=c.createOscillator(),g=c.createGain();o.type=type;o.frequency.setValueAtTime(f1,t);
+  if(f2)o.frequency.exponentialRampToValueAtTime(f2,t+dur);
+  g.gain.setValueAtTime(0.0001,t);g.gain.exponentialRampToValueAtTime(gain,t+0.006);
+  g.gain.exponentialRampToValueAtTime(0.0001,t+dur);o.connect(g).connect(c.destination);o.start(t);o.stop(t+dur+0.02);}
+function noise(dur,gain){const c=A(),n=c.createBufferSource(),b=c.createBuffer(1,c.sampleRate*dur,c.sampleRate);
+  const d=b.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*(1-i/d.length);
+  const g=c.createGain(),f=c.createBiquadFilter();f.type="highpass";f.frequency.value=4000;
+  g.gain.value=gain;n.buffer=b;n.connect(f).connect(g).connect(c.destination);n.start();}
+const sfx={click:()=>{tone(900,420,0.06,"square",0.10);noise(0.03,0.05);},
+  pop:()=>{tone(520,880,0.12,"sine",0.16);},
+  tick:()=>{tone(1300,1100,0.04,"triangle",0.08);},
+  kick:()=>{tone(150,48,0.16,"sine",0.22);},
+  bass:()=>{tone(110,40,0.7,"sine",0.32);tone(220,80,0.5,"triangle",0.12);}};
+function startBeat(){let i=0;beat=setInterval(()=>{sfx.kick();if(i%2)noise(0.02,0.03);i++;},468/2*2);}
+function stopBeat(){clearInterval(beat);beat=null;}
+
+/* ---- wordbook ---- */
+let wbCount=0; const rowByWord={};
+function addRow(word,level){wbCount++;$("#wbc").textContent=wbCount;
+  const row=document.createElement("div");row.className="wb-row";
+  row.innerHTML=`<span class="lv"></span><span class="wb-word">${word}</span>`;
+  $("#wblist").appendChild(row);rowByWord[word]=row;
+  requestAnimationFrame(()=>row.classList.add("in"));
+  if(level)setTimeout(()=>row.querySelector(".lv").style.background=LV[level][0],260);}
+
+/* ---- click a word: pulse + flyer to wordbook ---- */
+function clickWord(sel,label,level,saved=true){
+  const el=document.querySelector(`[data-w="${sel}"]`);if(!el)return;
+  cursorTo(el);
+  at(360,()=>{$("#cursor").classList.add("tap");el.classList.add("pulse","click");sfx.click();});
+  at(760,()=>$("#cursor").classList.remove("tap"));
+  at(430,()=>el.classList.remove("pulse"));
+  if(!saved)return;
+  at(470,()=>{
+    const r=rel(el),wb=rel($("#wb"));
+    const f=document.createElement("div");f.className="flyer";
+    f.innerHTML=`${label}<span class="badge">+ saved</span>`;
+    f.style.left=r.x+"px";f.style.top=r.y+"px";stage.appendChild(f);
+    const fr=f.getBoundingClientRect(),sb=stage.getBoundingClientRect();
+    const tx=(wb.x+18)-(fr.left-sb.left), ty=(wb.y+44+wbCount*34)-(fr.top-sb.top);
+    requestAnimationFrame(()=>{f.style.transform=`translate(${tx}px,${ty}px) scale(.9)`;
+      setTimeout(()=>{f.style.opacity="0";},250);});
+    setTimeout(()=>{f.remove();sfx.pop();addRow(label,level);},430);
+  });
+}
+
+/* ---- highlight a word in text (wave) ---- */
+function light(sel,level){const el=document.querySelector(`[data-w="${sel}"]`);if(!el)return;
+  el.style.setProperty("--lvl",LV[level][0]);el.style.setProperty("--lvlInk",LV[level][1]);
+  el.classList.remove("hint");el.classList.add("on");}
+
+/* ---- master timeline ---- */
+function run(){
+  // scene 1 — page appears
+  at(60,()=>{$("#browser").classList.add("in");startBeat();});
+  at(120,()=>caption("Read anywhere"));
+  at(520,()=>{$("#cursor").classList.add("show");cursorTo($('[data-w="strangely"]'));});
+
+  // scene 2 — one click saves
+  at(760,()=>{$("#wb").classList.add("in");});
+  clickWordAt(900,"strangely","strangely","new");
+  at(1000,()=>caption("Click a word"));
+
+  // scene 3 — fills fast
+  at(1820,()=>caption("Build your wordbook"));
+  clickWordAt(1900,"quiet","quiet","new");
+  clickWordAt(2280,"storm","storm","learning");
+  clickWordAt(2660,"alive","alive","known");
+  clickWordAt(3040,"streets","streets","new");
+
+  // scene 4 — set level
+  at(3380,()=>{caption("Set the level");$("#cursor").classList.remove("show");
+    $("#browser").classList.add("dim");$("#wb").classList.add("dim");$("#lc").classList.add("in");});
+  at(3820,()=>{seg("learning");sfx.tick();});
+  at(4080,()=>{sfx.tick();
+    $("#browser").classList.remove("dim");$("#wb").classList.remove("dim");
+    light("strangely","learning");
+    if(rowByWord["strangely"])rowByWord["strangely"].querySelector(".lv").style.background=LV.learning[0];});
+  at(4480,()=>$("#lc").classList.remove("in"));
+
+  // scene 5 — the web remembers
+  at(4760,()=>{caption("See them again");$("#wb").classList.add("dim");$("#track").classList.add("swipe");});
+  at(5240,()=>{light("storm2","learning");sfx.tick();});
+  at(5380,()=>{light("quiet2","new");sfx.tick();});
+  at(5520,()=>{light("alive2","known");sfx.tick();});
+
+  // scene 6 — brand reveal
+  at(5980,()=>{$("#browser").classList.add("dim");$("#wb").classList.add("dim");});
+  at(6200,()=>{$("#browser").style.opacity="0";$("#wb").style.opacity="0";
+    $("#brand").classList.add("in");stopBeat();sfx.bass();});
+  at(8400,()=>$("#replay").classList.add("show"));
+}
+function clickWordAt(t,sel,label,level){at(t,()=>clickWord(sel,label,level));}
+function seg(k){document.querySelectorAll("#seg button").forEach(b=>b.classList.toggle("sel",b.dataset.k===k));}
+
+/* ---- controls ---- */
+function reset(){
+  timers.forEach(clearTimeout);timers=[];stopBeat();
+  document.querySelectorAll(".flyer").forEach(f=>f.remove());
+  $("#wblist").innerHTML="";wbCount=0;$("#wbc").textContent="0";for(const k in rowByWord)delete rowByWord[k];
+  ["browser","wb"].forEach(id=>{$("#"+id).classList.remove("in","dim");$("#"+id).style.opacity="";});
+  $("#brand").classList.remove("in");$("#lc").classList.remove("in");$("#track").classList.remove("swipe");
+  $("#cursor").classList.remove("show");$("#replay").classList.remove("show");seg("new");
+  document.querySelectorAll(".w").forEach(w=>{w.classList.remove("on");
+    if(["strangely","quiet","storm","alive"].includes(w.dataset.w))w.classList.add("hint");});
+}
+function start(){reset();if(A().state==="suspended")A().resume();run();}
+$("#ui").addEventListener("click",()=>{$("#ui").classList.add("hide");start();});
+$("#replay").addEventListener("click",start);
+</script>
+</body>
+</html>

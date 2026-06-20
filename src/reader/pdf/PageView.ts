@@ -12,11 +12,13 @@ export class PageView {
     readonly el: HTMLElement;
     readonly #page: pdfjsLib.PDFPageProxy;
     readonly #scale: number;
+    readonly #onTextLayer?: (el: HTMLElement) => void;
     #rendered = false;
 
-    constructor(page: pdfjsLib.PDFPageProxy, scale: number) {
+    constructor(page: pdfjsLib.PDFPageProxy, scale: number, onTextLayer?: (el: HTMLElement) => void) {
         this.#page = page;
         this.#scale = scale;
+        this.#onTextLayer = onTextLayer;
         const viewport = page.getViewport({scale});
         const el = document.createElement("div");
         el.className = "page";
@@ -55,5 +57,8 @@ export class PageView {
             viewport,
         });
         await textLayer.render();
+
+        // Слой готов и спозиционирован — отдаём сшивателю слов (перенос/буквица).
+        this.#onTextLayer && this.#onTextLayer(textLayerDiv);
     };
 }
