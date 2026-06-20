@@ -57,6 +57,45 @@ export class Inflector {
         return [...out];
     };
 
+    /**
+     * Одна каноническая база для СОХРАНЕНИЯ (клик по слову). В отличие от bases()
+     * (все кандидаты для матчинга) — возвращает ровно одну форму, чтобы в словарь
+     * легла лемма, а не словоформа: кликнул "views"/"fixed" — хранится "view"/"fix",
+     * и подсвечивается всё семейство.
+     *
+     * Эвристика без словаря: покрывает регулярные -s/-ies/-ed/-ing. НЕ различает
+     * выпадение немой "e" (used→use, making→make вернутся усечёнными) и неправильные
+     * формы (went→go останется как есть). Полное покрытие — словарь форм (отд. задача).
+     */
+    lemma = (word: string): string => {
+        if (!LATIN_LOWER.test(word) || word.length <= 3) {
+            return word;
+        }
+        if (word.length > 4 && (word.endsWith("ies") || word.endsWith("ied"))) {
+            return word.slice(0, -3) + "y";                  // studies→study, tried→try
+        }
+        if (word.length > 5 && word.endsWith("ing")) {
+            const stem = word.slice(0, -3);
+            if (stem.length < 3) return word;                // using → using (не "us")
+            return this.undouble(stem);                      // running→run, walking→walk
+        }
+        if (word.length > 4 && word.endsWith("ed")) {
+            const stem = word.slice(0, -2);
+            if (stem.length < 3) return word;                // used → used (не "us")
+            return this.undouble(stem);                      // stopped→stop, walked→walk
+        }
+        if (word.length > 4 && /(ss|x|z|ch|sh)es$/.test(word)) {
+            return word.slice(0, -2);                        // boxes→box, classes→class, dishes→dish
+        }
+        if (word.length > 4 && word.endsWith("es")) {
+            return word.slice(0, -1);                        // makes→make, uses→use
+        }
+        if (word.endsWith("s") && !word.endsWith("ss")) {
+            return word.slice(0, -1);                        // runs→run, views→view
+        }
+        return word;
+    };
+
     private undouble = (stem: string): string => {
         return DOUBLED_CONSONANT.test(stem) ? stem.slice(0, -1) : stem;
     };

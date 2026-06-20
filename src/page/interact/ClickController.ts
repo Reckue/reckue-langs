@@ -1,5 +1,6 @@
 import {HitTester} from "./HitTester";
 import {WordMatcher} from "../word/WordMatcher";
+import {Inflector} from "../word/Inflector";
 import {Popup} from "./Popup";
 import {Hint} from "./Hint";
 import {WordbookService} from "../../core/words/WordbookService";
@@ -26,6 +27,7 @@ export class ClickController {
     private readonly popup: Popup;
     private readonly hint: Hint;
     private readonly refresh: () => void;
+    private readonly inflector = new Inflector();
     private fast = false;
 
     constructor(hit: HitTester, matcher: WordMatcher,
@@ -65,7 +67,9 @@ export class ClickController {
             event.preventDefault();
             event.stopPropagation();
 
-            const word = hit.word.toLowerCase();
+            // Сохраняем лемму, а не словоформу: клик по "views"/"fixed" кладёт в
+            // словарь "view"/"fix", и подсвечивается всё семейство форм.
+            const word = this.inflector.lemma(hit.word.toLowerCase());
             if (!this.matcher.has(word)) {
                 this.save(word, DEFAULT_LEVEL);
             }
