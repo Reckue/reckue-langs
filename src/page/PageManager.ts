@@ -5,6 +5,7 @@ import {PageScanner} from "./scan/PageScanner";
 import {RootRegistry} from "./scan/RootRegistry";
 import {WordMatcher} from "./word/WordMatcher";
 import {LemmaDictionary} from "./word/LemmaDictionary";
+import {LemmaMigration} from "./word/LemmaMigration";
 import {MutationPipeline} from "./invalidate/MutationPipeline";
 import {HitTester} from "./interact/HitTester";
 import {HoverController} from "./interact/HoverController";
@@ -62,10 +63,12 @@ export class PageManager {
         new ClickController(hit, matcher, service, popup, hint, refresh).attach();
 
         // Словарь лемм грузится из storage асинхронно: сканируем сразу на правилах,
-        // а как словарь появится (или SW его обновит) — пере-скан, чтобы
-        // подсветка подхватила неправильные формы (went→go и т.п.).
-        LemmaDictionary.load().then(refresh);
-        LemmaDictionary.watch(refresh);
+        // а как словарь появится (или SW его обновит) — разовая миграция
+        // словоформ→леммы (см. LemmaMigration) и пере-скан, чтобы подсветка
+        // подхватила неправильные формы (went→go) и схлопнутые записи.
+        const syncLemmas = () => LemmaMigration.run(service).then(refresh);
+        LemmaDictionary.load().then(syncLemmas);
+        LemmaDictionary.watch(syncLemmas);
 
         this.lifecycle(hover, pipeline);
     };

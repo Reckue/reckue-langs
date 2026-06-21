@@ -25,6 +25,11 @@ export class LemmaDictionary {
         return typeof value === "string" ? value : undefined;
     }
 
+    /** Загружен ли словарь (для миграции, которая без словаря не должна запускаться). */
+    static loaded(): boolean {
+        return LemmaDictionary.map !== null;
+    }
+
     /** Загружает словарь из chrome.storage в память (один раз на старте). */
     static load(): Promise<void> {
         return new Promise((resolve) => {
