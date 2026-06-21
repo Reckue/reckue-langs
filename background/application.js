@@ -28,3 +28,69 @@ function registerPdfRedirect() {
 
 chrome.runtime.onInstalled.addListener(registerPdfRedirect);
 chrome.runtime.onStartup.addListener(registerPdfRedirect);
+
+// --- Словарь лемм (словоформа→лемма) -----------------------------------------
+// Качаем michmech-словарь через ручку Langs и кэшируем в chrome.storage; контент-
+// скрипт берёт его для лемматизации (см. src/page/word/LemmaDictionary.ts). Это
+// download справочных данных — пользовательские данные наружу не уходят.
+// Формат строк ручки: "лемма<TAB>форма" (CRLF, BOM в первой строке); строим
+// карту форма→лемма, отбрасывая числовые/нелатинские записи (1→first и т.п.).
+const LEMMA_LANG = "en";
+const LEMMA_KEY = "lemmaDict:" + LEMMA_LANG;
+const LEMMA_ETAG_KEY = "lemmaEtag:" + LEMMA_LANG;
+const LEMMA_URL = "https://api.reckue.com/api/1/dictionaries/" + LEMMA_LANG + "/lemmas";
+const LEMMA_ALPHA = /^[a-z]+$/;
+
+function parseLemmaDict(text) {
+    const map = Object.create(null);
+    const lines = text.split("\n");
+    for (let i = 0; i < lines.length; i++) {
+        let line = lines[i];
+        if (i === 0) {
+            line = line.replace(/^﻿/, "");
+        }
+        if (line.charCodeAt(line.length - 1) === 13) {
+            line = line.slice(0, -1);
+        }
+        const tab = line.indexOf("\t");
+        if (tab < 1) {
+            continue;
+        }
+        const lemma = line.slice(0, tab).toLowerCase();
+        const form = line.slice(tab + 1).toLowerCase();
+        if (form === lemma || !LEMMA_ALPHA.test(lemma) || !LEMMA_ALPHA.test(form)) {
+            continue;
+        }
+        map[form] = lemma;
+    }
+    return map;
+}
+
+async function syncLemmaDict() {
+    try {
+        const stored = await chrome.storage.local.get([LEMMA_ETAG_KEY, LEMMA_KEY]);
+        const headers = {};
+        if (stored[LEMMA_ETAG_KEY] && stored[LEMMA_KEY]) {
+            headers["If-None-Match"] = stored[LEMMA_ETAG_KEY];
+        }
+        const res = await fetch(LEMMA_URL, {headers});
+        if (res.status === 304) {
+            return;
+        }
+        if (!res.ok) {
+            console.warn("Reckue: словарь лемм — HTTP", res.status);
+            return;
+        }
+        const map = parseLemmaDict(await res.text());
+        await chrome.storage.local.set({
+            [LEMMA_KEY]: map,
+            [LEMMA_ETAG_KEY]: res.headers.get("ETag") || ""
+        });
+        console.log("Reckue: словарь лемм обновлён,", Object.keys(map).length, "форм");
+    } catch (e) {
+        console.warn("Reckue: не удалось загрузить словарь лемм", e);
+    }
+}
+
+chrome.runtime.onInstalled.addListener(syncLemmaDict);
+chrome.runtime.onStartup.addListener(syncLemmaDict);

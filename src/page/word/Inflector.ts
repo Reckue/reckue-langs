@@ -1,20 +1,22 @@
+import {LemmaDictionary} from "./LemmaDictionary";
+
 const LATIN_LOWER = /^[a-z]+$/;
 const DOUBLED_CONSONANT = /([bcdfghjklmnpqrstvwxz])\1$/;
 
 /**
- * Лёгкая лемматизация для матчинга: по словоформе со страницы возвращает
- * вероятные базовые формы, чтобы сохранённое "run" подсвечивало "runs"/"running",
- * а "study" — "studies". Только ДОБАВЛЯЕТ кандидатов для поиска; что хранится в
- * словаре — не меняет.
- *
- * Намеренно ограничено регулярными английскими формами и латиницей (кириллицу/CJK
- * не трогаем — там правила другие). Это эвристика без словаря: дёшево для
- * контент-скрипта, но не покрывает неправильные формы (went→go) и другие языки.
- * Полноценная мультиязычная лемматизация — отдельная задача (нужен словарь форм).
+ * Лемматизация для матчинга и сохранения. Источник истины — словарь форм
+ * [[LemmaDictionary]] (michmech, грузится из Langs): он покрывает неправильные
+ * формы (went→go, children→child) и выпадение немой "e" (making→make), чего
+ * правила не умеют. Если формы нет в словаре (не загружен / OOV) — падаем на
+ * регулярные английские правила ниже.
  */
 export class Inflector {
 
     bases = (word: string): string[] => {
+        const fromDict = LemmaDictionary.get(word);
+        if (fromDict) {
+            return fromDict === word ? [] : [fromDict];
+        }
         if (!LATIN_LOWER.test(word) || word.length <= 3) {
             return [];
         }
@@ -63,11 +65,15 @@ export class Inflector {
      * легла лемма, а не словоформа: кликнул "views"/"fixed" — хранится "view"/"fix",
      * и подсвечивается всё семейство.
      *
-     * Эвристика без словаря: покрывает регулярные -s/-ies/-ed/-ing. НЕ различает
-     * выпадение немой "e" (used→use, making→make вернутся усечёнными) и неправильные
-     * формы (went→go останется как есть). Полное покрытие — словарь форм (отд. задача).
+     * Сначала смотрит в [[LemmaDictionary]] (точная лемма, включая неправильные
+     * формы и e-drop). Если формы нет в словаре — правила ниже: покрывают
+     * регулярные -s/-ies/-ed/-ing, но не различают e-drop и неправильные формы.
      */
     lemma = (word: string): string => {
+        const fromDict = LemmaDictionary.get(word);
+        if (fromDict) {
+            return fromDict;
+        }
         if (!LATIN_LOWER.test(word) || word.length <= 3) {
             return word;
         }

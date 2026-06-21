@@ -4,6 +4,7 @@ import {HighlightStore} from "./highlight/HighlightStore";
 import {PageScanner} from "./scan/PageScanner";
 import {RootRegistry} from "./scan/RootRegistry";
 import {WordMatcher} from "./word/WordMatcher";
+import {LemmaDictionary} from "./word/LemmaDictionary";
 import {MutationPipeline} from "./invalidate/MutationPipeline";
 import {HitTester} from "./interact/HitTester";
 import {HoverController} from "./interact/HoverController";
@@ -59,6 +60,12 @@ export class PageManager {
         // только кликнутую ноду). Скан идемпотентен; клики редки.
         const refresh = () => pipeline.scan(document.body);
         new ClickController(hit, matcher, service, popup, hint, refresh).attach();
+
+        // Словарь лемм грузится из storage асинхронно: сканируем сразу на правилах,
+        // а как словарь появится (или SW его обновит) — пере-скан, чтобы
+        // подсветка подхватила неправильные формы (went→go и т.п.).
+        LemmaDictionary.load().then(refresh);
+        LemmaDictionary.watch(refresh);
 
         this.lifecycle(hover, pipeline);
     };
