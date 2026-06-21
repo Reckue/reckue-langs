@@ -1,6 +1,6 @@
 # Privacy Policy — Reckue Languages
 
-_Last updated: 20 June 2026_
+_Last updated: 21 June 2026_
 
 Reckue Languages ("the extension") is a browser extension that lets you save and
 highlight vocabulary words while you browse the web and read PDFs.
@@ -13,10 +13,19 @@ browser's local storage (`chrome.storage.local`):
 - The words you save and their knowledge levels (your wordbook)
 - Your settings (enabled languages, highlight mode, etc.)
 
+## Network use
+
+The extension downloads a **language dictionary** (used to reduce words to their
+base form for highlighting) from Reckue's server (`api.reckue.com`). This is a
+**one-way download of reference data** — the request contains no personal data
+and no page content. The dictionary is cached locally afterwards.
+
+Apart from this dictionary download, the extension makes no network requests:
+your wordbook, settings, and the pages you read never leave your device.
+
 ## What the extension does NOT do
 
-- It does **not** send your data anywhere. The extension makes no external
-  network requests — nothing leaves your browser.
+- It does **not** send your saved words, settings, or page content anywhere.
 - It does **not** collect, sell, or share personal information.
 - It does **not** track your browsing history and uses **no** analytics.
 - It shows **no** ads.
