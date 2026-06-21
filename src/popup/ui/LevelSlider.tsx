@@ -69,6 +69,16 @@ export function LevelSlider({level, onChange}: LevelSliderProps) {
         <div class="level-slider" onPointerDown={down}>
             <div class="level-slider-track" ref={trackRef}>
                 <div class="level-slider-fill" style={{width: `${(pos / LEVEL_COUNT) * 100}%`, background: color}}/>
+                {Array.from({length: LEVEL_COUNT}, (_, i) => {
+                    const n = i + 1;
+                    const cls = "level-slider-dot"
+                        + (pos >= n ? " filled" : "")
+                        + (pos === n ? " current" : "");
+                    // Точка по центру своего сегмента; --dot — цвет уровня для
+                    // заливки/подсветки активной точки (см. css).
+                    const style = {left: `${((n - 0.5) / LEVEL_COUNT) * 100}%`, "--dot": color} as any;
+                    return <span key={n} class={cls} style={style}/>;
+                })}
             </div>
             <div class="level-slider-value">{pos || "–"}</div>
         </div>

@@ -15,6 +15,15 @@ interface Coverage {
     word: string;
 }
 
+// Мульти-нодовый токен-кандидат на подсветку: границы Range (через ноды) +
+// поверхностная форма. Зависит только от геометрии слоя (не от словаря), поэтому
+// строится один раз в #scan и переиспользуется в refresh — без пересчёта rect'ов.
+interface Candidate {
+    a: Owner;
+    b: Owner;
+    word: string;
+}
+
 /**
  * Reader-сшивка слов, разорванных текстовым слоем PDF.js на несколько спанов.
  *
@@ -40,6 +49,9 @@ export class WordStitcher {
     // переносного/буквичного слова сохранял слово целиком, даже если его ещё нет
     // в словаре. См. wordAt.
     readonly #words = new Map<Text, Coverage[]>();
+    // layer → мульти-нодовые кандидаты (геометрия слоя). Строится один раз при
+    // add; refresh лишь перекрашивает их по текущему словарю, не трогая геометрию.
+    readonly #candidates = new Map<HTMLElement, Candidate[]>();
 
     constructor(matcher: WordMatcher, store: HighlightStore) {
         this.#matcher = matcher;
@@ -49,20 +61,26 @@ export class WordStitcher {
     /** Новый текстовый слой страницы готов — обработать (инкрементально). */
     add = (layer: HTMLElement) => {
         this.#layers.push(layer);
-        this.#process(layer);
+        const candidates = this.#scan(layer);
+        this.#candidates.set(layer, candidates);
+        candidates.forEach(this.#colorize);
     };
 
-    /** Словарь изменился — пересобрать сшивку по всем известным страницам. */
+    /**
+     * Словарь изменился — перекрасить сшивку по всем страницам. Геометрия не
+     * меняется (ноды и rect'ы те же), поэтому переиспользуем кэш кандидатов и
+     * лишь заново прогоняем уровни — без TreeWalker и getClientRects.
+     */
     refresh = () => {
         this.#store.clearAll();
-        this.#words.clear();
-        this.#layers.forEach(this.#process);
+        this.#layers.forEach((layer) => this.#candidates.get(layer)?.forEach(this.#colorize));
     };
 
     /** Перекладка (зум) — старые ноды выброшены, начать с чистого листа. */
     reset = () => {
         this.#store.clearAll();
         this.#words.clear();
+        this.#candidates.clear();
         this.#layers.length = 0;
     };
 
@@ -84,10 +102,25 @@ export class WordStitcher {
         return undefined;
     };
 
-    #process = (layer: HTMLElement) => {
+    // Перекрасить один кандидат по текущему словарю (без чтения геометрии).
+    #colorize = (cand: Candidate) => {
+        const level = this.#matcher.level(cand.word);
+        if (!level) {
+            return;
+        }
+        const range = document.createRange();
+        range.setStart(cand.a.node, cand.a.offset);
+        range.setEnd(cand.b.node, cand.b.offset + 1);
+        this.#store.addRange(range, level);
+    };
+
+    // Построить логическую строку слоя, заполнить карту кликов (#words) и вернуть
+    // список мульти-нодовых кандидатов. Вызывается один раз на слой (геометрия).
+    #scan = (layer: HTMLElement): Candidate[] => {
+        const candidates: Candidate[] = [];
         const nodes = this.#textNodes(layer);
         if (nodes.length < 2) {
-            return;
+            return candidates;
         }
 
         // Логическая строка страницы + карта «индекс символа → нода/смещение».
@@ -135,16 +168,10 @@ export class WordStitcher {
             // Карта для клика: записываем покрытие каждой ноды (включая средние
             // при разрыве на 3+ части) — независимо от наличия в словаре.
             this.#record(span, match[0]);
-
-            // Подсветка — только известные слова, мульти-нодовым Range'ом.
-            const level = this.#matcher.level(match[0]);
-            if (level) {
-                const range = document.createRange();
-                range.setStart(a.node, a.offset);
-                range.setEnd(b.node, b.offset + 1);
-                this.#store.addRange(range, level);
-            }
+            // Кандидат на подсветку — отложенно красится в #colorize (refresh).
+            candidates.push({a, b, word: match[0]});
         }
+        return candidates;
     };
 
     // Разбить токен по нодам и записать покрытие [min, max+1) каждой в #words.

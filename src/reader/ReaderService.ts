@@ -67,14 +67,35 @@ export class ReaderService {
 
         // Кэш словаря — живая Map (мутируется на service.set), поэтому после
         // сохранения слова в reader достаточно пересобрать сшивку. Сигнал —
-        // запись словаря в storage (ключи wordbook*).
+        // запись словаря в storage (ключи wordbook*). Откладываем в idle и
+        // коалесим: запись словаря идёт несколькими ключами (кусками) → одно
+        // изменение может прийти пачкой; держать перекраску на синхронном пути
+        // не нужно — иначе лагает попап смены уровня.
+        const refresh = this.#coalesce(stitcher.refresh);
         chrome.storage.onChanged.addListener((changes, area) => {
             if (area === "local" && Object.keys(changes).some((k) => k.startsWith("wordbook"))) {
-                stitcher.refresh();
+                refresh();
             }
         });
 
         return stitcher;
+    };
+
+    // Схлопнуть серию вызовов в один запуск в простое (rIC, запасной rAF).
+    #coalesce = (fn: () => void): (() => void) => {
+        let scheduled = false;
+        const run = () => {
+            scheduled = false;
+            fn();
+        };
+        return () => {
+            if (scheduled) {
+                return;
+            }
+            scheduled = true;
+            const ric = (window as any).requestIdleCallback;
+            ric ? ric(run, {timeout: 300}) : requestAnimationFrame(run);
+        };
     };
 
     #openFile = async (file: File) => {

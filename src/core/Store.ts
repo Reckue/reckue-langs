@@ -16,6 +16,10 @@ export class Store {
         chrome.storage.local.set(wordbooks);
     }
 
+    removeWordbooks = (keys: string[]) => {
+        chrome.storage.local.remove(keys);
+    }
+
     getByName = (name: string): Promise<any> => {
         return new Promise(resolve => chrome.storage.local.get([name], (app) => resolve(app[name])));
     }
