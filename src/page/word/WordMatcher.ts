@@ -39,7 +39,12 @@ export class WordMatcher {
     };
 
     has = (raw: string): boolean => {
-        return this.lookup(new Word(raw)) !== undefined;
+        return this.level(raw) !== undefined;
+    };
+
+    /** Уровень для сырого слова (точное совпадение или базовая форма), иначе undefined. */
+    level = (raw: string): string | undefined => {
+        return this.lookup(new Word(raw));
     };
 
     private lookup = (word: Word): string | undefined => {

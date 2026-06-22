@@ -36,8 +36,16 @@ export class WordbookService {
     }
 
     #updateStorage = () => {
-        const wordbooks = this.#wordbook.toObject();
-        this.#storage.saveWordbooks(wordbooks);
+        // Пишем только изменившиеся куски, а не весь словарь — иначе на большом
+        // словаре каждая смена уровня сериализует и клонирует всё (лаг). При
+        // сокращении словаря удаляем осиротевшие хвостовые ключи.
+        const {set, remove} = this.#wordbook.takeDirty();
+        if (Object.keys(set).length) {
+            this.#storage.saveWordbooks(set);
+        }
+        if (remove.length) {
+            this.#storage.removeWordbooks(remove);
+        }
     }
 
     getWordbook = () => {
@@ -74,7 +82,8 @@ export class WordbookService {
 
     #load = (wordbook: Bundle[] | undefined, number: number) => {
         if (wordbook) {
-            this.#wordbook.set(wordbook);
+            // dirty=false: слова пришли из storage, переписывать их не нужно.
+            this.#wordbook.set(wordbook, false);
             this.#loadNext(number);
         } else {
             this.#executeAfter();

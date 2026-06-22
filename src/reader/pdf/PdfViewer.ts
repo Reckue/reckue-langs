@@ -10,17 +10,24 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = chrome.runtime.getURL("dist/reader/pdf.
  * ленивый (IntersectionObserver): видна только часть книги — остальное рисуется
  * по мере прокрутки. Зум перекладывает всё заново с новым масштабом.
  */
+interface ViewerHooks {
+    onTextLayer?: (el: HTMLElement) => void;   // текстовый слой страницы отрисован
+    onReset?: () => void;                       // перекладка (зум) — страницы пересоздаются
+}
+
 export class PdfViewer {
 
     readonly #container: HTMLElement;
+    readonly #hooks: ViewerHooks;
     #doc: pdfjsLib.PDFDocumentProxy | null = null;
     #fitScale = 1;
     #zoom = 1;
     #observer: IntersectionObserver | null = null;
     #views: PageView[] = [];
 
-    constructor(container: HTMLElement) {
+    constructor(container: HTMLElement, hooks: ViewerHooks = {}) {
         this.#container = container;
+        this.#hooks = hooks;
     }
 
     open = async (source: PdfSourceDescriptor): Promise<number> => {
@@ -46,12 +53,13 @@ export class PdfViewer {
         this.#observer?.disconnect();
         this.#container.textContent = "";
         this.#views = [];
+        this.#hooks.onReset && this.#hooks.onReset();
 
         const scale = this.#fitScale * this.#zoom;
         const observer = new IntersectionObserver(this.#onIntersect, {rootMargin: "200% 0px"});
         for (let i = 1; i <= doc.numPages; i++) {
             const page = await doc.getPage(i);
-            const view = new PageView(page, scale);
+            const view = new PageView(page, scale, this.#hooks.onTextLayer);
             this.#views.push(view);
             this.#container.appendChild(view.el);
             observer.observe(view.el);

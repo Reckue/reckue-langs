@@ -23,14 +23,21 @@ export class HighlightStore {
     private hover: any = null;
     private readonly index = new Map<Text, Entry[]>();
     private readonly background: boolean;
+    private readonly ns: string;
 
     /**
      * background=false (страница): уровни красятся цветом текста + подчёркиванием.
      * background=true (reader/PDF): текстовый слой PDF.js прозрачный поверх canvas,
      * цвет текста не виден — поэтому уровни рисуются фоновой заливкой, как hover.
+     *
+     * namespace — префикс имён CSS Highlight'ов. По умолчанию "reckue-" (движок
+     * страницы). Reader держит ВТОРОЙ store под "reckue-stitch-" для слов,
+     * сшитых через несколько нод (перенос/буквица), чтобы не конфликтовать с
+     * по-нодовой подсветкой в CSS.highlights.
      */
-    constructor(opts: { background?: boolean } = {}) {
+    constructor(opts: { background?: boolean, namespace?: string } = {}) {
         this.background = !!opts.background;
+        this.ns = opts.namespace ?? "reckue-";
     }
 
     static supported = (): boolean => {
@@ -47,10 +54,10 @@ export class HighlightStore {
             const name = (Levels as any)[key].name;
             const highlight = new Ctor();
             this.levels.set(name, highlight);
-            highlights.set(`reckue-${name}`, highlight);
+            highlights.set(`${this.ns}${name}`, highlight);
         });
         this.hover = new Ctor();
-        highlights.set("reckue-hover", this.hover);
+        highlights.set(`${this.ns}hover`, this.hover);
     };
 
     ensureStyles = (root: StyleRoot) => {
@@ -99,6 +106,22 @@ export class HighlightStore {
         this.index.delete(node);
     };
 
+    /**
+     * Loose-режим (используется reader-сшивателем): добавить произвольный Range на
+     * уровень, без индекса Node→Range. Range может пересекать несколько text-нод —
+     * Highlight API красит обе физические части (напр. оба фрагмента переноса).
+     */
+    addRange = (range: Range, level: string) => {
+        const highlight = this.levels.get(level);
+        highlight && highlight.add(range);
+    };
+
+    /** Стереть все loose-Range'и (перед пересборкой сшивки). */
+    clearAll = () => {
+        this.levels.forEach((highlight) => highlight.clear());
+        this.index.clear();
+    };
+
     setHover = (range: Range) => {
         if (this.hover) {
             this.hover.clear();
@@ -118,10 +141,10 @@ export class HighlightStore {
             const level = (Levels as any)[key];
             // 40 = ~25% альфа в 8-значном hex; заливка читаема поверх растра PDF.
             return this.background
-                ? `::highlight(reckue-${level.name}) { background-color: ${level.hex}40; }`
-                : `::highlight(reckue-${level.name}) { color: ${level.hex}; }`;
+                ? `::highlight(${this.ns}${level.name}) { background-color: ${level.hex}40; }`
+                : `::highlight(${this.ns}${level.name}) { color: ${level.hex}; }`;
         });
-        rules.push("::highlight(reckue-hover) { background-color: rgba(30, 129, 198, .25); }");
+        rules.push(`::highlight(${this.ns}hover) { background-color: rgba(30, 129, 198, .25); }`);
         this.sheet = new CSSStyleSheet();
         this.sheet.replaceSync(rules.join("\n"));
     };

@@ -1,5 +1,9 @@
 import {PageManager} from "../page/PageManager";
+import {Context} from "../core/Context";
+import {WordMatcher} from "../page/word/WordMatcher";
+import {HighlightStore} from "../page/highlight/HighlightStore";
 import {PdfViewer} from "./pdf/PdfViewer";
+import {WordStitcher} from "./pdf/WordStitcher";
 import {PdfSource, PdfSourceDescriptor} from "./source/PdfSource";
 import {Toolbar} from "./ui/Toolbar";
 
@@ -22,15 +26,24 @@ export class ReaderService {
             return;
         }
 
-        this.#viewer = new PdfViewer(pages);
+        // Сшивка слов, разорванных текстовым слоем PDF.js на несколько спанов
+        // (перенос по слогам, буквица). Свой store под отдельным namespace, чтобы
+        // не конфликтовать с подсветкой движка. Строим до движка — его
+        // ClickController берёт у сшивателя resolveWord (клик по фрагменту → целое слово).
+        const stitcher = this.#buildStitcher();
+
+        // Движок стартует до загрузки PDF: страницы добавятся лениво, а
+        // MutationPipeline (observe document.body) подхватит их текст по мере появления.
+        this.#manager.run({background: true, resolveWord: stitcher ? stitcher.wordAt : undefined});
+
+        this.#viewer = new PdfViewer(pages, stitcher ? {
+            onTextLayer: stitcher.add,
+            onReset: stitcher.reset,
+        } : {});
         this.#toolbar = new Toolbar(toolbar, {
             onOpenFile: (file) => this.#openFile(file),
             onZoom: (factor) => this.#viewer.zoomBy(factor),
         });
-
-        // Движок стартует до загрузки PDF: страницы добавятся лениво, а
-        // MutationPipeline (observe document.body) подхватит их текст по мере появления.
-        this.#manager.run({background: true});
 
         this.#enableDrop();
 
@@ -40,6 +53,49 @@ export class ReaderService {
         } else {
             this.#toolbar.setTitle("Откройте PDF");
         }
+    };
+
+    #buildStitcher = (): WordStitcher | null => {
+        const service = Context.getWordbookService();
+        if (!service || !HighlightStore.supported()) {
+            return null;
+        }
+        const matcher = new WordMatcher(service.getWordbookCache());
+        const store = new HighlightStore({background: true, namespace: "reckue-stitch-"});
+        store.init(document);
+        const stitcher = new WordStitcher(matcher, store);
+
+        // Кэш словаря — живая Map (мутируется на service.set), поэтому после
+        // сохранения слова в reader достаточно пересобрать сшивку. Сигнал —
+        // запись словаря в storage (ключи wordbook*). Откладываем в idle и
+        // коалесим: запись словаря идёт несколькими ключами (кусками) → одно
+        // изменение может прийти пачкой; держать перекраску на синхронном пути
+        // не нужно — иначе лагает попап смены уровня.
+        const refresh = this.#coalesce(stitcher.refresh);
+        chrome.storage.onChanged.addListener((changes, area) => {
+            if (area === "local" && Object.keys(changes).some((k) => k.startsWith("wordbook"))) {
+                refresh();
+            }
+        });
+
+        return stitcher;
+    };
+
+    // Схлопнуть серию вызовов в один запуск в простое (rIC, запасной rAF).
+    #coalesce = (fn: () => void): (() => void) => {
+        let scheduled = false;
+        const run = () => {
+            scheduled = false;
+            fn();
+        };
+        return () => {
+            if (scheduled) {
+                return;
+            }
+            scheduled = true;
+            const ric = (window as any).requestIdleCallback;
+            ric ? ric(run, {timeout: 300}) : requestAnimationFrame(run);
+        };
     };
 
     #openFile = async (file: File) => {

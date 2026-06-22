@@ -27,17 +27,25 @@ export class ClickController {
     private readonly popup: Popup;
     private readonly hint: Hint;
     private readonly refresh: () => void;
+    private readonly resolveWord?: (node: Text, offset: number) => string | undefined;
     private readonly inflector = new Inflector();
     private fast = false;
 
+    /**
+     * resolveWord (опционально, reader): по (node, offset) возвращает полное слово,
+     * если клик попал во фрагмент сшитого слова (перенос/буквица в PDF). Тогда
+     * сохраняется/меняет уровень целое слово, а не его фрагмент.
+     */
     constructor(hit: HitTester, matcher: WordMatcher,
-                service: WordbookService, popup: Popup, hint: Hint, refresh: () => void) {
+                service: WordbookService, popup: Popup, hint: Hint, refresh: () => void,
+                resolveWord?: (node: Text, offset: number) => string | undefined) {
         this.hit = hit;
         this.matcher = matcher;
         this.service = service;
         this.popup = popup;
         this.hint = hint;
         this.refresh = refresh;
+        this.resolveWord = resolveWord;
     }
 
     attach = () => {
@@ -68,8 +76,10 @@ export class ClickController {
             event.stopPropagation();
 
             // Сохраняем лемму, а не словоформу: клик по "views"/"fixed" кладёт в
-            // словарь "view"/"fix", и подсвечивается всё семейство форм.
-            const word = this.inflector.lemma(hit.word.toLowerCase());
+            // словарь "view"/"fix", и подсвечивается всё семейство форм. В reader
+            // resolveWord сперва достраивает фрагмент сшитого слова до целого.
+            const surface = (this.resolveWord && this.resolveWord(hit.node, hit.start)) ?? hit.word;
+            const word = this.inflector.lemma(surface.toLowerCase());
             if (!this.matcher.has(word)) {
                 this.save(word, DEFAULT_LEVEL);
             }

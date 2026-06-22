@@ -29,7 +29,7 @@ export class PageManager {
      * Скан/observe идут по document.body в обоих случаях: страницы PDF
      * добавляются в body лениво, MutationPipeline подхватывает их по мере появления.
      */
-    run = (opts: { background?: boolean } = {}) => {
+    run = (opts: { background?: boolean, resolveWord?: (node: Text, offset: number) => string | undefined } = {}) => {
         const service: WordbookService = Context.getWordbookService();
         if (!service) {
             return;
@@ -56,11 +56,35 @@ export class PageManager {
         hover.attach();
         // refresh: после смены уровня пере-сканируем всю страницу, иначе остальные
         // вхождения того же слова и его формы не перекрасятся (store.apply трогал
-        // только кликнутую ноду). Скан идемпотентен; клики редки.
-        const refresh = () => pipeline.scan(document.body);
-        new ClickController(hit, matcher, service, popup, hint, refresh).attach();
+        // только кликнутую ноду). Скан идемпотентен; клики редки. Откладываем в
+        // idle и коалесим: на большом документе (reader с десятками отрисованных
+        // PDF-страниц) полный скан тяжёлый — не держим его на синхронном пути
+        // клика, иначе лагают попап и слайдер уровня.
+        const refresh = this.coalesce(() => pipeline.scan(document.body));
+        new ClickController(hit, matcher, service, popup, hint, refresh, opts.resolveWord).attach();
 
         this.lifecycle(hover, pipeline);
+    };
+
+    /**
+     * Обернуть тяжёлую операцию в коалесинг: несколько вызовов подряд схлопывает
+     * в один запуск в простое (requestIdleCallback, с запасным rAF). Снимает
+     * работу с синхронного пути клика/смены уровня.
+     */
+    private coalesce = (fn: () => void): (() => void) => {
+        let scheduled = false;
+        const run = () => {
+            scheduled = false;
+            fn();
+        };
+        return () => {
+            if (scheduled) {
+                return;
+            }
+            scheduled = true;
+            const ric = (window as any).requestIdleCallback;
+            ric ? ric(run, {timeout: 300}) : requestAnimationFrame(run);
+        };
     };
 
     /**
