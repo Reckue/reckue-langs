@@ -1,9 +1,12 @@
 import {HitTester} from "./HitTester";
 import {WordMatcher} from "../word/WordMatcher";
 import {Inflector} from "../word/Inflector";
+import {LemmaDictionary} from "../word/LemmaDictionary";
 import {Popup} from "./Popup";
 import {Hint} from "./Hint";
 import {WordbookService} from "../../core/words/WordbookService";
+import {KnowledgeResolver} from "../../core/words/KnowledgeResolver";
+import {RelationProviders} from "../../core/words/KnowledgeUnit";
 
 const DEFAULT_LEVEL = "beginner";
 
@@ -29,6 +32,14 @@ export class ClickController {
     private readonly refresh: () => void;
     private readonly resolveWord?: (node: Text, offset: number) => string | undefined;
     private readonly inflector = new Inflector();
+    // Связи единицы знания: лемму формы знаем уже сейчас (словарь лемм), а
+    // семья/конструкции включатся, когда подъедет word_derivations с бэкенда.
+    private readonly providers: RelationProviders = {
+        lemmaOf: (word) => LemmaDictionary.get(word),
+        familyOf: () => [],
+        constructionsOf: () => []
+    };
+    private readonly resolver = new KnowledgeResolver(this.providers);
     private fast = false;
 
     /**
@@ -78,15 +89,17 @@ export class ClickController {
             // Сохраняем лемму, а не словоформу: клик по "views"/"fixed" кладёт в
             // словарь "view"/"fix", и подсвечивается всё семейство форм. В reader
             // resolveWord сперва достраивает фрагмент сшитого слова до целого.
-            const surface = (this.resolveWord && this.resolveWord(hit.node, hit.start)) ?? hit.word;
-            const word = this.inflector.lemma(surface.toLowerCase());
+            const surface = ((this.resolveWord && this.resolveWord(hit.node, hit.start)) ?? hit.word).toLowerCase();
+            const word = this.inflector.lemma(surface);
             if (!this.matcher.has(word)) {
                 this.save(word, DEFAULT_LEVEL);
             }
             this.hint.hide();
-            const level = this.service.getWordbookCache().get(word) ?? DEFAULT_LEVEL;
+            // Единица знания: голова-лемма + (позже) семья/конструкции. Строим после
+            // save, чтобы cache уже содержал уровень кликнутого слова.
+            const unit = this.resolver.unitFor(word, this.service.getWordbookCache());
             const anchor = hit.range.getBoundingClientRect();
-            this.popup.show(word, level, anchor, (next) => this.save(word, next));
+            this.popup.show(unit, surface, anchor, (next) => this.save(word, next));
         });
     };
 
