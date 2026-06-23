@@ -3,3 +3,7 @@
 # dependencies
 /node_modules
 /dist
+
+# Claude Code (локальные инструкции/сессии — не версионируем)
+CLAUDE.md
+.claude/
