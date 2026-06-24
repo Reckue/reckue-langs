@@ -2,6 +2,7 @@ import {HitTester} from "./HitTester";
 import {WordMatcher} from "../word/WordMatcher";
 import {Inflector} from "../word/Inflector";
 import {LemmaDictionary} from "../word/LemmaDictionary";
+import {FamilyDictionary} from "../word/FamilyDictionary";
 import {Popup} from "./Popup";
 import {Hint} from "./Hint";
 import {WordbookService} from "../../core/words/WordbookService";
@@ -36,7 +37,7 @@ export class ClickController {
     // семья/конструкции включатся, когда подъедет word_derivations с бэкенда.
     private readonly providers: RelationProviders = {
         lemmaOf: (word) => LemmaDictionary.get(word),
-        familyOf: () => [],
+        familyOf: (lemma) => FamilyDictionary.get(lemma),
         constructionsOf: () => []
     };
     private readonly resolver = new KnowledgeResolver(this.providers);

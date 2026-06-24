@@ -94,3 +94,62 @@ async function syncLemmaDict() {
 
 chrome.runtime.onInstalled.addListener(syncLemmaDict);
 chrome.runtime.onStartup.addListener(syncLemmaDict);
+
+// --- Словарь семей (лемма→словообразовательные родственники) ------------------
+// Качаем бандл из ручки Langs (строится из word_derivations/OEWN) и кэшируем;
+// контент-скрипт берёт его для секции «семья» в попапе (см. FamilyDictionary.ts).
+// Формат строк: "лемма<TAB>родственник1,родственник2" (уже lowercase, без BOM).
+const FAMILY_KEY = "familyDict:" + LEMMA_LANG;
+const FAMILY_ETAG_KEY = "familyEtag:" + LEMMA_LANG;
+const FAMILY_URL = "https://api.reckue.com/api/1/dictionaries/" + LEMMA_LANG + "/families";
+
+function parseFamilyDict(text) {
+    const map = Object.create(null);
+    const lines = text.split("\n");
+    for (let i = 0; i < lines.length; i++) {
+        let line = lines[i];
+        if (line.charCodeAt(line.length - 1) === 13) {
+            line = line.slice(0, -1);
+        }
+        const tab = line.indexOf("\t");
+        if (tab < 1) {
+            continue;
+        }
+        const lemma = line.slice(0, tab);
+        const rest = line.slice(tab + 1);
+        if (!rest) {
+            continue;
+        }
+        map[lemma] = rest.split(",");
+    }
+    return map;
+}
+
+async function syncFamilyDict() {
+    try {
+        const stored = await chrome.storage.local.get([FAMILY_ETAG_KEY, FAMILY_KEY]);
+        const headers = {};
+        if (stored[FAMILY_ETAG_KEY] && stored[FAMILY_KEY]) {
+            headers["If-None-Match"] = stored[FAMILY_ETAG_KEY];
+        }
+        const res = await fetch(FAMILY_URL, {headers});
+        if (res.status === 304) {
+            return;
+        }
+        if (!res.ok) {
+            console.warn("Reckue: словарь семей — HTTP", res.status);
+            return;
+        }
+        const map = parseFamilyDict(await res.text());
+        await chrome.storage.local.set({
+            [FAMILY_KEY]: map,
+            [FAMILY_ETAG_KEY]: res.headers.get("ETag") || ""
+        });
+        console.log("Reckue: словарь семей обновлён,", Object.keys(map).length, "лемм");
+    } catch (e) {
+        console.warn("Reckue: не удалось загрузить словарь семей", e);
+    }
+}
+
+chrome.runtime.onInstalled.addListener(syncFamilyDict);
+chrome.runtime.onStartup.addListener(syncFamilyDict);
