@@ -4,6 +4,7 @@ import {WordMatcher} from "../page/word/WordMatcher";
 import {HighlightStore} from "../page/highlight/HighlightStore";
 import {PdfViewer} from "./pdf/PdfViewer";
 import {WordStitcher} from "./pdf/WordStitcher";
+import {Bookmark} from "./bookmark/Bookmark";
 import {PdfSource, PdfSourceDescriptor} from "./source/PdfSource";
 import {Toolbar} from "./ui/Toolbar";
 
@@ -16,8 +17,10 @@ import {Toolbar} from "./ui/Toolbar";
 export class ReaderService {
 
     readonly #manager = new PageManager();
+    readonly #bookmark = new Bookmark((page) => this.#viewer.scrollToPage(page));
     #viewer!: PdfViewer;
     #toolbar!: Toolbar;
+    #current = 1;
 
     run = () => {
         const pages = document.getElementById("pages");
@@ -36,16 +39,31 @@ export class ReaderService {
         // MutationPipeline (observe document.body) подхватит их текст по мере появления.
         this.#manager.run({background: true, resolveWord: stitcher ? stitcher.wordAt : undefined});
 
-        this.#viewer = new PdfViewer(pages, stitcher ? {
-            onTextLayer: stitcher.add,
-            onReset: stitcher.reset,
-        } : {});
+        // Текстовый слой страницы готов → сшивка слов + восстановление маркера закладки.
+        const onTextLayer = (el: HTMLElement) => {
+            stitcher && stitcher.add(el);
+            this.#bookmark.onTextLayer(el);
+        };
+        this.#viewer = new PdfViewer(pages, {
+            onTextLayer,
+            onReset: stitcher ? stitcher.reset : undefined,
+            onPageChange: (page) => {
+                this.#current = page;
+                this.#toolbar.setCurrent(page);
+            },
+        });
         this.#toolbar = new Toolbar(toolbar, {
             onOpenFile: (file) => this.#openFile(file),
             onZoom: (factor) => this.#viewer.zoomBy(factor),
+            onPrev: () => this.#viewer.scrollToPage(this.#current - 1),
+            onNext: () => this.#viewer.scrollToPage(this.#current + 1),
+            onGoto: (page) => this.#viewer.scrollToPage(page),
+            onBookmark: () => this.#bookmark.jump(),
         });
 
         this.#enableDrop();
+        this.#enableBookmarkGesture();
+        this.#enableKeys();
 
         const source = PdfSource.fromQuery();
         if (source) {
@@ -107,6 +125,12 @@ export class ReaderService {
         try {
             const count = await this.#viewer.open(source);
             this.#toolbar.setPages(count);
+            // Закладка-прогресс: при наличии сразу прыгаем к сохранённой позиции.
+            const page = await this.#bookmark.load(source.id, name);
+            this.#toolbar.setHasBookmark(this.#bookmark.has());
+            if (page) {
+                this.#viewer.scrollToPage(page);
+            }
         } catch (e) {
             this.#toolbar.setTitle("Не удалось открыть PDF");
             window.console.warn("Reckue reader:", e);
@@ -132,6 +156,59 @@ export class ReaderService {
             const file = e.dataTransfer && e.dataTransfer.files[0];
             if (file && file.type === "application/pdf") {
                 this.#openFile(file);
+            }
+        });
+    };
+
+    // Alt+Click ставит/переносит закладку-прогресс. Перехватываем на фазе capture
+    // и гасим распространение — ClickController (bubble) этот клик не увидит, поэтому
+    // жест не конфликтует с сохранением слова (Ctrl+Click / обычный клик в fastMode).
+    #enableBookmarkGesture = () => {
+        document.addEventListener("click", (e: MouseEvent) => {
+            if (!e.altKey) {
+                return;
+            }
+            if (this.#bookmark.place(e.clientX, e.clientY)) {
+                e.preventDefault();
+                e.stopImmediatePropagation();
+                this.#toolbar.setHasBookmark(true);
+            }
+        }, true);
+    };
+
+    #enableKeys = () => {
+        window.addEventListener("keydown", (e: KeyboardEvent) => {
+            const target = e.target as HTMLElement | null;
+            if (target && (target.tagName === "INPUT" || target.tagName === "TEXTAREA")) {
+                return;
+            }
+            const pages = document.getElementById("pages");
+            if (!pages) {
+                return;
+            }
+            switch (e.key) {
+                case "PageDown":
+                    pages.scrollBy({top: pages.clientHeight * 0.9});
+                    e.preventDefault();
+                    break;
+                case "PageUp":
+                    pages.scrollBy({top: -pages.clientHeight * 0.9});
+                    e.preventDefault();
+                    break;
+                case "Home":
+                    pages.scrollTo({top: 0});
+                    e.preventDefault();
+                    break;
+                case "End":
+                    pages.scrollTo({top: pages.scrollHeight});
+                    e.preventDefault();
+                    break;
+                case "b":
+                case "B":
+                case "и":
+                case "И":
+                    this.#bookmark.jump();
+                    break;
             }
         });
     };

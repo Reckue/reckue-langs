@@ -33,11 +33,46 @@
             color: #fff;
             font-size: 14px;
         }
-        #toolbar button:hover { background: rgba(255, 255, 255, .12); }
-        #toolbar .title { font-size: 13px; max-width: 50vw; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-        #toolbar .pages { font-size: 12px; opacity: .7; margin-right: auto; }
+        #toolbar button:hover:not(:disabled) { background: rgba(255, 255, 255, .12); }
+        #toolbar button:disabled { opacity: .4; cursor: default; }
+        #toolbar .title { font-size: 13px; max-width: 32vw; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-right: auto; }
+
+        #toolbar .nav { display: flex; align-items: center; gap: 4px; }
+        #toolbar .nav .page-input {
+            width: 44px;
+            padding: 4px 6px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, .25);
+            border-radius: 6px;
+            background: transparent;
+            color: #fff;
+            font-size: 13px;
+        }
+        #toolbar .nav .page-input::-webkit-inner-spin-button { display: none; }
+        #toolbar .nav .total { font-size: 12px; opacity: .7; min-width: 32px; }
+        #toolbar .bookmark { color: #ff7a4d; border-color: rgba(255, 122, 77, .5); }
 
         #pages { flex: 1; overflow: auto; padding: 16px 0; }
+
+        /* Каретка закладки-прогресса: тонкая вертикальная метка с флажком в позиции,
+           докуда дочитал (ставится Alt+кликом). pointer-events:none — не мешает кликам по тексту. */
+        .reckue-bookmark {
+            position: absolute;
+            width: 2px;
+            background: #ff5a3c;
+            pointer-events: none;
+            z-index: 3;
+            box-shadow: 0 0 0 1px rgba(255, 255, 255, .6);
+        }
+        .reckue-bookmark::before {
+            content: "";
+            position: absolute;
+            top: -3px;
+            left: -1px;
+            border: 5px solid transparent;
+            border-top-color: #ff5a3c;
+            border-left-color: #ff5a3c;
+        }
 
         .page {
             --user-unit: 1;
@@ -86,7 +121,7 @@
             transform: rotate(var(--rotate)) scaleX(var(--scale-x)) scale(var(--min-font-size-inv));
         }
         .textLayer .markedContent { display: contents; }
-        .textLayer ::selection { background: transparent; }
+        .textLayer ::selection { background: rgba(0, 120, 215, .35); }
     </style>
 </head>
 <body>
