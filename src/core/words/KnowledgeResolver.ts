@@ -13,7 +13,7 @@ export class KnowledgeResolver {
     constructor(private readonly providers: RelationProviders) {
     }
 
-    /** Все единицы знания из словаря (для попапа-словаря). */
+    /** Все единицы знания из словаря (для вью-словаря) — только сохранённые члены. */
     units(cache: Map<string, string>): KnowledgeUnit[] {
         const claimed = new Set<string>();
         const units: KnowledgeUnit[] = [];
@@ -22,24 +22,28 @@ export class KnowledgeResolver {
             if (claimed.has(word)) {
                 return;
             }
-            const unit = this.build(word, cache, claimed);
+            const unit = this.build(word, cache, claimed, false);
             units.push(unit);
         });
 
         return units;
     }
 
-    /** Единица знания для конкретного слова (для клик-попапа над словом). */
+    /**
+     * Единица знания для конкретного слова (клик-попап). Семья показывается
+     * ПОЛНОСТЬЮ: и сохранённые члены (со своим уровнем), и ещё не выученные
+     * (level=undefined) — чтобы пользователь видел всё словообразовательное гнездо.
+     */
     unitFor(word: string, cache: Map<string, string>): KnowledgeUnit {
         const lemma = this.providers.lemmaOf(word) ?? word;
-        return this.build(lemma, cache, new Set<string>());
+        return this.build(lemma, cache, new Set<string>(), true);
     }
 
-    /** Строит юнит с головой-леммой, подвешивая сохранённые семью и конструкции. */
-    private build(lemma: string, cache: Map<string, string>, claimed: Set<string>): KnowledgeUnit {
+    /** Строит юнит с головой-леммой, подвешивая членов семьи и конструкции. */
+    private build(lemma: string, cache: Map<string, string>, claimed: Set<string>, includeUnsaved: boolean): KnowledgeUnit {
         claimed.add(lemma);
-        const members = this.savedMembers(this.providers.familyOf(lemma), lemma, cache, claimed, "derivation");
-        const constructions = this.savedMembers(this.providers.constructionsOf(lemma), lemma, cache, claimed, "construction");
+        const members = this.members(this.providers.familyOf(lemma), lemma, cache, claimed, "derivation", includeUnsaved);
+        const constructions = this.members(this.providers.constructionsOf(lemma), lemma, cache, claimed, "construction", includeUnsaved);
         return {
             lemma,
             level: cache.get(lemma),
@@ -48,23 +52,36 @@ export class KnowledgeResolver {
         };
     }
 
-    /** Из списка кандидатов оставляет только сохранённые (и ещё не занятые) слова. */
-    private savedMembers(
+    /**
+     * Кандидаты → члены юнита. includeUnsaved=false оставляет только сохранённые
+     * (для вью-словаря); true берёт всех, сохранённые — первыми (для попапа).
+     */
+    private members(
         candidates: string[],
         head: string,
         cache: Map<string, string>,
         claimed: Set<string>,
-        relation: UnitMember["relation"]
+        relation: UnitMember["relation"],
+        includeUnsaved: boolean
     ): UnitMember[] {
-        const members: UnitMember[] = [];
+        const saved: UnitMember[] = [];
+        const unsaved: UnitMember[] = [];
         for (const word of candidates) {
-            const level = cache.get(word);
-            if (word === head || level === undefined || claimed.has(word)) {
+            if (word === head || claimed.has(word)) {
                 continue;
             }
-            claimed.add(word);
-            members.push({word, level, relation});
+            const level = cache.get(word);
+            if (level === undefined) {
+                if (!includeUnsaved) {
+                    continue;
+                }
+                claimed.add(word);
+                unsaved.push({word, relation});
+            } else {
+                claimed.add(word);
+                saved.push({word, level, relation});
+            }
         }
-        return members;
+        return saved.concat(unsaved);
     }
 }

@@ -3,7 +3,7 @@ export type Relation = "lemma" | "derivation" | "construction";
 
 export interface UnitMember {
     word: string;
-    level: string;          // имя уровня (см. core/enum/Levels)
+    level?: string;         // имя уровня (core/enum/Levels); undefined = ещё не сохранено
     relation: Relation;
 }
 

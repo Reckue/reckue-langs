@@ -82,18 +82,28 @@ export class Popup {
         }
     };
 
-    /** Заполняет контейнер чипами членов (цветная точка уровня + слово); вернёт, были ли члены. */
+    /**
+     * Заполняет контейнер чипами членов семьи. Сохранённые — заливка + цветная
+     * точка уровня; ещё не выученные (level=undefined) — полый кружок и
+     * приглушённый контурный чип. Вернёт, были ли члены.
+     */
     private renderChips = (container: HTMLElement, members: UnitMember[]): boolean => {
         container.textContent = "";
         members.forEach((member) => {
+            const lvl = member.level;
             const chip = document.createElement("span");
             Object.assign(chip.style, {
                 display: "inline-flex", alignItems: "center", gap: "5px",
-                background: "#f4f4f4", borderRadius: "7px", padding: "3px 8px", fontSize: "12px"
+                borderRadius: "7px", padding: "3px 8px", fontSize: "12px",
+                background: lvl ? "#f4f4f4" : "transparent",
+                border: lvl ? "1px solid transparent" : "1px solid #e6e6e6",
+                color: lvl ? "#1a1a1a" : "#9a9a9a"
             });
             const dot = document.createElement("span");
             Object.assign(dot.style, {
-                width: "7px", height: "7px", borderRadius: "50%", background: levelHex(member.level)
+                width: "7px", height: "7px", borderRadius: "50%", boxSizing: "border-box",
+                background: lvl ? levelHex(lvl) : "transparent",
+                border: lvl ? "none" : "1px solid #c4c4c4"
             });
             chip.append(dot, document.createTextNode(member.word));
             container.appendChild(chip);
