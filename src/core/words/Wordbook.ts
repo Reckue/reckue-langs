@@ -26,8 +26,12 @@ export class Wordbook {
     // сокращении словаря удалить «хвостовые» ключи — иначе осиротевший последний
     // ключ при следующей загрузке воскресит удалённые слова.
     #stored = 0;
+    // Префикс ключей куска в storage (wordbook0… для дефолта, wordbook_<id>_0…
+    // для именованного словаря). Задаётся при создании под активный словарь.
+    #prefix: string;
 
-    constructor() {
+    constructor(prefix = "wordbook") {
+        this.#prefix = prefix;
         this.#cache = new Map<string, string>();
         this.#pages = new Pages(0, 0);
     }
@@ -129,7 +133,7 @@ export class Wordbook {
     }
 
     getName = (number: number) => {
-        return "wordbook" + number;
+        return this.#prefix + number;
     }
 
     #toList = () => {

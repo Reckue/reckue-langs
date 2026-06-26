@@ -1,4 +1,5 @@
 import {WordbookService} from "./words/WordbookService";
+import {Wordbooks} from "./words/Wordbooks";
 import {Context} from "./Context";
 
 interface LogicService {
@@ -8,18 +9,22 @@ interface LogicService {
 export class App {
 
     #context: Context;
-    #wordbookService: WordbookService;
+    #wordbookService!: WordbookService;
     #logicService: LogicService;
 
     constructor(logicService: LogicService) {
         this.#context = new Context();
         this.#logicService = logicService;
-        this.#wordbookService = new WordbookService();
     }
 
     start = () => {
-        this.#wordbookService.executeAfter(this.#runService);
-        this.#wordbookService.loadWordbooks();
+        // Грузим активный словарь: на странице/в reader подсвечиваются и
+        // сохраняются слова именно того словаря, что выбран в попапе.
+        Wordbooks.getActiveId().then((id) => {
+            this.#wordbookService = new WordbookService(id);
+            this.#wordbookService.executeAfter(this.#runService);
+            this.#wordbookService.loadWordbooks();
+        });
     }
 
     #runService = () => {

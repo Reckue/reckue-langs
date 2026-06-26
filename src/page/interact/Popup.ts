@@ -1,43 +1,46 @@
 import {levelHex} from "../../core/enum/Levels";
 import {KnowledgeUnit, UnitMember} from "../../core/words/KnowledgeUnit";
 import {markUi} from "../ui/Ui";
-import {LevelSlider} from "./LevelSlider";
+import {LevelPips} from "./LevelPips";
 
 const MARGIN = 8;
 const GAP = 10;
 const ARROW = 8;
 
 /**
- * Попап единицы знания: голова — инфинитив (лемма), под ней тихая строка
- * кликнутой формы (если она ≠ лемме), слайдер уровня и раскрывающиеся секции
- * семьи/конструкций. Секции рендерятся только при наличии сохранённых членов —
- * пока нет word_derivations, они пусты и скрыты, и попап выглядит как карточка
- * слова с уровнем. Данные приходят из [[KnowledgeResolver]] (см. ClickController).
+ * Попап единицы знания. Голова — инфинитив (лемма) с собственным уровнем, под ней
+ * строка кликнутой формы (если она ≠ лемме). Ниже — члены словообразовательной
+ * семьи, у КАЖДОГО свой кликабельный контрол уровня ([[LevelPips]]): клик
+ * сохраняет уровень этого слова (см. onLevel). Несохранённые члены показаны
+ * приглушённо с пустыми пипсами — их тоже можно «прокликать», добавив в словарь.
+ * Данные — из [[KnowledgeResolver]] (см. ClickController).
  */
 export class Popup {
 
     private el: HTMLElement | null = null;
     private head: HTMLElement | null = null;
     private form: HTMLElement | null = null;
+    private headPips: LevelPips | null = null;
     private sections: HTMLElement | null = null;
-    private family: HTMLElement | null = null;
-    private familyChips: HTMLElement | null = null;
-    private constructions: HTMLElement | null = null;
-    private constructionChips: HTMLElement | null = null;
+    private familyLabel: HTMLElement | null = null;
+    private members: HTMLElement | null = null;
     private arrow: HTMLElement | null = null;
-    private slider: LevelSlider | null = null;
-    private onChange: ((level: string) => void) | null = null;
+
+    private lemma = "";
+    private onLevel: ((word: string, level: string) => void) | null = null;
 
     contains = (node: Node | null): boolean => {
         return !!(this.el && node && this.el.contains(node));
     };
 
     /**
-     * unit — единица знания (голова-лемма + сохранённые члены/конструкции).
-     * surface — кликнутая словоформа в нижнем регистре (для строки «форма»).
+     * unit — единица знания (голова-лемма + члены семьи: сохранённые и ещё нет).
+     * surface — кликнутая словоформа (нижний регистр) для строки «форма».
+     * onLevel(word, level) — сохранить уровень конкретного слова (головы или члена).
      */
-    show = (unit: KnowledgeUnit, surface: string, anchor: DOMRect, onChange: (level: string) => void) => {
-        this.onChange = onChange;
+    show = (unit: KnowledgeUnit, surface: string, anchor: DOMRect, onLevel: (word: string, level: string) => void) => {
+        this.onLevel = onLevel;
+        this.lemma = unit.lemma;
         if (!this.el) {
             this.build();
         }
@@ -46,13 +49,9 @@ export class Popup {
 
         (this.head as HTMLElement).textContent = unit.lemma;
         this.setForm(surface, unit.lemma);
-        this.slider?.set(level);
+        this.headPips?.set(unit.level);
 
-        const hasFamily = this.renderChips(this.familyChips as HTMLElement, unit.members);
-        const hasConstr = this.renderChips(this.constructionChips as HTMLElement, unit.constructions);
-        (this.family as HTMLElement).style.display = hasFamily ? "block" : "none";
-        (this.constructions as HTMLElement).style.display = hasConstr ? "block" : "none";
-        (this.sections as HTMLElement).style.display = hasFamily || hasConstr ? "block" : "none";
+        this.renderMembers(unit.members);
 
         el.style.borderTop = `4px solid ${levelHex(level)}`;
         el.style.visibility = "hidden";
@@ -67,7 +66,7 @@ export class Popup {
         }
     };
 
-    /** Строка «ты выделил <форма> · форма» — только когда кликнутая форма ≠ лемме. */
+    /** Строка «форма: <слово>» — только когда кликнутая форма ≠ лемме. */
     private setForm = (surface: string, lemma: string) => {
         const form = this.form as HTMLElement;
         if (surface && surface !== lemma) {
@@ -75,40 +74,45 @@ export class Popup {
             const word = document.createElement("span");
             word.textContent = surface;
             word.style.color = "#666";
-            form.append("ты выделил ", word, " · форма");
+            form.append("форма: ", word);
             form.style.display = "block";
         } else {
             form.style.display = "none";
         }
     };
 
-    /**
-     * Заполняет контейнер чипами членов семьи. Сохранённые — заливка + цветная
-     * точка уровня; ещё не выученные (level=undefined) — полый кружок и
-     * приглушённый контурный чип. Вернёт, были ли члены.
-     */
-    private renderChips = (container: HTMLElement, members: UnitMember[]): boolean => {
-        container.textContent = "";
+    /** Строит строки членов семьи (каждая — слово + свои пипсы уровня). */
+    private renderMembers = (members: UnitMember[]) => {
+        const box = this.members as HTMLElement;
+        box.textContent = "";
         members.forEach((member) => {
-            const lvl = member.level;
-            const chip = document.createElement("span");
-            Object.assign(chip.style, {
-                display: "inline-flex", alignItems: "center", gap: "5px",
-                borderRadius: "7px", padding: "3px 8px", fontSize: "12px",
-                background: lvl ? "#f4f4f4" : "transparent",
-                border: lvl ? "1px solid transparent" : "1px solid #e6e6e6",
-                color: lvl ? "#1a1a1a" : "#9a9a9a"
-            });
-            const dot = document.createElement("span");
-            Object.assign(dot.style, {
-                width: "7px", height: "7px", borderRadius: "50%", boxSizing: "border-box",
-                background: lvl ? levelHex(lvl) : "transparent",
-                border: lvl ? "none" : "1px solid #c4c4c4"
-            });
-            chip.append(dot, document.createTextNode(member.word));
-            container.appendChild(chip);
+            box.appendChild(this.memberRow(member.word, member.level));
         });
-        return members.length > 0;
+        const has = members.length > 0;
+        (this.familyLabel as HTMLElement).style.display = has ? "block" : "none";
+        (this.sections as HTMLElement).style.display = has ? "block" : "none";
+    };
+
+    /** Одна строка: слово слева (приглушено, если не сохранено) + пипсы справа. */
+    private memberRow = (word: string, level: string | undefined): HTMLElement => {
+        const row = document.createElement("div");
+        Object.assign(row.style, {
+            display: "flex", alignItems: "center", justifyContent: "space-between",
+            gap: "10px", padding: "5px 0"
+        });
+
+        const label = document.createElement("span");
+        label.textContent = word;
+        Object.assign(label.style, {
+            fontWeight: "500", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
+            color: level ? "#1a1a1a" : "#9a9a9a"
+        });
+
+        const pips = new LevelPips((next) => this.onLevel && this.onLevel(word, next));
+        pips.set(level);
+
+        row.append(label, pips.el);
+        return row;
     };
 
     /** Центрируем по слову, кладём под него (или над, если снизу не влезает), и наводим стрелку. */
@@ -150,13 +154,13 @@ export class Popup {
             position: "fixed",
             display: "none",
             boxSizing: "border-box",
-            minWidth: "200px",
+            minWidth: "230px",
             maxWidth: "320px",
             background: "#ffffff",
             color: "#1a1a1a",
             border: "1px solid rgba(0,0,0,.08)",
             borderRadius: "12px",
-            padding: "14px 16px 16px",
+            padding: "14px 16px 14px",
             font: "13px system-ui, sans-serif",
             zIndex: "2147483647",
             boxShadow: "0 8px 28px rgba(0,0,0,.28)"
@@ -167,68 +171,54 @@ export class Popup {
 
         const head = document.createElement("div");
         Object.assign(head.style, {
-            fontWeight: "500", fontSize: "19px", textAlign: "center",
+            fontWeight: "500", fontSize: "18px",
             overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap"
         });
 
         const form = document.createElement("div");
         Object.assign(form.style, {
-            display: "none", fontSize: "11.5px", color: "#9a9a9a", textAlign: "center", marginTop: "2px"
+            display: "none", fontSize: "11.5px", color: "#9a9a9a", marginTop: "2px"
         });
 
-        const row = document.createElement("div");
-        Object.assign(row.style, {display: "flex", alignItems: "center", gap: "8px", marginTop: "12px"});
-
+        // Уровень самой леммы — строка справа от слова не нужна; кладём отдельной
+        // строкой «уровень … пипсы», чтобы голова читалась крупно.
+        const headRow = document.createElement("div");
+        Object.assign(headRow.style, {
+            display: "flex", alignItems: "center", justifyContent: "space-between",
+            gap: "10px", marginTop: "10px"
+        });
         const caption = document.createElement("span");
         caption.textContent = "уровень";
-        Object.assign(caption.style, {fontSize: "11px", color: "#888", whiteSpace: "nowrap"});
-
-        const slider = new LevelSlider((next) => {
-            el.style.borderTop = `4px solid ${levelHex(next)}`;
-            this.onChange && this.onChange(next);
+        Object.assign(caption.style, {fontSize: "11px", color: "#888"});
+        const headPips = new LevelPips((next) => {
+            (this.el as HTMLElement).style.borderTop = `4px solid ${levelHex(next)}`;
+            this.onLevel && this.onLevel(this.lemma, next);
         });
-        row.append(caption, slider.el);
+        headRow.append(caption, headPips.el);
 
         const sections = document.createElement("div");
         Object.assign(sections.style, {
-            display: "none", marginTop: "14px", paddingTop: "12px", borderTop: "1px solid #efefef"
+            display: "none", marginTop: "12px", paddingTop: "10px", borderTop: "1px solid #efefef"
         });
-        const [family, familyChips] = this.buildSection("семья");
-        const [constructions, constructionChips] = this.buildSection("конструкции");
-        (constructions.style.marginTop = "12px");
-        sections.append(family, constructions);
+        const familyLabel = document.createElement("div");
+        familyLabel.textContent = "семья";
+        Object.assign(familyLabel.style, {
+            fontSize: "10.5px", letterSpacing: ".03em", textTransform: "uppercase",
+            color: "#aaa", marginBottom: "2px"
+        });
+        const members = document.createElement("div");
+        sections.append(familyLabel, members);
 
-        el.append(arrow, head, form, row, sections);
+        el.append(arrow, head, form, headRow, sections);
         document.body.appendChild(el);
 
         this.el = el;
         this.head = head;
         this.form = form;
+        this.headPips = headPips;
         this.sections = sections;
-        this.family = family;
-        this.familyChips = familyChips;
-        this.constructions = constructions;
-        this.constructionChips = constructionChips;
+        this.familyLabel = familyLabel;
+        this.members = members;
         this.arrow = arrow;
-        this.slider = slider;
-    };
-
-    /** Блок секции: заголовок-капс + контейнер чипов. Вернёт [блок, контейнер чипов]. */
-    private buildSection = (title: string): [HTMLElement, HTMLElement] => {
-        const block = document.createElement("div");
-        block.style.display = "none";
-
-        const label = document.createElement("div");
-        label.textContent = title;
-        Object.assign(label.style, {
-            fontSize: "10.5px", letterSpacing: ".03em", textTransform: "uppercase",
-            color: "#aaa", marginBottom: "7px"
-        });
-
-        const chips = document.createElement("div");
-        Object.assign(chips.style, {display: "flex", flexWrap: "wrap", gap: "6px"});
-
-        block.append(label, chips);
-        return [block, chips];
     };
 }

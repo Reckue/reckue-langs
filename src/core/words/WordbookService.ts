@@ -1,6 +1,7 @@
 import {Logger} from "../Logger";
 import {Store} from "../Store";
 import {Wordbook} from "./Wordbook";
+import {Wordbooks} from "./Wordbooks";
 
 interface Bundle {
     word: string;
@@ -12,6 +13,7 @@ export class WordbookService {
     #storage: Store;
     #logger: Logger;
     #wordbook: Wordbook;
+    #id: string;
 
     #executeAfter: () => void;
 
@@ -19,11 +21,15 @@ export class WordbookService {
         this.#executeAfter = after;
     }
 
-    constructor() {
+    // id — активный словарь (пустая строка = дефолтный, legacy-ключи).
+    constructor(id = "") {
+        this.#id = id;
         this.#storage = new Store();
         this.#logger = new Logger();
-        this.#wordbook = new Wordbook();
+        this.#wordbook = new Wordbook(Wordbooks.keyPrefix(id));
     }
+
+    getId = () => this.#id;
 
     set = (words: Bundle[]) => {
         this.#wordbook.set(words);

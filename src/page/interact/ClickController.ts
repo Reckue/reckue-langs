@@ -100,7 +100,9 @@ export class ClickController {
             // save, чтобы cache уже содержал уровень кликнутого слова.
             const unit = this.resolver.unitFor(word, this.service.getWordbookCache());
             const anchor = hit.range.getBoundingClientRect();
-            this.popup.show(unit, surface, anchor, (next) => this.save(word, next));
+            // onLevel получает само слово (голова-лемма ИЛИ член семьи) — каждое
+            // со своими пипсами уровня в попапе.
+            this.popup.show(unit, surface, anchor, (w, next) => this.save(w, next));
         });
     };
 
