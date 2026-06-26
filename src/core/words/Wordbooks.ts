@@ -1,6 +1,11 @@
+import {Languages} from "./Languages";
+
 export interface WordbookMeta {
     id: string;
     title: string;
+    // Язык словаря (ISO 639-1). Определяет письменность словаря и куда раскладывать
+    // кликнутые слова. У legacy-дефолта языка нет — раскладка для него выключена.
+    lang?: string;
 }
 
 // Реестр словарей и активный словарь живут в chrome.storage.local.
@@ -53,11 +58,18 @@ export class Wordbooks {
     static setActive = (id: string): Promise<void> =>
         new Promise((resolve) => chrome.storage.local.set({[ACTIVE_KEY]: id}, () => resolve()));
 
-    // Создать словарь и сделать его активным.
-    static create = (title: string): Promise<WordbookMeta> =>
-        Wordbooks.load().then(({list}) => new Promise<WordbookMeta>((resolve) => {
-            const meta: WordbookMeta = {id: uniqueId(title, list), title: title.trim() || "Wordbook"};
+    // Создать словарь под язык и сделать его активным. Один язык — один словарь:
+    // если словарь языка уже есть, просто активируем его.
+    static create = (lang: string): Promise<WordbookMeta> =>
+        Wordbooks.load().then(({list}) => {
+            const existing = list.find((w) => w.lang === lang);
+            if (existing) {
+                return new Promise<WordbookMeta>((resolve) =>
+                    chrome.storage.local.set({[ACTIVE_KEY]: existing.id}, () => resolve(existing)));
+            }
+            const meta: WordbookMeta = {id: uniqueId(lang, list), title: Languages.name(lang), lang};
             const next = [...list, meta];
-            chrome.storage.local.set({[LIST_KEY]: next, [ACTIVE_KEY]: meta.id}, () => resolve(meta));
-        }));
+            return new Promise<WordbookMeta>((resolve) =>
+                chrome.storage.local.set({[LIST_KEY]: next, [ACTIVE_KEY]: meta.id}, () => resolve(meta)));
+        });
 }

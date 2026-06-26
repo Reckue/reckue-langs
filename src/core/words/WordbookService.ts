@@ -31,6 +31,14 @@ export class WordbookService {
 
     getId = () => this.#id;
 
+    // Поднять словарь по id из storage (грузится кусками) и отдать готовый сервис.
+    static load = (id = ""): Promise<WordbookService> =>
+        new Promise((resolve) => {
+            const service = new WordbookService(id);
+            service.executeAfter(() => resolve(service));
+            service.loadWordbooks();
+        });
+
     set = (words: Bundle[]) => {
         this.#wordbook.set(words);
         this.#updateStorage();

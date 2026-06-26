@@ -1,27 +1,36 @@
 import {useState} from "preact/hooks";
 import {WordbookMeta} from "../../core/words/Wordbooks";
 
+interface AddableLang {
+    code: string;
+    name: string;
+}
+
 interface WordbookPickerProps {
     list: WordbookMeta[];
     activeId: string;
+    languages: AddableLang[];
     onSelect: (id: string) => void;
-    onCreate: (title: string) => void;
+    onCreate: (lang: string) => void;
 }
 
 /**
- * Выбор активного словаря (по одному на язык) и создание нового. Активный
- * словарь определяет, куда сохраняются и где подсвечиваются слова.
+ * Выбор активного словаря (= изучаемого языка) и создание словаря под новый язык.
+ * Активный язык — приор для раскладки кликнутых слов по языковым словарям.
  */
-export function WordbookPicker({list, activeId, onSelect, onCreate}: WordbookPickerProps) {
+export function WordbookPicker({list, activeId, languages, onSelect, onCreate}: WordbookPickerProps) {
     const [creating, setCreating] = useState(false);
-    const [title, setTitle] = useState("");
+    const [lang, setLang] = useState("");
+
+    const start = () => {
+        setLang(languages[0]?.code ?? "");
+        setCreating(true);
+    };
 
     const submit = () => {
-        const next = title.trim();
-        setTitle("");
         setCreating(false);
-        if (next) {
-            onCreate(next);
+        if (lang) {
+            onCreate(lang);
         }
     };
 
@@ -30,17 +39,12 @@ export function WordbookPicker({list, activeId, onSelect, onCreate}: WordbookPic
             {creating
                 ? (
                     <>
-                        <input class="wb-name" autofocus placeholder="Language name…" value={title}
-                               onInput={(e) => setTitle((e.target as HTMLInputElement).value)}
-                               onKeyDown={(e) => {
-                                   if (e.key === "Enter") {
-                                       submit();
-                                   } else if (e.key === "Escape") {
-                                       setTitle("");
-                                       setCreating(false);
-                                   }
-                               }}/>
-                        <button class="wb-add" onClick={submit}>Add</button>
+                        <select class="wb-name" value={lang}
+                                onChange={(e) => setLang((e.target as HTMLSelectElement).value)}>
+                            {languages.map((l) => <option value={l.code}>{l.name}</option>)}
+                        </select>
+                        <button class="wb-add" disabled={!lang} onClick={submit}>Add</button>
+                        <button class="wb-add" onClick={() => setCreating(false)}>✕</button>
                     </>
                 )
                 : (
@@ -49,7 +53,7 @@ export function WordbookPicker({list, activeId, onSelect, onCreate}: WordbookPic
                                 onChange={(e) => onSelect((e.target as HTMLSelectElement).value)}>
                             {list.map((w) => <option value={w.id}>{w.title}</option>)}
                         </select>
-                        <button class="wb-new" onClick={() => setCreating(true)}>+ New</button>
+                        <button class="wb-new" disabled={!languages.length} onClick={start}>+ New</button>
                     </>
                 )}
         </div>
