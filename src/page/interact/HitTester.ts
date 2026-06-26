@@ -1,4 +1,5 @@
-import {WORD_CHAR} from "../word/Word";
+import {WORD_CHAR, APOS} from "../word/Word";
+import {segmentAt} from "../word/Contractions";
 import {RootRegistry} from "../scan/RootRegistry";
 import {isUi} from "../ui/Ui";
 
@@ -32,24 +33,38 @@ export class HitTester {
         }
         const node = caret.node as Text;
         const text = node.nodeValue ?? "";
+        // Захватываем буквы И внутренние апострофы (it's, don't), затем срезаем
+        // крайние апострофы (кавычки 'word').
         let start = caret.offset;
         let end = caret.offset;
-        while (start > 0 && WORD_CHAR.test(text[start - 1])) {
+        while (start > 0 && (WORD_CHAR.test(text[start - 1]) || APOS.test(text[start - 1]))) {
             start--;
         }
-        while (end < text.length && WORD_CHAR.test(text[end])) {
+        while (end < text.length && (WORD_CHAR.test(text[end]) || APOS.test(text[end]))) {
             end++;
+        }
+        while (start < end && APOS.test(text[start])) {
+            start++;
+        }
+        while (end > start && APOS.test(text[end - 1])) {
+            end--;
         }
         if (end <= start) {
             return null;
         }
+        // Внутри апостроф-слова берём сегмент под каретой (it's: «it» либо «is»):
+        // word — раскрытая форма для словаря, диапазон — физический кусок сегмента.
+        const seg = segmentAt(text.slice(start, end), caret.offset - start);
+        const segStart = seg ? start + seg.start : start;
+        const segEnd = seg ? start + seg.end : end;
+        const word = seg ? seg.word : text.slice(segStart, segEnd);
         const range = document.createRange();
-        range.setStart(node, start);
-        range.setEnd(node, end);
+        range.setStart(node, segStart);
+        range.setEnd(node, segEnd);
         if (!this.pointInRange(x, y, range)) {
             return null;
         }
-        return {node, start, end, word: text.slice(start, end), range, isLink: this.isLink(node)};
+        return {node, start: segStart, end: segEnd, word, range, isLink: this.isLink(node)};
     };
 
     private isLink = (node: Node): boolean => {

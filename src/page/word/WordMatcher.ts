@@ -1,4 +1,5 @@
-import {Word, WORD_TOKEN} from "./Word";
+import {Word, APOS_WORD} from "./Word";
+import {segments} from "./Contractions";
 import {Inflector} from "./Inflector";
 
 export interface WordMatch {
@@ -26,13 +27,17 @@ export class WordMatcher {
     matchNode = (node: Text): WordMatch[] => {
         const text = node.nodeValue ?? "";
         const matches: WordMatch[] = [];
-        for (const match of text.matchAll(WORD_TOKEN)) {
+        for (const match of text.matchAll(APOS_WORD)) {
             if (match.index === undefined) {
                 continue;
             }
-            const level = this.lookup(new Word(match[0]));
-            if (level) {
-                matches.push({start: match.index, end: match.index + match[0].length, level});
+            // Апостроф-слово раскрывается в сегменты (it's → it + is): подсвечиваем
+            // физический кусок каждого сегмента под его эффективное слово.
+            for (const seg of segments(match[0])) {
+                const level = this.lookup(new Word(seg.word));
+                if (level) {
+                    matches.push({start: match.index + seg.start, end: match.index + seg.end, level});
+                }
             }
         }
         return matches;
