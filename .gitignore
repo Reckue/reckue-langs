@@ -3,3 +3,8 @@
 # dependencies
 /node_modules
 /dist
+
+# Локальное: инструкции ассистента, конфиг редактора, сборочные архивы
+CLAUDE.md
+.claude/
+reckue-langs-*.zip
