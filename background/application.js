@@ -153,3 +153,62 @@ async function syncFamilyDict() {
 
 chrome.runtime.onInstalled.addListener(syncFamilyDict);
 chrome.runtime.onStartup.addListener(syncFamilyDict);
+
+// --- Словарь грамматики (лемма→части речи) ------------------------------------
+// Качаем бандл из ручки Langs (строится из senses.pos/OEWN) и кэшируем; контент-
+// скрипт показывает POS-тег в попапе (см. GrammarDictionary.ts). Держим ОТДЕЛЬНО
+// от семей. Формат строк: "лемма<TAB>noun,verb" (уже lowercase, без BOM).
+const POS_KEY = "posDict:" + LEMMA_LANG;
+const POS_ETAG_KEY = "posEtag:" + LEMMA_LANG;
+const POS_URL = "https://api.reckue.com/api/1/dictionaries/" + LEMMA_LANG + "/pos";
+
+function parsePosDict(text) {
+    const map = Object.create(null);
+    const lines = text.split("\n");
+    for (let i = 0; i < lines.length; i++) {
+        let line = lines[i];
+        if (line.charCodeAt(line.length - 1) === 13) {
+            line = line.slice(0, -1);
+        }
+        const tab = line.indexOf("\t");
+        if (tab < 1) {
+            continue;
+        }
+        const lemma = line.slice(0, tab);
+        const rest = line.slice(tab + 1);
+        if (!rest) {
+            continue;
+        }
+        map[lemma] = rest.split(",");
+    }
+    return map;
+}
+
+async function syncPosDict() {
+    try {
+        const stored = await chrome.storage.local.get([POS_ETAG_KEY, POS_KEY]);
+        const headers = {};
+        if (stored[POS_ETAG_KEY] && stored[POS_KEY]) {
+            headers["If-None-Match"] = stored[POS_ETAG_KEY];
+        }
+        const res = await fetch(POS_URL, {headers});
+        if (res.status === 304) {
+            return;
+        }
+        if (!res.ok) {
+            console.warn("Reckue: словарь грамматики — HTTP", res.status);
+            return;
+        }
+        const map = parsePosDict(await res.text());
+        await chrome.storage.local.set({
+            [POS_KEY]: map,
+            [POS_ETAG_KEY]: res.headers.get("ETag") || ""
+        });
+        console.log("Reckue: словарь грамматики обновлён,", Object.keys(map).length, "лемм");
+    } catch (e) {
+        console.warn("Reckue: не удалось загрузить словарь грамматики", e);
+    }
+}
+
+chrome.runtime.onInstalled.addListener(syncPosDict);
+chrome.runtime.onStartup.addListener(syncPosDict);

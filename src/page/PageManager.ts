@@ -6,6 +6,7 @@ import {RootRegistry} from "./scan/RootRegistry";
 import {WordMatcher} from "./word/WordMatcher";
 import {LemmaDictionary} from "./word/LemmaDictionary";
 import {FamilyDictionary} from "./word/FamilyDictionary";
+import {GrammarDictionary} from "./word/GrammarDictionary";
 import {LemmaMigration} from "./word/LemmaMigration";
 import {MutationPipeline} from "./invalidate/MutationPipeline";
 import {HitTester} from "./interact/HitTester";
@@ -78,6 +79,8 @@ export class PageManager {
         // KnowledgeResolver). На подсветку не влияет, пере-скан не нужен.
         FamilyDictionary.load();
         FamilyDictionary.watch();
+        GrammarDictionary.load();
+        GrammarDictionary.watch();
 
         this.lifecycle(hover, pipeline);
     };

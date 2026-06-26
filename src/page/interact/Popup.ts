@@ -18,7 +18,8 @@ const ARROW = 8;
 export class Popup {
 
     private el: HTMLElement | null = null;
-    private head: HTMLElement | null = null;
+    private headWord: HTMLElement | null = null;
+    private pos: HTMLElement | null = null;
     private form: HTMLElement | null = null;
     private headPips: LevelPips | null = null;
     private sections: HTMLElement | null = null;
@@ -47,7 +48,8 @@ export class Popup {
         const el = this.el as HTMLElement;
         const level = unit.level ?? "beginner";
 
-        (this.head as HTMLElement).textContent = unit.lemma;
+        (this.headWord as HTMLElement).textContent = unit.lemma;
+        this.setPos(unit.pos);
         this.setForm(surface, unit.lemma);
         this.headPips?.set(unit.level);
 
@@ -63,6 +65,17 @@ export class Popup {
     hide = () => {
         if (this.el) {
             this.el.style.display = "none";
+        }
+    };
+
+    /** POS-тег грамматики рядом с леммой (verb · noun); скрыт, если POS нет. */
+    private setPos = (pos: string[]) => {
+        const el = this.pos as HTMLElement;
+        if (pos && pos.length) {
+            el.textContent = pos.join(" · ");
+            el.style.display = "inline-block";
+        } else {
+            el.style.display = "none";
         }
     };
 
@@ -169,11 +182,20 @@ export class Popup {
         const arrow = document.createElement("div");
         Object.assign(arrow.style, {position: "absolute", width: "0", height: "0"});
 
+        // Голова: лемма крупно + POS-тег (грамматика) рядом, отдельно от семьи.
         const head = document.createElement("div");
-        Object.assign(head.style, {
+        Object.assign(head.style, {display: "flex", alignItems: "baseline", gap: "8px", overflow: "hidden"});
+        const headWord = document.createElement("span");
+        Object.assign(headWord.style, {
             fontWeight: "500", fontSize: "18px",
             overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap"
         });
+        const pos = document.createElement("span");
+        Object.assign(pos.style, {
+            display: "none", fontSize: "10.5px", color: "#7a7a7a", background: "#f1f1f1",
+            borderRadius: "4px", padding: "1px 6px", whiteSpace: "nowrap", flex: "none"
+        });
+        head.append(headWord, pos);
 
         const form = document.createElement("div");
         Object.assign(form.style, {
@@ -213,7 +235,8 @@ export class Popup {
         document.body.appendChild(el);
 
         this.el = el;
-        this.head = head;
+        this.headWord = headWord;
+        this.pos = pos;
         this.form = form;
         this.headPips = headPips;
         this.sections = sections;

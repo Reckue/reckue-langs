@@ -47,6 +47,7 @@ export class KnowledgeResolver {
         return {
             lemma,
             level: cache.get(lemma),
+            pos: this.providers.posOf(lemma),
             members,
             constructions
         };

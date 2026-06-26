@@ -3,6 +3,7 @@ import {WordMatcher} from "../word/WordMatcher";
 import {Inflector} from "../word/Inflector";
 import {LemmaDictionary} from "../word/LemmaDictionary";
 import {FamilyDictionary} from "../word/FamilyDictionary";
+import {GrammarDictionary} from "../word/GrammarDictionary";
 import {Popup} from "./Popup";
 import {Hint} from "./Hint";
 import {WordbookService} from "../../core/words/WordbookService";
@@ -42,7 +43,9 @@ export class ClickController {
         // родственник, который лемматизируется обратно в голову (running→run) —
         // это грамматическая форма, не член семьи (граница «семьи это семьи»).
         familyOf: (lemma) => FamilyDictionary.get(lemma).filter((r) => LemmaDictionary.get(r) !== lemma),
-        constructionsOf: () => []
+        constructionsOf: () => [],
+        // Грамматика (части речи) — ОТДЕЛЬНО от семьи.
+        posOf: (lemma) => GrammarDictionary.get(lemma)
     };
     private readonly resolver = new KnowledgeResolver(this.providers);
     // Раскладка слов по языковым словарям (активный приор + письменность).

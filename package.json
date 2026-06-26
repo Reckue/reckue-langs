@@ -1,6 +1,6 @@
 {
   "name": "reckue-lang",
-  "version": "0.10.4",
+  "version": "0.10.5",
   "description": "Vacabulary Assistant helps you effortlessly build and organize your vocabulary while browsing the web.",
   "main": "index.js",
   "scripts": {
