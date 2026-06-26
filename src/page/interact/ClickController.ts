@@ -1,4 +1,4 @@
-import {HitTester} from "./HitTester";
+import {HitTester, Hit} from "./HitTester";
 import {WordMatcher} from "../word/WordMatcher";
 import {Inflector} from "../word/Inflector";
 import {LemmaDictionary} from "../word/LemmaDictionary";
@@ -106,24 +106,37 @@ export class ClickController {
             this.hint.hide();
             const anchor = hit.range.getBoundingClientRect();
 
-            // Раскладка по языковым словарям: слово письменности активного языка
-            // (общий случай) идёт в активный словарь — синхронный путь как раньше.
-            // Слово другого алфавита уходит в словарь своего языка (если заведён).
-            const targetId = this.router.targetId(word);
-            if (targetId === this.router.getActiveId()) {
-                if (!this.matcher.has(word)) {
-                    this.save(word, DEFAULT_LEVEL);
+            // Раскладка по языковым словарям. Письменность активного языка с одним
+            // словарём (общий случай) резолвится сразу; слово другого алфавита уходит
+            // в словарь своего языка; несколько словарей одной письменности
+            // (латиница en/de/…) разводит chrome.i18n по «слову + контексту» (async).
+            const context = this.contextAround(hit);
+            this.router.resolveTarget(word, context).then((targetId) => {
+                if (targetId === this.router.getActiveId()) {
+                    if (!this.matcher.has(word)) {
+                        this.save(word, DEFAULT_LEVEL);
+                    }
+                    // Единица знания: голова-лемма + (позже) семья/конструкции. Строим после
+                    // save, чтобы cache уже содержал уровень кликнутого слова. onLevel
+                    // получает само слово (голова-лемма ИЛИ член семьи) — каждое со
+                    // своими пипсами уровня в попапе.
+                    const unit = this.resolver.unitFor(word, this.service.getWordbookCache());
+                    this.popup.show(unit, surface, anchor, (w, next) => this.save(w, next));
+                } else {
+                    this.saveForeign(targetId, word, surface, anchor);
                 }
-                // Единица знания: голова-лемма + (позже) семья/конструкции. Строим после
-                // save, чтобы cache уже содержал уровень кликнутого слова. onLevel
-                // получает само слово (голова-лемма ИЛИ член семьи) — каждое со
-                // своими пипсами уровня в попапе.
-                const unit = this.resolver.unitFor(word, this.service.getWordbookCache());
-                this.popup.show(unit, surface, anchor, (w, next) => this.save(w, next));
-            } else {
-                this.saveForeign(targetId, word, surface, anchor);
-            }
+            });
         });
+    };
+
+    // Контекст вокруг кликнутого слова из той же text-ноды — поднимает точность
+    // детекта над одиночным словом. Небольшое окно, чтобы не уехать в язык всей
+    // страницы при клике по иноязычному вкраплению.
+    private contextAround = (hit: Hit): string => {
+        const text = hit.node.nodeValue ?? hit.word;
+        const from = Math.max(0, hit.start - 24);
+        const to = Math.min(text.length, hit.end + 24);
+        return text.slice(from, to);
     };
 
     // Слово чужого языка: лениво грузим его словарь и пишем туда. Подсветку

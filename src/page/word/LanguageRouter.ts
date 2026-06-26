@@ -2,17 +2,21 @@ import {WordbookService} from "../../core/words/WordbookService";
 import {Wordbooks, WordbookMeta} from "../../core/words/Wordbooks";
 import {Languages} from "../../core/words/Languages";
 import {detectScript} from "../../core/words/Script";
+import {detectLanguage} from "./I18nDetect";
+
+// Порог уверенности детекта: ниже — дефолтим на активный словарь (приор), чтобы
+// не раскладывать слово не туда. CLD2 даёт проценты по топ-языкам.
+const CONFIDENCE = 50;
 
 /**
- * Раскладка кликнутого слова по языковым словарям (Фаза 1).
+ * Раскладка кликнутого слова по языковым словарям (Фазы 1–2).
  *
- * Слой 0 — активный язык как приор: слово той же письменности, что активный
- * словарь, уходит в активный (общий случай — пользователь читает на изучаемом
- * языке). Слой 1 — письменность (Script): слово другого алфавита уходит в словарь
- * своего языка, если он заведён. Разведение языков ВНУТРИ одной письменности
- * (латиница) здесь не делается — это поздние фазы; при неоднозначности дефолтим.
+ * Слой 0 — активный язык как приор. Слой 1 — письменность (Script): слово другого
+ * алфавита уходит в словарь своего языка. Слой 2 — несколько словарей ОДНОЙ
+ * письменности (латиница en/de/fr…): различаем chrome.i18n.detectLanguage() по
+ * «слову + контексту соседей» с порогом уверенности; при сомнении — активный.
  *
- * Слова чужих словарей пишем лениво: сервис нужного словаря грузится при первом
+ * Чужие словари грузим лениво: сервис нужного словаря поднимается при первом
  * обращении и кешируется, чтобы не грузить все словари на старте.
  */
 export class LanguageRouter {
@@ -20,7 +24,6 @@ export class LanguageRouter {
     readonly #active: WordbookService;
     readonly #activeId: string;
     #list: WordbookMeta[] | null = null;
-    #activeScripts: string[] = [];
     readonly #cache = new Map<string, Promise<WordbookService>>();
 
     constructor(active: WordbookService) {
@@ -28,37 +31,41 @@ export class LanguageRouter {
         this.#activeId = active.getId();
     }
 
-    // Подтянуть реестр словарей и письменности активного языка. До init всё
-    // уходит в активный словарь (роутер ещё не знает про другие словари).
+    // Подтянуть реестр словарей. До init всё уходит в активный словарь.
     init = (): Promise<void> =>
         Wordbooks.load().then(({list}) => {
             this.#list = list;
-            const lang = list.find((w) => w.id === this.#activeId)?.lang;
-            this.#activeScripts = lang ? Languages.scriptsOf(lang) : [];
         });
 
     getActiveId = (): string => this.#activeId;
 
-    // id словаря, куда сохранить слово (синхронно — горячий путь клика).
-    targetId = (word: string): string => {
+    /**
+     * id словаря, куда сохранить слово. Async, потому что разведение языков одной
+     * письменности идёт через chrome.i18n (callback). Общий случай (один словарь
+     * на письменность слова) резолвится сразу, без детекта.
+     */
+    resolveTarget = (word: string, context: string): Promise<string> => {
         if (!this.#list) {
-            return this.#activeId;
+            return Promise.resolve(this.#activeId);
         }
         const script = detectScript(word);
-        if (!script || this.#activeScripts.includes(script)) {
-            // нет букв известного скрипта, либо письменность активного языка → активный
-            return this.#activeId;
+        if (!script) {
+            // нет букв известного скрипта (числа/пунктуация) → активный
+            return Promise.resolve(this.#activeId);
         }
-        const candidates = this.#list.filter(
+        const pool = this.#list.filter(
             (w) => w.lang && Languages.scriptsOf(w.lang).includes(script)
         );
-        if (candidates.length === 0) {
+        if (pool.length === 0) {
             // язык этой письменности не заведён → дефолт на активный
-            return this.#activeId;
+            return Promise.resolve(this.#activeId);
         }
-        // ровно один словарь этой письменности → он; несколько (неоднозначность
-        // языков одной письменности) → первый, до поздних фаз с моделью
-        return candidates[0].id;
+        if (pool.length === 1) {
+            // ровно один словарь этой письменности → он (детерминированно)
+            return Promise.resolve(pool[0].id);
+        }
+        // несколько словарей одной письменности → разводим детектом
+        return this.#disambiguate(word, context, pool);
     };
 
     // Сервис словаря по id: активный отдаём сразу, чужой грузим лениво и кешируем.
@@ -73,5 +80,21 @@ export class LanguageRouter {
         const loading = WordbookService.load(id);
         this.#cache.set(id, loading);
         return loading;
+    };
+
+    // chrome.i18n по «слову + контексту»: язык из топа, если он уверенный И входит
+    // в словари-кандидаты. Иначе приор — активный словарь (если он этой
+    // письменности), либо первый кандидат.
+    #disambiguate = (word: string, context: string, pool: WordbookMeta[]): Promise<string> => {
+        const fallback = pool.find((w) => w.id === this.#activeId)?.id ?? pool[0].id;
+        return detectLanguage(context || word).then((res) => {
+            if (res && res.reliable && res.percentage >= CONFIDENCE) {
+                const match = pool.find((w) => w.lang === res.lang);
+                if (match) {
+                    return match.id;
+                }
+            }
+            return fallback;
+        });
     };
 }
