@@ -74,30 +74,15 @@ export class Inflector {
         if (fromDict) {
             return fromDict;
         }
-        if (!LATIN_LOWER.test(word) || word.length <= 3) {
-            return word;
-        }
-        if (word.length > 4 && (word.endsWith("ies") || word.endsWith("ied"))) {
-            return word.slice(0, -3) + "y";                  // studies→study, tried→try
-        }
-        if (word.length > 5 && word.endsWith("ing")) {
-            const stem = word.slice(0, -3);
-            if (stem.length < 3) return word;                // using → using (не "us")
-            return this.undouble(stem);                      // running→run, walking→walk
-        }
-        if (word.length > 4 && word.endsWith("ed")) {
-            const stem = word.slice(0, -2);
-            if (stem.length < 3) return word;                // used → used (не "us")
-            return this.undouble(stem);                      // stopped→stop, walked→walk
-        }
-        if (word.length > 4 && /(ss|x|z|ch|sh)es$/.test(word)) {
-            return word.slice(0, -2);                        // boxes→box, classes→class, dishes→dish
-        }
-        if (word.length > 4 && word.endsWith("es")) {
-            return word.slice(0, -1);                        // makes→make, uses→use
-        }
-        if (word.endsWith("s") && !word.endsWith("ss")) {
-            return word.slice(0, -1);                        // runs→run, views→view
+        // OOV (формы нет в словаре). Правила дают кандидатов (bases уже умеет и
+        // e-restoration «make», и undouble «run»), но СОХРАНЯЕМ лишь того, кто
+        // подтверждён словарём как реальная лемма. Иначе не режем и возвращаем
+        // слово как есть — консервативно: лучше форма, чем огрызок «mak»/«thi».
+        // Это же чинит недо-срез: «used»→«use», «makes»→«make».
+        for (const base of this.bases(word)) {
+            if (LemmaDictionary.isLemma(base)) {
+                return base;
+            }
         }
         return word;
     };
