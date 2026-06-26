@@ -37,7 +37,10 @@ export class ClickController {
     // семья/конструкции включатся, когда подъедет word_derivations с бэкенда.
     private readonly providers: RelationProviders = {
         lemmaOf: (word) => LemmaDictionary.get(word),
-        familyOf: (lemma) => FamilyDictionary.get(lemma),
+        // Семья — только лексические деривации. Выкидываем инфлексии-двойники:
+        // родственник, который лемматизируется обратно в голову (running→run) —
+        // это грамматическая форма, не член семьи (граница «семьи это семьи»).
+        familyOf: (lemma) => FamilyDictionary.get(lemma).filter((r) => LemmaDictionary.get(r) !== lemma),
         constructionsOf: () => []
     };
     private readonly resolver = new KnowledgeResolver(this.providers);
