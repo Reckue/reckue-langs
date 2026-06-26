@@ -1,9 +1,15 @@
-import {HitTester} from "./HitTester";
+import {HitTester, Hit} from "./HitTester";
 import {WordMatcher} from "../word/WordMatcher";
 import {Inflector} from "../word/Inflector";
+import {LemmaDictionary} from "../word/LemmaDictionary";
+import {FamilyDictionary} from "../word/FamilyDictionary";
+import {GrammarDictionary} from "../word/GrammarDictionary";
 import {Popup} from "./Popup";
 import {Hint} from "./Hint";
 import {WordbookService} from "../../core/words/WordbookService";
+import {KnowledgeResolver} from "../../core/words/KnowledgeResolver";
+import {RelationProviders} from "../../core/words/KnowledgeUnit";
+import {LanguageRouter} from "../word/LanguageRouter";
 
 const DEFAULT_LEVEL = "beginner";
 
@@ -29,6 +35,21 @@ export class ClickController {
     private readonly refresh: () => void;
     private readonly resolveWord?: (node: Text, offset: number) => string | undefined;
     private readonly inflector = new Inflector();
+    // Связи единицы знания: лемму формы знаем уже сейчас (словарь лемм), а
+    // семья/конструкции включатся, когда подъедет word_derivations с бэкенда.
+    private readonly providers: RelationProviders = {
+        lemmaOf: (word) => LemmaDictionary.get(word),
+        // Семья — только лексические деривации. Выкидываем инфлексии-двойники:
+        // родственник, который лемматизируется обратно в голову (running→run) —
+        // это грамматическая форма, не член семьи (граница «семьи это семьи»).
+        familyOf: (lemma) => FamilyDictionary.get(lemma).filter((r) => LemmaDictionary.get(r) !== lemma),
+        constructionsOf: () => [],
+        // Грамматика (части речи) — ОТДЕЛЬНО от семьи.
+        posOf: (lemma) => GrammarDictionary.get(lemma)
+    };
+    private readonly resolver = new KnowledgeResolver(this.providers);
+    // Раскладка слов по языковым словарям (активный приор + письменность).
+    private readonly router: LanguageRouter;
     private fast = false;
 
     /**
@@ -46,9 +67,11 @@ export class ClickController {
         this.hint = hint;
         this.refresh = refresh;
         this.resolveWord = resolveWord;
+        this.router = new LanguageRouter(service);
     }
 
     attach = () => {
+        this.router.init();
         chrome.storage.local.get(["fastMode"], (s) => (this.fast = !!s.fastMode));
         chrome.storage.onChanged.addListener((changes, area) => {
             if (area === "local" && changes.fastMode) {
@@ -78,15 +101,53 @@ export class ClickController {
             // Сохраняем лемму, а не словоформу: клик по "views"/"fixed" кладёт в
             // словарь "view"/"fix", и подсвечивается всё семейство форм. В reader
             // resolveWord сперва достраивает фрагмент сшитого слова до целого.
-            const surface = (this.resolveWord && this.resolveWord(hit.node, hit.start)) ?? hit.word;
-            const word = this.inflector.lemma(surface.toLowerCase());
-            if (!this.matcher.has(word)) {
-                this.save(word, DEFAULT_LEVEL);
-            }
+            const surface = ((this.resolveWord && this.resolveWord(hit.node, hit.start)) ?? hit.word).toLowerCase();
+            const word = this.inflector.lemma(surface);
             this.hint.hide();
-            const level = this.service.getWordbookCache().get(word) ?? DEFAULT_LEVEL;
             const anchor = hit.range.getBoundingClientRect();
-            this.popup.show(word, level, anchor, (next) => this.save(word, next));
+
+            // Раскладка по языковым словарям. Письменность активного языка с одним
+            // словарём (общий случай) резолвится сразу; слово другого алфавита уходит
+            // в словарь своего языка; несколько словарей одной письменности
+            // (латиница en/de/…) разводит chrome.i18n по «слову + контексту» (async).
+            const context = this.contextAround(hit);
+            this.router.resolveTarget(word, context).then((targetId) => {
+                if (targetId === this.router.getActiveId()) {
+                    if (!this.matcher.has(word)) {
+                        this.save(word, DEFAULT_LEVEL);
+                    }
+                    // Единица знания: голова-лемма + (позже) семья/конструкции. Строим после
+                    // save, чтобы cache уже содержал уровень кликнутого слова. onLevel
+                    // получает само слово (голова-лемма ИЛИ член семьи) — каждое со
+                    // своими пипсами уровня в попапе.
+                    const unit = this.resolver.unitFor(word, this.service.getWordbookCache());
+                    this.popup.show(unit, surface, anchor, (w, next) => this.save(w, next));
+                } else {
+                    this.saveForeign(targetId, word, surface, anchor);
+                }
+            });
+        });
+    };
+
+    // Контекст вокруг кликнутого слова из той же text-ноды — поднимает точность
+    // детекта над одиночным словом. Небольшое окно, чтобы не уехать в язык всей
+    // страницы при клике по иноязычному вкраплению.
+    private contextAround = (hit: Hit): string => {
+        const text = hit.node.nodeValue ?? hit.word;
+        const from = Math.max(0, hit.start - 24);
+        const to = Math.min(text.length, hit.end + 24);
+        return text.slice(from, to);
+    };
+
+    // Слово чужого языка: лениво грузим его словарь и пишем туда. Подсветку
+    // активной страницы не трогаем — слово в другом алфавите, его словарь не активен.
+    private saveForeign = (id: string, word: string, surface: string, anchor: DOMRect) => {
+        this.router.getService(id).then((service) => {
+            if (!service.getWordbookCache().get(word)) {
+                service.set([{word, level: DEFAULT_LEVEL}]);
+            }
+            const unit = this.resolver.unitFor(word, service.getWordbookCache());
+            this.popup.show(unit, surface, anchor, (w, next) => service.set([{word: w, level: next}]));
         });
     };
 

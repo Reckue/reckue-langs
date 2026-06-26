@@ -3,7 +3,7 @@ export type Relation = "lemma" | "derivation" | "construction";
 
 export interface UnitMember {
     word: string;
-    level: string;          // имя уровня (см. core/enum/Levels)
+    level?: string;         // имя уровня (core/enum/Levels); undefined = ещё не сохранено
     relation: Relation;
 }
 
@@ -16,6 +16,7 @@ export interface UnitMember {
 export interface KnowledgeUnit {
     lemma: string;
     level?: string;                 // уровень самой леммы, если она сохранена
+    pos: string[];                  // части речи леммы (грамматика): noun, verb…
     members: UnitMember[];          // деривации: decision, decisive, indecisive
     constructions: UnitMember[];    // многословные: look forward to, decide on
 }
@@ -32,11 +33,14 @@ export interface RelationProviders {
     familyOf: (lemma: string) => string[];
     /** Связанные конструкции (многословные) для леммы. */
     constructionsOf: (lemma: string) => string[];
+    /** Части речи леммы (грамматика, ОТДЕЛЬНО от семьи): noun, verb… */
+    posOf: (lemma: string) => string[];
 }
 
 /** Заглушка без связей: каждое слово — юнит-одиночка (пока нет данных семей). */
 export const NO_RELATIONS: RelationProviders = {
     lemmaOf: () => undefined,
     familyOf: () => [],
-    constructionsOf: () => []
+    constructionsOf: () => [],
+    posOf: () => []
 };

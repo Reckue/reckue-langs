@@ -4,27 +4,31 @@ import * as pdfjsLib from "pdfjs-dist";
  * Одна страница PDF: растр в <canvas> + прозрачный текстовый слой PDF.js поверх.
  * Подсветка слов работает по text-нодам этого слоя (см. HighlightStore в background-режиме).
  *
- * Рендер ленивый: el создаётся с финальными размерами сразу (чтобы не прыгал
- * скролл), а тяжёлый canvas/textLayer строится только когда страница близка к вьюпорту.
+ * Рендер ленивый: el создаётся сразу с оценкой размера (по 1-й странице) — чтобы
+ * не блокировать открытие и не прыгал скролл, — а сама страница (proxy + canvas +
+ * textLayer) подтягивается только когда близка к вьюпорту. Реальный размер
+ * уточняется при рендере, если отличается от оценки (неоднородный документ).
  */
 export class PageView {
 
     readonly el: HTMLElement;
-    readonly #page: pdfjsLib.PDFPageProxy;
+    readonly #getPage: () => Promise<pdfjsLib.PDFPageProxy>;
     readonly #scale: number;
     readonly #onTextLayer?: (el: HTMLElement) => void;
     #rendered = false;
 
-    constructor(page: pdfjsLib.PDFPageProxy, scale: number, onTextLayer?: (el: HTMLElement) => void) {
-        this.#page = page;
+    constructor(getPage: () => Promise<pdfjsLib.PDFPageProxy>, pageNumber: number,
+                scale: number, estWidth: number, estHeight: number,
+                onTextLayer?: (el: HTMLElement) => void) {
+        this.#getPage = getPage;
         this.#scale = scale;
         this.#onTextLayer = onTextLayer;
-        const viewport = page.getViewport({scale});
         const el = document.createElement("div");
         el.className = "page";
+        el.dataset.page = String(pageNumber);
         el.style.setProperty("--scale-factor", String(scale));
-        el.style.width = Math.floor(viewport.width) + "px";
-        el.style.height = Math.floor(viewport.height) + "px";
+        el.style.width = Math.floor(estWidth) + "px";
+        el.style.height = Math.floor(estHeight) + "px";
         this.el = el;
     }
 
@@ -34,7 +38,16 @@ export class PageView {
         }
         this.#rendered = true;
 
-        const viewport = this.#page.getViewport({scale: this.#scale});
+        const page = await this.#getPage();
+        const viewport = page.getViewport({scale: this.#scale});
+
+        // Уточнить плейсхолдер, если реальный размер страницы отличается от оценки.
+        if (Math.floor(viewport.width) !== this.el.clientWidth
+            || Math.floor(viewport.height) !== this.el.clientHeight) {
+            this.el.style.width = Math.floor(viewport.width) + "px";
+            this.el.style.height = Math.floor(viewport.height) + "px";
+        }
+
         const outputScale = window.devicePixelRatio || 1;
 
         const canvas = document.createElement("canvas");
@@ -49,10 +62,10 @@ export class PageView {
         this.el.appendChild(textLayerDiv);
 
         const transform = outputScale !== 1 ? [outputScale, 0, 0, outputScale, 0, 0] : undefined;
-        await this.#page.render({canvas, viewport, transform} as any).promise;
+        await page.render({canvas, viewport, transform} as any).promise;
 
         const textLayer = new pdfjsLib.TextLayer({
-            textContentSource: this.#page.streamTextContent(),
+            textContentSource: page.streamTextContent(),
             container: textLayerDiv,
             viewport,
         });
