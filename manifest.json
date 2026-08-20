@@ -2,6 +2,7 @@
   "name": "Reckue Languages",
   "version": "0.10.6",
   "description": "Interactive language learning assistant",
+  "homepage_url": "https://lapshin.online",
   "permissions": [
     "storage",
     "unlimitedStorage",
