@@ -87,6 +87,11 @@ Contributions are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) for the workfl
 
 All data stays on your device — the extension makes no external requests. See [PRIVACY.md](PRIVACY.md).
 
+## Author
+
+Built by [Vladislav Lapshin](https://lapshin.online) — tech lead and backend engineer.
+See the other things that are live: [korean.reckue.com](https://korean.reckue.com).
+
 ## License
 
 Licensed under the Apache License 2.0. See [LICENSE](LICENSE).
